@@ -1,8 +1,8 @@
 #include <WiFiNINA.h>
 #include <WiFiUdp.h>
 
-char ssid[] = "CastleDeSherwood";; // your network SSID (name)
-char pass[] = "serinpaul"; // your network password (use for WPA, or use as key for WEP)
+char ssid[] = "wifinet";; // your network SSID (name)
+char pass[] = "wifipass"; // your network password (use for WPA, or use as key for WEP)
 
 WiFiUDP Udp;
 
