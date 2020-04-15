@@ -1,9 +1,10 @@
 #include <WiFiNINA.h>
 #include <WiFiUdp.h>
+#include <secrets.h>
 
 
-char ssid[] = "wifinet"; // your network SSID (name)
-char pass[] = "wifipass"; // your network password (use for WPA, or use as key for WEP)
+char ssid[] = SSID__;
+char pass[] = PASSWORD__;
 
 unsigned int localPort = 2390;  // local port to listen on
 

@@ -2,8 +2,8 @@
    adapted from https://github.com/rodrigoms2004/ServerSocketTCP_UDP/blob/master/util/loggerTool.js
 udp_server.js
 */
+'use strict';
 
-https: //github.com/rodrigoms2004/ServerSocketTCP_UDP/blob/master/util/loggerTool.js
 const winston = require('winston')
 const moment = require('moment')
 require('winston-daily-rotate-file')

@@ -1,6 +1,6 @@
+'user strict';
 
-
-export default class traceroute {
+class Traceroute {
 	state = {};
 
 	runTrace(params) {
@@ -11,3 +11,5 @@ export default class traceroute {
 		
 	}
 };
+
+module.default = Traceroute;

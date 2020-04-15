@@ -3,7 +3,7 @@
 
 # don't share secrets, otherwise
 # they aren't secrets...
-.secrets.h
+secrets.h
 
 # dependencies
 /node_modules
