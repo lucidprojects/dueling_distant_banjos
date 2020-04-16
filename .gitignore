@@ -6,7 +6,7 @@
 secrets.h
 
 # dependencies
-/server/node_modules
+./server/node_modules
 
 # log
 /logs
