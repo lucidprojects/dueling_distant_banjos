@@ -18,10 +18,6 @@ const config = require('../config/config');
 
 // NOTE: -----> Create HTTP Server <-----
 
-class DBServer {
-
-};
-
 const app = express();
 
 const server = http.createServer(app);
@@ -35,4 +31,4 @@ app.use(helmet());
 
 app.use(express.static('public'));
 
-module.default = DBServer;
+module.default = server;
