@@ -1,98 +1,118 @@
+/*
+   
+   adapted from https: //github.com/frnkst/traceroute-js
+   created 04/17/2020
+*/
+'use strict';
+
 const dgram = require('dgram');
-const raw = require('raw-socket');
+const rSocket = require('raw-socket');
 const dns = require('dns-then');
+const config = require('../config/config');
 
-const icmpSocket = raw.createSocket({
-	protocol: raw.Protocol.ICMP
+const icmpSocket = rSocket.createSocket({
+	protocol: rSocket.Protocol.ICMP
 });
-const udpSocket = dgram.createSocket('udp4');
 
-const MAX_HOPS = 64;
-const MAX_TIMEOUT_IN_MILLISECONDS = 1000;
-const DESTINATION_HOST = 'google.com'
-const NO_REVERSE_LOOKUP = process.argv[process.argv.length - 2] === '-n';
+class Traceroute {
+	constructor() {
+		this.udpSocket = dgram.createSocket('udp4');
+		this.icmpSocket = rSocket.createSocket({protocol: rSocket.Protocol.ICMP});
+		this.MAX_HOPS;
+		this.MAX_TIMEOUT; 
+		this.DESTINATION_HOST;
+		this.DESTINATION_IP;
+		this.NO_REVERSE_LOOKUP = false;
+		// this.port = 33434;
+		this.port = config.trPort;
+		this.ttl = 1;
+		this.tries = 0;
+		this.startTime;
+		this.timeout;
+		this.previousIP;
+	}
 
-let DESTINATION_IP;
+	startTrace(params) {
+		this.MAX_HOPS = params.max_hops || 10; // 64;
+		this.MAX_TIMEOUT = params.max_timeout || 1000;
+		this.DESTINATION_HOST = params.host || 'noahkernis.com'
 
-let port = 33434;
-let ttl = 1;
-let tries = 0;
+		this.init();
+	}
 
-let startTime;
-let timeout;
-let previousIP;
+	async init() {
+		this.DESTINATION_IP = await dns.lookup(this.DESTINATION_HOST);
+		console.log(`traceroute to ${this.DESTINATION_HOST} (${this.DESTINATION_IP}), ${this.MAX_HOPS} hops max, 42 byte packets`);
+		this.udpSocket.bind(this.port, () => this.sendPacket());
 
-startTrace();
+		setImmediate(() => this.listenIcmpSocket());
+	}
 
-setImmediate(() => {
-	icmpSocket.on('message', async function (buffer, ip) {
-		let p = buffer.toString('hex').substr(100, 4);
-		let portNumber = parseInt(p, 16);
-		if (port === portNumber) {
-			try {
-				let symbolicAddress;
-				if (!NO_REVERSE_LOOKUP) {
-					symbolicAddress = await dns.reverse(ip);
+	listenIcmpSocket() {
+		icmpSocket.on('message', async (buffer, ip) => {
+			let p = buffer.toString('hex').substr(100, 4);
+			let portNumber = parseInt(p, 16);
+			if (this.port === portNumber) {
+				try {
+					let symbolicAddress;
+					if (!this.NO_REVERSE_LOOKUP) {
+						symbolicAddress = await dns.reverse(ip);
+					}
+					this.handleReply(ip, symbolicAddress[0]);
+				} catch (e) {
+					this.handleReply(ip);
 				}
-				handleReply(ip, symbolicAddress[0]);
-			} catch (e) {
-				handleReply(ip);
+			}
+		});
+	}
+
+	sendPacket() {
+		this.port++;
+
+		if (this.tries >= 3) {
+			this.tries = 0;
+			this.ttl++;
+		}
+		this.tries++;
+
+		this.udpSocket.setTTL(this.ttl);
+		this.startTime = process.hrtime();
+		this.udpSocket.send(new Buffer(''), 0, 0, this.port, this.DESTINATION_IP, (err) => {
+			if (err) throw err;
+			this.timeout = setTimeout(() => this.handleReply(), this.MAX_TIMEOUT);
+		});
+	}
+
+	handleReply(ip, symbolicAddress) {
+		if (this.timeout) {
+			clearTimeout(this.timeout);
+		}
+
+		if (ip) {
+			const elapsedTime = `${(process.hrtime(this.startTime)[1] / 1000000).toFixed(3)} ms`;
+
+			if (ip === this.previousIP) {
+				process.stdout.write(`  ${elapsedTime}`);
+			} else if (this.tries === 1) {
+				process.stdout.write(`\n ${this.ttl}  ${symbolicAddress ? symbolicAddress : ip} (${ip}) ${elapsedTime}`);
+			} else {
+				process.stdout.write(`\n    ${symbolicAddress ? symbolicAddress : ip} (${ip}) ${elapsedTime}`);
+			}
+		} else {
+			if (this.tries === 1) {
+				process.stdout.write(`\n ${this.ttl}  * `);
+			} else {
+				process.stdout.write(`* `);
 			}
 		}
-	});
-});
 
-async function startTrace() {
-	DESTINATION_IP = await dns.lookup(DESTINATION_HOST);
-	console.log(`traceroute to ${DESTINATION_HOST} (${DESTINATION_IP}), ${MAX_HOPS} hops max, 42 byte packets`);
-	udpSocket.bind(1234, () => sendPacket());
-}
-
-function sendPacket() {
-	port++;
-
-	if (tries >= 3) {
-		tries = 0;
-		ttl++;
-	}
-	tries++;
-
-	udpSocket.setTTL(ttl);
-	startTime = process.hrtime();
-	udpSocket.send(new Buffer(''), 0, 0, port, DESTINATION_IP, function (err) {
-		if (err) throw err;
-		timeout = setTimeout(handleReply, MAX_TIMEOUT_IN_MILLISECONDS);
-	});
-}
-
-function handleReply(ip, symbolicAddress) {
-	if (timeout) {
-		clearTimeout(timeout);
-	}
-
-	if (ip) {
-		const elapsedTime = `${(process.hrtime(startTime)[1] / 1000000).toFixed(3)} ms`;
-
-		if (ip === previousIP) {
-			process.stdout.write(`  ${elapsedTime}`);
-		} else if (tries === 1) {
-			process.stdout.write(`\n ${ttl}  ${symbolicAddress ? symbolicAddress : ip} (${ip}) ${elapsedTime}`);
-		} else {
-			process.stdout.write(`\n    ${symbolicAddress ? symbolicAddress : ip} (${ip}) ${elapsedTime}`);
+		if ((ip == this.DESTINATION_IP && this.tries === 3) || this.ttl >= this.MAX_HOPS) {
+			process.exit();
 		}
-	} else {
-		if (tries === 1) {
-			process.stdout.write(`\n ${ttl}  * `);
-		} else {
-			process.stdout.write(`* `);
-		}
-	}
 
-	if ((ip == DESTINATION_IP && tries === 3) || ttl >= MAX_HOPS) {
-		console.log('');
-		process.exit();
+		this.previousIP = ip;
+		setImmediate(() => this.sendPacket());
 	}
-
-	previousIP = ip;
-	setImmediate(sendPacket);
 }
+
+module.exports = Traceroute;

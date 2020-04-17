@@ -3,7 +3,7 @@
 // const server = require('./src/HTTPServer')
 // const UDPServer = require('./src/UDPServer')
 const Traceroute = require('./src/Traceroute')
-const config = require('./config/config');
+// const config = require('./config/config');
 
 // NOTE: -----> Start Server <-----
 
@@ -26,4 +26,4 @@ const config = require('./config/config');
 
 // udpServer.run();
 
-// Traceroute.run();
+new Traceroute().startTrace({});

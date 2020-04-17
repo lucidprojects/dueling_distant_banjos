@@ -1,11 +1,11 @@
 /*
    
-   adapted from https: //github.com/rodrigoms2004/ServerSocketTCP_UDP/blob/master/udp_server.js
-   created 02/15/2020
+   adapted from https://github.com/rodrigoms2004/ServerSocketTCP_UDP/blob/master/udp_server.js
+   created 04/15/2020
 */
 'use strict';
 
-const udp = require('dgram');
+const dgram = require('dgram');
 const config = require('../config/config');
 
 // const {
@@ -14,19 +14,17 @@ const config = require('../config/config');
 
 class UDPServer {
 	constructor() {
-		this.server;
+		this.server = dgram.createSocket('udp4');
 	}
 
-	async run() {
-		this.server = udp.createSocket('udp4');
-
+	run() {
 		this.onClose();
 		this.onError();
 		this.onMessage();
 		this.onListen();
 
 		this.server.bind(config.port)
-	};
+	}
 
 	onClose() {
 		//emits after the socket is closed using socket.close()
@@ -73,6 +71,8 @@ class UDPServer {
 	}
 
 	sendMessage(message) {
+		// TODO: 
+		// Use server obj or use this new client??
 		const client = dgram.createSocket('udp4');
 
 		const data = {
