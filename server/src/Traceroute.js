@@ -10,6 +10,11 @@ const rSocket = require('raw-socket');
 const dns = require('dns-then');
 const config = require('../config/config');
 
+// TODO:
+// 1) Return data needed for midi stuff
+// 2) Remove DNS?
+// 3) Clean up code
+
 const icmpSocket = rSocket.createSocket({
 	protocol: rSocket.Protocol.ICMP
 });
@@ -23,7 +28,6 @@ class Traceroute {
 		this.DESTINATION_HOST;
 		this.DESTINATION_IP;
 		this.NO_REVERSE_LOOKUP = false;
-		// this.port = 33434;
 		this.port = config.trPort;
 		this.ttl = 1;
 		this.tries = 0;
@@ -42,6 +46,7 @@ class Traceroute {
 
 	async init() {
 		this.DESTINATION_IP = await dns.lookup(this.DESTINATION_HOST);
+
 		console.log(`traceroute to ${this.DESTINATION_HOST} (${this.DESTINATION_IP}), ${this.MAX_HOPS} hops max, 42 byte packets`);
 		this.udpSocket.bind(this.port, () => this.sendPacket());
 
