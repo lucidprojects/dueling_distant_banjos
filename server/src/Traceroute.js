@@ -5,19 +5,15 @@
 */
 'use strict';
 
-const dgram = require('dgram');
-const rSocket = require('raw-socket');
-const dns = require('dns-then');
-const config = require('../config/config');
-
 // TODO:
 // 1) Return data needed for midi stuff
 // 2) Remove DNS?
 // 3) Clean up code
 
-const icmpSocket = rSocket.createSocket({
-	protocol: rSocket.Protocol.ICMP
-});
+const dgram = require('dgram');
+const rSocket = require('raw-socket');
+const dns = require('dns-then');
+const config = require('../config/config');
 
 class Traceroute {
 	constructor() {
