@@ -1,7 +1,7 @@
 'use strict';
 
 // const server = require('./src/HTTPServer')
-// const UDPServer = require('./src/UDPServer')
+const UDPServer = require('./src/UDPServer')
 const Traceroute = require('./src/Traceroute')
 // const config = require('./config/config');
 
@@ -22,8 +22,8 @@ const Traceroute = require('./src/Traceroute')
 // 	}
 // })
 
-// const udpServer = new UDPServer();
+const udpServer = new UDPServer();
 
-// udpServer.run();
+udpServer.run();
 
-new Traceroute().startTrace({});
+// new Traceroute().startTrace({});

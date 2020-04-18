@@ -28,7 +28,7 @@ class UDPServer {
 		this.onMessage();
 		this.onListen();
 
-		this.server.bind(config.port)
+		this.server.bind(config.udpPort)
 	}
 
 	onClose() {
@@ -51,8 +51,13 @@ class UDPServer {
 	onMessage() {
 		// receive msg
 		this.server.on('message', (msg, info) => {
-			console.log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port}`);
+			// console.log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port}`);
 			// log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port}`)
+
+			console.log(msg[0]);
+			console.log(msg[1]);
+			console.log(msg[2]);
+			console.log('');
 		});
 
 		// TODO: data will go to arduino
