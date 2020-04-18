@@ -35,7 +35,7 @@ class Traceroute {
 	startTrace(params) {
 		this.MAX_HOPS = params.max_hops || 10; // 64;
 		this.MAX_TIMEOUT = params.max_timeout || 1000;
-		this.DESTINATION_HOST = params.host || 'noahkernis.com'
+		this.DESTINATION_HOST = params.host || config.remoteRpi
 
 		this.init();
 	}

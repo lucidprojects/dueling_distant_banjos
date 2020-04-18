@@ -18,6 +18,9 @@ const config = require('../config/config');
 class UDPServer {
 	constructor() {
 		this.server = dgram.createSocket('udp4');
+		this.localArduino = config.localArduino;
+		this.remoteRpi = config.remoteRpi;
+		this.port = config.udpPort;
 	}
 
 	run() {
@@ -26,7 +29,7 @@ class UDPServer {
 		this.onMessage();
 		this.onListen();
 
-		this.server.bind(config.udpPort)
+		this.server.bind(this.port)
 	}
 
 	onClose() {
@@ -56,8 +59,7 @@ class UDPServer {
 			console.log('');
 			// log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port}`)
 
-			// TODO: send to remote pi or local ard (currently loops back to local can)
-			this.sendMessage(msg, config.localCanHost, 5000);
+			this.handleMessage(msg, info)
 		});
 
 	}
@@ -78,7 +80,23 @@ class UDPServer {
 			// log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
 		});
 	}
+	
+	handleMessage(msg, info) {
+		switch (`${info.address}`) {
+			case this.localArduino:
+				this.sendMessage(msg, this.remoteRpi, this.port);
+				break;
 
+			case this.remoteRpi:
+				this.sendMessage(msg, this.localArduino, this.port);
+				break;
+		
+			default:
+				console.log("info", "received udp from unknown source", `${info.address}:${info.port}`);
+				break;
+		}
+	}
+	
 	sendMessage(buffer, host, port) {
 		// TODO: 
 		// Use server obj or use this new client??
@@ -95,8 +113,6 @@ class UDPServer {
 				client.close();
 			}
 		});
-
-		// TODO: need to trigger when data to send from arduino
 	}
 }
 

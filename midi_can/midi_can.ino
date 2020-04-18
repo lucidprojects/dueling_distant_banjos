@@ -5,7 +5,6 @@
 #include <WiFiNINA.h>
 #include <WiFiUdp.h>
 #include <MIDIUSB.h>
-#include <pitchToNote.h>
 
 #include "secrets.h"
 
@@ -20,12 +19,12 @@ WiFiUDP Udp;
 
 IPAddress localRpi(192, 168, 0, 168);
 
-const int MIDI_PACKET_SIZE = 3; // NTP time stamp is in the first 48 bytes of the message
+const int MIDI_PACKET_SIZE = 3;
 
-byte packetBuffer[MIDI_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
-byte packetBufferIn[MIDI_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
+byte packetBufferIn[MIDI_PACKET_SIZE];
+byte packetBufferOut[MIDI_PACKET_SIZE];
 
-unsigned int localPort = 5000; // local port to listen on
+unsigned int localPort = 5000;
 unsigned long timestamp;
 
 // MIDI
@@ -55,7 +54,6 @@ void setup()
 	if (WiFi.status() == WL_NO_MODULE)
 	{
 		Serial.println("Communication with WiFi module failed!");
-		// don't continue
 		while (true);
 	}
 
@@ -139,16 +137,16 @@ void midiOn(int chnl, int noteValue)
 	switch (chnl)
 	{
 	case 1:
-		midiCommand(0x90, noteValue, 0x7F);
+		midiCommand(0x90, noteValue, 0x7F, true);
 		break;
 	case 2:
-		midiCommand(0x91, noteValue, 0x7F);
+		midiCommand(0x91, noteValue, 0x7F, true);
 		break;
 	case 3:
-		midiCommand(0x92, noteValue, 0x7F);
+		midiCommand(0x92, noteValue, 0x7F, true);
 		break;
 	case 4:
-		midiCommand(0x93, noteValue, 0x7F);
+		midiCommand(0x93, noteValue, 0x7F, true);
 		break;
 	default:
 		break;
@@ -160,28 +158,44 @@ void midiOff(int chnl, int noteValue)
 	switch (chnl)
 	{
 	case 1:
-		midiCommand(0x80, noteValue, 0x7F);
+		midiCommand(0x80, noteValue, 0x7F, true);
 		break;
 	case 2:
-		midiCommand(0x81, noteValue, 0x7F);
+		midiCommand(0x81, noteValue, 0x7F, true);
 		break;
 	case 3:
-		midiCommand(0x82, noteValue, 0x7F);
+		midiCommand(0x82, noteValue, 0x7F, true);
 		break;
 	case 4:
-		midiCommand(0x83, noteValue, 0x7F);
+		midiCommand(0x83, noteValue, 0x7F, true);
 		break;
 	default:
 		break;
 	}
 }
 
-void midiCommand(byte cmd, byte data1, byte data2)
+void midiCommand(byte cmd, byte data1, byte data2, bool fwd)
 {
 	midiEventPacket_t midiMsg = {cmd >> 4, cmd, data1, data2};
 	MidiUSB.sendMIDI(midiMsg);
 
-	handleSendUpd(cmd, data1, data2);
+	if (fwd)
+	{
+		handleSendUpd(cmd, data1, data2);
+	}
+}
+
+void handleSendUpd(byte cmd, byte data1, byte data2)
+{
+	memset(packetBufferOut, 0, MIDI_PACKET_SIZE);
+
+	packetBufferOut[0] = cmd;
+	packetBufferOut[1] = data1;
+	packetBufferOut[2] = data2;
+
+	Udp.beginPacket(localRpi, 5000);
+	Udp.write(packetBufferOut, MIDI_PACKET_SIZE);
+	Udp.endPacket();
 }
 
 void handleReceiveUdp() 
@@ -200,29 +214,13 @@ void handleReceiveUdp()
 		Serial.println(Udp.remotePort());
 
 		memset(packetBufferIn, 0, MIDI_PACKET_SIZE);
-		// char packetBuffer[255]; //buffer to hold incoming packet
-		// // read the packet into packetBufffer
-		int len = Udp.read(packetBufferIn, MIDI_PACKET_SIZE);
-		if (len > 0)
-		{
-			packetBuffer[len] = 0;
-		}
+		Udp.read(packetBufferIn, MIDI_PACKET_SIZE);
+		
 		Serial.println("Contents:");
-		Serial.println(packetBuffer[0]);
-		Serial.println(packetBuffer[1]);
-		Serial.println(packetBuffer[2]);
+		Serial.println(packetBufferIn[0]);
+		Serial.println(packetBufferIn[1]);
+		Serial.println(packetBufferIn[2]);
+
+		midiCommand(packetBufferIn[0], packetBufferIn[1], packetBufferIn[2], false);
 	}
-}
-
-void handleSendUpd(byte cmd, byte data1, byte data2)
-{
-	memset(packetBuffer, 0, MIDI_PACKET_SIZE);
-
-	packetBuffer[0] = cmd;
-	packetBuffer[1] = data1;
-	packetBuffer[2] = data2;
-
-	Udp.beginPacket(localRpi, 5000);
-	Udp.write(packetBuffer, MIDI_PACKET_SIZE);
-	Udp.endPacket();
 }
