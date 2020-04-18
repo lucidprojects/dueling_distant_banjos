@@ -7,8 +7,6 @@
 
 // TODO:
 // 1) Test!
-// 2) Send data to remote rpi
-// 3) Receive data from remote rpi and send to local ard
 
 const dgram = require('dgram');
 const config = require('../config/config');

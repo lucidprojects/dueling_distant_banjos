@@ -23,6 +23,7 @@ IPAddress localRpi(192, 168, 0, 168);
 const int MIDI_PACKET_SIZE = 3; // NTP time stamp is in the first 48 bytes of the message
 
 byte packetBuffer[MIDI_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
+byte packetBufferIn[MIDI_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
 
 unsigned int localPort = 5000; // local port to listen on
 unsigned long timestamp;
@@ -198,22 +199,24 @@ void handleReceiveUdp()
 		Serial.print(", port ");
 		Serial.println(Udp.remotePort());
 
-		char packetBuffer[255]; //buffer to hold incoming packet
-		// read the packet into packetBufffer
-		int len = Udp.read(packetBuffer, sizeof(packetBuffer) / sizeof(packetBuffer[0]));
+		memset(packetBufferIn, 0, MIDI_PACKET_SIZE);
+		// char packetBuffer[255]; //buffer to hold incoming packet
+		// // read the packet into packetBufffer
+		int len = Udp.read(packetBufferIn, MIDI_PACKET_SIZE);
 		if (len > 0)
 		{
 			packetBuffer[len] = 0;
 		}
 		Serial.println("Contents:");
-		Serial.println(packetBuffer);
+		Serial.println(packetBuffer[0]);
+		Serial.println(packetBuffer[1]);
+		Serial.println(packetBuffer[2]);
 	}
 }
 
 void handleSendUpd(byte cmd, byte data1, byte data2)
 {
 	memset(packetBuffer, 0, MIDI_PACKET_SIZE);
-	Serial.println(data1);
 
 	packetBuffer[0] = cmd;
 	packetBuffer[1] = data1;
