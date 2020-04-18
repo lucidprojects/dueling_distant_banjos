@@ -1,3 +1,7 @@
+/*
+	creating buffer: https://www.arduino.cc/en/Tutorial/UdpNTPClient
+*/
+
 #include <WiFiNINA.h>
 #include <WiFiUdp.h>
 #include <MIDIUSB.h>
@@ -20,7 +24,7 @@ const int MIDI_PACKET_SIZE = 3; // NTP time stamp is in the first 48 bytes of th
 
 byte packetBuffer[MIDI_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
 
-unsigned int localPort = 2390; // local port to listen on
+unsigned int localPort = 5000; // local port to listen on
 unsigned long timestamp;
 
 // MIDI

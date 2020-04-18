@@ -51,16 +51,17 @@ class UDPServer {
 	onMessage() {
 		// receive msg
 		this.server.on('message', (msg, info) => {
-			// console.log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port}`);
+			console.log("udp_server", `| Received ${msg.length} bytes from ${info.address}:${info.port}`);
+			console.log("cmd", msg[0]);
+			console.log("data1", msg[1]);
+			console.log("dat2", msg[2]);
+			console.log('');
 			// log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port}`)
 
-			console.log(msg[0]);
-			console.log(msg[1]);
-			console.log(msg[2]);
-			console.log('');
+			// TODO: send to remote pi or local ard (currently loops back to local can)
+			this.sendMessage(msg, config.localCanHost, 5000);
 		});
 
-		// TODO: data will go to arduino
 	}
 
 	onListen() {
@@ -80,19 +81,12 @@ class UDPServer {
 		});
 	}
 
-	sendMessage(message) {
+	sendMessage(buffer, host, port) {
 		// TODO: 
 		// Use server obj or use this new client??
 		const client = dgram.createSocket('udp4');
 
-		const data = {
-			body: message,
-			timestamp: new Date().toJSON()
-		};
-
-		const buffer = Buffer.from(JSON.stringify(data));
-
-		client.send(buffer, "remote_port", "remote_host", (error, bytes) => {
+		client.send(buffer, port, host, (error, bytes) => {
 			if (error) {
 				console.log("udp_server", "error", error);
 				// log("udp_server", "error", error)
