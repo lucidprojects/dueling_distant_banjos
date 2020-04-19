@@ -1,0 +1,133 @@
+
+/* this is just testing 2 capactive buttons turning a LED on and off */
+
+#include <CapacitiveSensor.h>
+
+//int led = 2;      //use for single LED
+
+int red = A3; //this sets the red led pin
+int green = A4 ; //this sets the green led pin
+int blue = A5 ; //this sets the green led pin
+
+long time = 0;
+int state = LOW;
+
+int capState = LOW;
+int lastcapState[] = {0, 0};
+
+boolean yes;
+boolean previous = false;
+
+int debounce = 200;
+
+CapacitiveSensor   cbtns1 = CapacitiveSensor(8, 9);
+CapacitiveSensor   cbtns2 = CapacitiveSensor(6, 7);
+
+
+const int N_CAPPINS = 2;
+int capBtns [N_CAPPINS];
+
+
+void setup() {
+
+  Serial.begin(9600);
+
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
+  pinMode(blue, OUTPUT);
+
+  //pinMode(led, OUTPUT);
+
+  cbtns1.set_CS_AutocaL_Millis(0xFFFFFFFF);  //Calibrate the sensor... pinMode(led, OUTPUT);
+  cbtns2.set_CS_AutocaL_Millis(0xFFFFFFFF);  //Calibrate the sensor... pinMode(led, OUTPUT);
+
+}
+
+void loop()
+{
+
+
+  //  log cap values
+  //  Serial.print("yes");
+  //  Serial.print("\t");
+  //  Serial.print(yes);
+  //  Serial.print("\t");
+  //  Serial.print("capBtns[0]");
+  //  Serial.print("\t");
+  //  Serial.print(capBtns[0]);
+  //  Serial.print("\t");
+  //  Serial.print("capBtns[1]");
+  //  Serial.print("\t");
+  //  Serial.println(capBtns[1]);
+
+  capBtns[0] =  cbtns1.capacitiveSensor(30);
+  capBtns[1] =  cbtns2.capacitiveSensor(30);
+
+  for (int c = 0; c <  N_CAPPINS; c++) {
+
+    for (int d = 0; d < N_CAPPINS; d++) {
+      if (capBtns[d] > 1100) {
+        capState = HIGH;
+      } else {
+        capState = LOW;
+      }
+
+    }
+
+    if (capState != lastcapState[c])
+    {
+      if (capState == HIGH)
+      {
+        Serial.print("midiOn(");
+        Serial.print(c);
+        Serial.println("+ 4, baseNote)");
+        yes = true;
+      }
+      else
+      {
+        Serial.print("midiOff(");
+        Serial.print(c);
+        Serial.println("+ 4, baseNote)");
+        yes = false;
+      }
+
+      lastcapState[c] = capState;
+      delay(10);
+    }
+  }
+
+
+  //
+  //  if (capBtns[0] > 1100) {
+  //    yes = true;
+  //  } else if (capBtns[1] > 1100) {
+  //    yes = true;
+  //  } else {
+  //    yes = false;
+  //  }
+  
+
+  // to toggle the state of state
+  if (yes == true && previous  == false && millis() - time > debounce) {
+
+    if (state == HIGH) {
+      state = LOW;
+    }
+    else
+      state = HIGH;
+    time = millis();
+
+  }
+
+  digitalWrite(green, state);
+  digitalWrite(red, HIGH);
+  digitalWrite(blue, HIGH);
+
+  //digitalWrite(led, state);
+
+  previous = yes;
+
+  //  Serial.println(millis() - time);
+  delay(10);
+
+}
