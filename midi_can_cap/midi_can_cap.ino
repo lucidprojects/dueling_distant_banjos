@@ -188,6 +188,8 @@ void loop()
 
   if (btn2 > 1100) {
     midiOn(3, baseNote);
+  } else if (btn1 < 1100) {
+    midiOff(3, baseNote);
   }
 
 
