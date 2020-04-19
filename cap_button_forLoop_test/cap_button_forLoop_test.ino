@@ -12,8 +12,9 @@ int blue = A5 ; //this sets the green led pin
 long time = 0;
 int state = LOW;
 
-int capState = LOW;
-int lastcapState[] = {0, 0};
+int capState[] = {LOW, LOW};
+int newVal;
+//int lastcapState[] = {0, 0};
 
 boolean yes;
 boolean previous = false;
@@ -48,36 +49,54 @@ void loop()
 
 
   //  log cap values
-  //  Serial.print("yes");
-  //  Serial.print("\t");
-  //  Serial.print(yes);
-  //  Serial.print("\t");
-  //  Serial.print("capBtns[0]");
-  //  Serial.print("\t");
-  //  Serial.print(capBtns[0]);
-  //  Serial.print("\t");
-  //  Serial.print("capBtns[1]");
-  //  Serial.print("\t");
-  //  Serial.println(capBtns[1]);
+  //    Serial.print("yes");
+  //    Serial.print("\t");
+  //    Serial.print(yes);
+  //    Serial.print("\t");
+  //    Serial.print("capBtns[0]");
+  //    Serial.print("\t");
+  //    Serial.print(capBtns[0]);
+  //    Serial.print("\t");
+  //    Serial.print("capBtns[1]");
+  //    Serial.print("\t");
+  //    Serial.println(capBtns[1]);
 
   capBtns[0] =  cbtns1.capacitiveSensor(30);
   capBtns[1] =  cbtns2.capacitiveSensor(30);
 
   for (int c = 0; c <  N_CAPPINS; c++) {
+    //    Serial.println(c);
+    Serial.print("starting capState[");
+    Serial.print(c);
+    Serial.print("] =");
+    Serial.print(capState[c]);
+    Serial.print("\t");
+    Serial.print("yes");
+    Serial.print("\t");
+    Serial.print(yes);
+
+    Serial.print("\t");
+    Serial.print("newVal");
+    Serial.print("\t");
+    Serial.print(newVal);
+
+    Serial.print("\t");
+    Serial.print("previous");
+    Serial.print("\t");
+    Serial.println(previous);
 
     for (int d = 0; d < N_CAPPINS; d++) {
-      if (capBtns[d] > 1100) {
-        capState = HIGH;
-      } else {
-        capState = LOW;
-      }
+      checkCapVals(d);
 
     }
 
-    if (capState != lastcapState[c])
+    //    if (capState != lastcapState[c])
+    if (capState[c]= !capState[c])
+
     {
-      if (capState == HIGH)
+      if (capState[c] == HIGH)
       {
+        Serial.println( capBtns[c]);
         Serial.print("midiOn(");
         Serial.print(c);
         Serial.println("+ 4, baseNote)");
@@ -90,8 +109,12 @@ void loop()
         Serial.println("+ 4, baseNote)");
         yes = false;
       }
-
-      lastcapState[c] = capState;
+      capState[c] = newVal;
+      //      lastcapState[c] = capState;
+      Serial.print("after loop capState[");
+      Serial.print(c);
+      Serial.print("] =");
+      Serial.println(capState[c]);
       delay(10);
     }
   }
@@ -105,7 +128,7 @@ void loop()
   //  } else {
   //    yes = false;
   //  }
-  
+
 
   // to toggle the state of state
   if (yes == true && previous  == false && millis() - time > debounce) {
@@ -129,5 +152,19 @@ void loop()
 
   //  Serial.println(millis() - time);
   delay(10);
+
+
+
+
+}
+
+
+void checkCapVals(int myVar) {
+  if (capBtns[myVar] > 1100) {
+    capState[myVar] = HIGH;
+  } else {
+    capState[myVar] = LOW;
+  }
+
 
 }
