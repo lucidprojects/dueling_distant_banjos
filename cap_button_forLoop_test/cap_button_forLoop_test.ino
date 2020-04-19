@@ -14,10 +14,11 @@ int state = LOW;
 
 int capState[] = {LOW, LOW};
 int newVal;
-//int lastcapState[] = {0, 0};
+int capStateBtn;
 
 boolean yes;
 boolean previous = false;
+
 
 int debounce = 200;
 
@@ -28,6 +29,7 @@ CapacitiveSensor   cbtns2 = CapacitiveSensor(6, 7);
 const int N_CAPPINS = 2;
 int capBtns [N_CAPPINS];
 
+int lastcapState[N_CAPPINS];
 
 void setup() {
 
@@ -90,10 +92,19 @@ void loop()
 
     }
 
-    //    if (capState != lastcapState[c])
-    if (capState[c]= !capState[c])
 
+
+
+//        if (capState[c] != lastcapState[c])
+    if (capState[c] != newVal)
+// if (capState[c]= !capState[c])
+
+
+      
     {
+
+  
+
       if (capState[c] == HIGH)
       {
         Serial.println( capBtns[c]);
@@ -108,63 +119,71 @@ void loop()
         Serial.print(c);
         Serial.println("+ 4, baseNote)");
         yes = false;
+
       }
+
+      
       capState[c] = newVal;
       //      lastcapState[c] = capState;
       Serial.print("after loop capState[");
       Serial.print(c);
       Serial.print("] =");
       Serial.println(capState[c]);
-      delay(10);
+
+//      lastcapState[c] = capState[c];
+      delay(100);
     }
-  }
-
-
-  //
-  //  if (capBtns[0] > 1100) {
-  //    yes = true;
-  //  } else if (capBtns[1] > 1100) {
-  //    yes = true;
-  //  } else {
-  //    yes = false;
-  //  }
-
-
-  // to toggle the state of state
-  if (yes == true && previous  == false && millis() - time > debounce) {
-
-    if (state == HIGH) {
-      state = LOW;
-    }
-    else
-      state = HIGH;
-    time = millis();
 
   }
 
-  digitalWrite(green, state);
-  digitalWrite(red, HIGH);
-  digitalWrite(blue, HIGH);
-
-  //digitalWrite(led, state);
-
-  previous = yes;
-
-  //  Serial.println(millis() - time);
-  delay(10);
+    //
+    //  if (capBtns[0] > 1100) {
+    //    yes = true;
+    //  } else if (capBtns[1] > 1100) {
+    //    yes = true;
+    //  } else {
+    //    yes = false;
+    //  }
 
 
+    // to toggle the state of state
+    if (yes == true && previous  == false && millis() - time > debounce) {
+
+      if (state == HIGH) {
+        state = LOW;
+      }
+      else {
+        state = HIGH;
+      time = millis();
+
+    }
+
+    digitalWrite(green, state);
+    digitalWrite(red, HIGH);
+    digitalWrite(blue, HIGH);
+
+    //digitalWrite(led, state);
+
+    previous = yes;
+
+    //  Serial.println(millis() - time);
+    delay(10);
+
+
+
+
+  }
 
 
 }
 
 
-void checkCapVals(int myVar) {
-  if (capBtns[myVar] > 1100) {
-    capState[myVar] = HIGH;
-  } else {
-    capState[myVar] = LOW;
+  void checkCapVals(int myVar) {
+    if (capBtns[myVar] > 1100) {
+      capState[myVar] = HIGH;
+    } else {
+      capState[myVar] = LOW;
+    }
+
+
   }
-
-
-}
