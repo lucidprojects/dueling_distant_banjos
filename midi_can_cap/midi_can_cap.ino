@@ -112,10 +112,9 @@ void loop()
   handleCapBtns();
   handleCapSlides();
 
-
   handleReceiveUdp();
 
-//  delay(10);
+//  delay(200);
 
 
 
@@ -141,7 +140,7 @@ void printWifiStatus()
 
 void handleInputs()
 {
-  baseNote = map(analogRead(pot), 0, 1023, 0, 110);
+  baseNote = map(analogRead(pot), 0, 1023, 0, 110); // these values should be adjusted - need calibration fn
   //Serial.println(baseNote);
 
   for (int k = 0; k < keyCount; k++)
@@ -201,7 +200,7 @@ void handleCapBtns() {
 }
 
 void checkCapBtnVals(int myVar) {
-  if (capBtns[myVar] > 1100) {
+  if (capBtns[myVar] > 1100) { // this value should be adjusted - need calibration fn
     capBtnState[myVar] = HIGH;
   } else {
     capBtnState[myVar] = LOW;
@@ -220,30 +219,28 @@ void handleCapSlides() {
 
   for (int c = 0; c <  N_CAPBTNS; c++) {
 
-    slideNoteVal[c] = map ( capSlides[c], 100, 2800, 0, 110);
-    
-    Serial.print("slideNoteVal[");
-    Serial.print(c);
-    Serial.print("] = ");
-    Serial.print(slideNoteVal[c]);
-    Serial.print("\t");
-    Serial.print("slideNote[");
-    Serial.print(c);
-    Serial.print("] = ");
-    Serial.print(slideNote[c]);    
-    Serial.print("\t");
-    Serial.print("capSlides[");
-    Serial.print(c);
-    Serial.print("] = ");
-    Serial.println(capSlides[c]); 
+  //  slideNoteVal[c] = map ( capSlides[c], 100, 2800, 0, 110);
+ 
+//    Serial.print("slideNoteVal[");
+//    Serial.print(c);
+//    Serial.print("] = ");
+//    Serial.print(slideNoteVal[c]);
+//    Serial.print("\t");
+//    Serial.print("slideNote[");
+//    Serial.print(c);
+//    Serial.print("] = ");
+//    Serial.print(slideNote[c]);    
+//    Serial.print("\t");
+//    Serial.print("capSlides[");
+//    Serial.print(c);
+//    Serial.print("] = ");
+//    Serial.println(capSlides[c]); 
     
     slideNote[c] = slideNoteVal[c];
     slideNote[c] = constrain(slideNote[c], 10, 110);
 
     int capSlideStateVal = capSlideState[c];
 
-    if (capSlideStateVal != lastCapSlideState[c])
-    {
       if (capSlideStateVal == HIGH)
       {
         Serial.println("turn midi slide signal on");
@@ -252,29 +249,22 @@ void handleCapSlides() {
       else
       {
       //  midiOff(6 - c, slideNote[c]);
-        Serial.println("turn midi slide signal off");
+      //  Serial.println("turn midi slide signal off");
         capSlideState[c] = LOW;
       }
 
-      lastCapSlideState[c] = capSlideStateVal;
       delay(10);
-    }
   }
 }
 
 void checkCapSlideVals(int myVar) {
-  if (capSlides[myVar] > 1100) {
+  if (capSlides[myVar] > 1100) {  // this value should be adjusted - need calibration fn
     capSlideState[myVar] = HIGH;
+    slideNoteVal[myVar] = map ( capSlides[myVar], 100, 2800, 0, 110); // these values should be adjusted - need calibration fn
   } else {
     capSlideState[myVar] = LOW;
   }
 }
-
-
-
-
-
-
 
 
 
