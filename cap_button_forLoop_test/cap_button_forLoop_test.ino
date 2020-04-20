@@ -3,33 +3,28 @@
 
 #include <CapacitiveSensor.h>
 
-//int led = 2;      //use for single LED
 
+// LED vars
+int state = HIGH;
+boolean doLED;
+boolean previous = false;
+
+//int led = 2;      //use for single LED
 int red = A3; //this sets the red led pin
 int green = A4 ; //this sets the green led pin
 int blue = A5 ; //this sets the green led pin
 
-long doLED = 0;
-int state = HIGH;
-
+// CAP vars
 int capState[] = {LOW, LOW};
 int newVal;
 int capStateBtn;
 
-boolean yes;
-boolean previous = false;
-
-
-int debounce = 200;
-
 CapacitiveSensor   cbtns1 = CapacitiveSensor(8, 9);
 CapacitiveSensor   cbtns2 = CapacitiveSensor(6, 7);
 
-
-const int N_CAPPINS = 2;
-int capBtns [N_CAPPINS];
-
-int lastcapState[] = {LOW, LOW};
+const int N_CAPBTNS = 2;
+int capBtns [N_CAPBTNS];
+int lastCapState[] = {LOW, LOW};
 
 void setup() {
 
@@ -46,12 +41,9 @@ void setup() {
 
 }
 
-void loop()
-{
-
+void loop() {
 
   handleCapBtns();
-
 
 }
 
@@ -62,43 +54,17 @@ void handleCapBtns() {
   capBtns[0] =  cbtns1.capacitiveSensor(30);
   capBtns[1] =  cbtns2.capacitiveSensor(30);
 
-  for (int d = 0; d < N_CAPPINS; d++) {
+  for (int d = 0; d < N_CAPBTNS; d++) {
     checkCapVals(d);
 
   }
 
 
-
-  for (int c = 0; c <  N_CAPPINS; c++) {
-    //    Serial.println(c);
-    //    Serial.print("starting capState[");
-    //    Serial.print(c);
-    //    Serial.print("] =");
-    //    Serial.print(capState[c]);
-    //    Serial.print("\t");
-    //    Serial.print("yes");
-    //    Serial.print("\t");
-    //    Serial.print(yes);
-    //
-    //    Serial.print("\t");
-    //    Serial.print("newVal");
-    //    Serial.print("\t");
-    //    Serial.print(newVal);
-    //
-    //    Serial.print("\t");
-    //    Serial.print("previous");
-    //    Serial.print("\t");
-    //    Serial.println(previous);
-
-
+  for (int c = 0; c <  N_CAPBTNS; c++) {
 
     int capStateVal = capState[c];
 
-    //
-    //Serial.println(capStateVal);
-
-
-    if (capStateVal != lastcapState[c])
+    if (capStateVal != lastCapState[c])
     {
       if (capStateVal == HIGH)
       {
@@ -115,7 +81,7 @@ void handleCapBtns() {
         // toggleLED(HIGH);
       }
 
-      lastcapState[c] = capStateVal;
+      lastCapState[c] = capStateVal;
       delay(10);
     }
   }
@@ -145,25 +111,15 @@ void toggleLED(int x) {
   }
 
 
-//  Serial.print("capLedStateVal");
-//  Serial.print("\t");
-//  Serial.print(capLedStateVal);
-//
-//  Serial.print("\t");
-//  Serial.print("previous");
-//  Serial.print("\t");
-//  Serial.println(previous);
-
-
   if (state == HIGH)
   {
     state = LOW;
-//    Serial.println("state = LOW");
+    Serial.println("We we're high but now we're low");
   }
   else
   {
     state = HIGH;
-//    Serial.println("state = HIGH");
+    Serial.println("We HIGH bro 420");
   }
 
   previous = doLED;
@@ -172,7 +128,6 @@ void toggleLED(int x) {
   digitalWrite(green, state);
   digitalWrite(red, HIGH);
   digitalWrite(blue, HIGH);
-
 
 
 }
