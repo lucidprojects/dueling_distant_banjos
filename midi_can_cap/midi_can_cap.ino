@@ -1,5 +1,5 @@
 /*
-	creating buffer: https://www.arduino.cc/en/Tutorial/UdpNTPClient
+  creating buffer: https://www.arduino.cc/en/Tutorial/UdpNTPClient
 */
 
 #include <WiFiNINA.h>
@@ -38,24 +38,28 @@ int lastKeyState[] = {0, 0, 0, 0};
 int keyCount = 4;
 int baseNote = 0;
 int noteValue = baseNote;
-int slideNote, slideNoteVal, slideNote2, slideNoteVal2;
 
 //CAPACITIVE
-
-
-// add >= 300kΩ resistor between send pin (11) & receive pin (12)  
+// add >= 300kΩ resistor between send pin (11) & receive pin (12)
 // https://youtu.be/jco-uU5ZgEU?t=225  (more about capacitive send and receive)
-
-CapacitiveSensor Sensor1 = CapacitiveSensor(11, 12);  
-CapacitiveSensor Sensor2 = CapacitiveSensor(11, 10);
+CapacitiveSensor slideSensor1 = CapacitiveSensor(11, 12);  
+CapacitiveSensor slideSensor2 = CapacitiveSensor(11, 10);
 CapacitiveSensor btnSensor1 = CapacitiveSensor(8, 9);
 CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 7);
 
+//CAP btn vars
+int capBtnState[] = {LOW, LOW};
+const int N_CAPBTNS = 2;
+int capBtns [N_CAPBTNS];
+int lastCapBtnState[] = {LOW, LOW};
 
-long val1 , val2, val4, val3, btn1, btn2, btn3, btn4;
-
-
-
+//CAP slide vars
+int capSlideState[] = {LOW, LOW};
+const int N_CAPSLIDES = 2;
+int capSlides [N_CAPSLIDES];
+int lastCapSlideState[] = {LOW, LOW};
+int slideNoteVal[N_CAPSLIDES];
+int slideNote[N_CAPSLIDES];
 
 void setup()
 {
@@ -105,100 +109,13 @@ void setup()
 void loop()
 {
   handleInputs();
+  handleCapBtns();
+  handleCapSlides();
+
+
   handleReceiveUdp();
 
-  //SLIDERS
-
-  val1 = Sensor1.capacitiveSensor(30);
-  val2 = Sensor2.capacitiveSensor(30);
-
-  //  Serial.print("vensor1 val = ");
-  //  Serial.print(val1);
-  //  Serial.print("\t");
-  //  Serial.print("venso2 val = ");
-  //  Serial.println(val2);
-
-
-  //  int slideVal = map ( val1, 10, 4000, 0, 255);
-  slideNoteVal = map ( val1, 500, 4000, 0, 70);
-  slideNote = slideNoteVal;
-  slideNote = constrain(slideNote, 10, 110);
-
-  //  int slideVal2 = map ( val2, 10, 4000, 0, 255);
-  slideNoteVal2 = map ( val2, 500, 4000, 0, 70);
-  slideNote2 = slideNoteVal2;
-  slideNote2 = constrain(slideNote2, 10, 110);
-
-
-  if (val1 >= 600)
-  {
-
-    midiOn(5, slideNote);
-    //    pos = 1;
-    delay(10);
-  }
-
-  else if (val1 >= 600)
-  {
-    //    pos = 0;
-    delay(10);
-  }
-
-  if (val2 >= 400)
-  {
-    midiOn(6,  slideNote2);
-    delay(100);
-  }
-
-  else if (val2 >= 100)
-  {
-    delay(100);
-  }
-
-
-  // END SLIDERS
-
-
-  // CAP BTNS
-
-
-  btn1 =  btnSensor1.capacitiveSensor(30);
-  btn2 =  btnSensor2.capacitiveSensor(30);
-
-
-  Serial.print("btn1");
-  Serial.print("\t");
-  Serial.print(btn1);
-  Serial.print("\t");
-  Serial.print("btn2");
-  Serial.print("\t");
-  Serial.println(btn2);
-
-
-
-  baseNote = map(analogRead(pot), 0, 1023, 0, 110);
-
-
-
-  if (btn1 > 1100) {
-    midiOn(2, baseNote);
-  } else if (btn1 < 1100) {
-    midiOff(2, baseNote);
-  }
-
-  if (btn2 > 1100) {
-    midiOn(3, baseNote);
-  } else if (btn1 < 1100) {
-    midiOff(3, baseNote);
-  }
-
-
-
-  // END CAP BTNS
-
-
-
-  delay(10);
+//  delay(10);
 
 
 
@@ -247,6 +164,121 @@ void handleInputs()
     }
   }
 }
+
+
+void handleCapBtns() {
+
+  capBtns[0] =  btnSensor1.capacitiveSensor(30);
+  capBtns[1] =  btnSensor2.capacitiveSensor(30);
+
+  for (int b = 0; b < N_CAPBTNS; b++) {
+    checkCapBtnVals(b);
+  }
+
+  for (int c = 0; c <  N_CAPBTNS; c++) {
+
+    int capBtnStateVal = capBtnState[c];
+
+    if (capBtnStateVal != lastCapBtnState[c])
+    {
+      if (capBtnStateVal == HIGH)
+      {
+        Serial.println("turn midi signal on");
+        midiOn(3 - c, baseNote);
+      }
+      else
+      {
+        midiOff(3 - c, baseNote);
+
+        Serial.println("turn midi signal off");
+        capBtnState[c] = LOW;
+      }
+
+      lastCapBtnState[c] = capBtnStateVal;
+      delay(10);
+    }
+  }
+}
+
+void checkCapBtnVals(int myVar) {
+  if (capBtns[myVar] > 1100) {
+    capBtnState[myVar] = HIGH;
+  } else {
+    capBtnState[myVar] = LOW;
+  }
+}
+
+
+void handleCapSlides() {
+
+  capSlides[0] = slideSensor1.capacitiveSensor(30);
+  capSlides[1] = slideSensor2.capacitiveSensor(30);
+
+  for (int b = 0; b < N_CAPBTNS; b++) {
+    checkCapSlideVals(b);
+  }
+
+  for (int c = 0; c <  N_CAPBTNS; c++) {
+
+    slideNoteVal[c] = map ( capSlides[c], 100, 2800, 0, 110);
+    
+    Serial.print("slideNoteVal[");
+    Serial.print(c);
+    Serial.print("] = ");
+    Serial.print(slideNoteVal[c]);
+    Serial.print("\t");
+    Serial.print("slideNote[");
+    Serial.print(c);
+    Serial.print("] = ");
+    Serial.print(slideNote[c]);    
+    Serial.print("\t");
+    Serial.print("capSlides[");
+    Serial.print(c);
+    Serial.print("] = ");
+    Serial.println(capSlides[c]); 
+    
+    slideNote[c] = slideNoteVal[c];
+    slideNote[c] = constrain(slideNote[c], 10, 110);
+
+    int capSlideStateVal = capSlideState[c];
+
+    if (capSlideStateVal != lastCapSlideState[c])
+    {
+      if (capSlideStateVal == HIGH)
+      {
+        Serial.println("turn midi slide signal on");
+        midiOn(6 - c, slideNote[c]);
+      }
+      else
+      {
+      //  midiOff(6 - c, slideNote[c]);
+        Serial.println("turn midi slide signal off");
+        capSlideState[c] = LOW;
+      }
+
+      lastCapSlideState[c] = capSlideStateVal;
+      delay(10);
+    }
+  }
+}
+
+void checkCapSlideVals(int myVar) {
+  if (capSlides[myVar] > 1100) {
+    capSlideState[myVar] = HIGH;
+  } else {
+    capSlideState[myVar] = LOW;
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 void midiOn(int chnl, int noteValue)
 {
@@ -313,6 +345,8 @@ void midiOff(int chnl, int noteValue)
       break;
   }
 }
+
+
 
 void midiCommand(byte cmd, byte data1, byte data2, bool fwd)
 {
