@@ -146,7 +146,7 @@ void handleCapSensors() {
   }
 }
 
-
+// main calibration fn used in setup()
 void runSensorCalibration(){
     while (calComplete == false) {
     // take sensor readings again - more consistent calibration readings
