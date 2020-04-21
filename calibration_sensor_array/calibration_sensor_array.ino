@@ -22,9 +22,6 @@ int green = A4 ; //this sets the green led pin
 int blue = A5 ; //this sets the green led pin
 
 int ledVal = 0;
-int newLed = 0;
-
-int pot = A0;
 
 //CAPACITIVE
 const int N_CAPBTNS = 4;  // set this to total # of sensors
