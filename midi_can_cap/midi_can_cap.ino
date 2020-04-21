@@ -2,8 +2,6 @@
   
   NETWORK - using nodejs to send signals across the interwebs via UDP to affect participants MIDI environment
   creating buffer: https://www.arduino.cc/en/Tutorial/UdpNTPClient
-
-
   
   MIDI - using MIDIUSB.h to send MIDI cmds to DAW   
 
@@ -70,7 +68,7 @@ int ledVal = 0;
 //initialize senors
 // add >= 300kΩ resistor between send pin (11) & receive pin (12)
 // sensor wire connected to receive pin
-// high resistor more sensitve 1mΩ or < will make it capacitive by hovering
+// higher resistor more sensitve 1mΩ or > will make it almost too sensitve - capacitve readings just by hovering
 // https://youtu.be/jco-uU5ZgEU?t=225  (more about capacitive send and receive)
 CapacitiveSensor slideSensor1 = CapacitiveSensor(11, 12);
 CapacitiveSensor slideSensor2 = CapacitiveSensor(11, 10);
@@ -109,7 +107,7 @@ int sensorMin_length;
 int sensorMax_length;
 
 int sensorMinMIN, sensorMaxMAX;  // min max values after calibration
-int sensorMinBuffer = 200; // buffer to prevent sensors from reading too low or 0
+int sensorMinBuffer = 200; // buffer to prevent sensors from reading too low or 0 -e.g. from can capacitance 
 
 
 void setup()
@@ -214,7 +212,7 @@ void printWifiStatus()
 
 void handleInputs()
 {
-  baseNote = map(analogRead(pot), 0, 1023, 0, 110); // these values should be adjusted - need calibration fn
+  baseNote = map(analogRead(pot), 0, 1023, 0, 110); 
   //Serial.println(baseNote);
 
   for (int k = 0; k < keyCount; k++)
@@ -257,11 +255,11 @@ void handleCapBtns() {
       if (capBtnStateVal == HIGH)
       {
         Serial.println("turn midi signal on");
-        midiOn(3 - c, baseNote);
+        midiOn(3 - c, baseNote);  // the first value sent in the fn will need to be adjusted for final channel assignment
       }
       else
       {
-        midiOff(3 - c, baseNote);
+        midiOff(3 - c, baseNote); // the first value sent in the fn will need to be adjusted for final channel assignment
 
         Serial.println("turn midi signal off");
         capBtnState[c] = LOW;
@@ -274,7 +272,7 @@ void handleCapBtns() {
 }
 
 void checkCapBtnVals(int myVar) {
-  if (capBtns[myVar] > sensorMinMIN + sensorMinBuffer) { // this value should be adjusted - need calibration fn
+  if (capBtns[myVar] > sensorMinMIN + sensorMinBuffer) { //check sensor values is > than this value returned from calibration fn + buffer
     capBtnState[myVar] = HIGH;
   } else {
     capBtnState[myVar] = LOW;
@@ -301,12 +299,12 @@ void handleCapSlides() {
     if (capSlideStateVal == HIGH)
     {
       Serial.println("turn midi slide signal on");
-      midiOn(6 - c, slideNote[c]);
+      midiOn(6 - c, slideNote[c]); // the first value sent in the fn will need to be adjusted for final channel assignment
     }
     else
     {
       //  midiOff(6 - c, slideNote[c]);
-      //  Serial.println("turn midi slide signal off");
+      //  Serial.println("turn midi slide signal off");  // never turning it off helps slide effect
       capSlideState[c] = LOW;
     }
 
@@ -315,7 +313,7 @@ void handleCapSlides() {
 }
 
 void checkCapSlideVals(int myVar) {
-  if (capSlides[myVar] > sensorMinMIN + sensorMinBuffer) {  //check sensor values is > than this value return from calibration fn + buffer
+  if (capSlides[myVar] > sensorMinMIN + sensorMinBuffer) {  //check sensor values is > than this value returned from calibration fn + buffer
     capSlideState[myVar] = HIGH;
     // slide sensors need to always be first in the shared N_ALL_CAPSENS array
     // so we can iterate properly in the N_CAPSLIDES array
@@ -327,7 +325,7 @@ void checkCapSlideVals(int myVar) {
 }
 
 
-// ###### CALIBTATION FUNCTIONS ######
+// ###### CALIBRATION FUNCTIONS ######
 
 // read sensor values
 void readSensors() {
@@ -337,7 +335,7 @@ void readSensors() {
   allCapSens[3] =  btnSensor2.capacitiveSensor(30);
 }
 
-// read/show cap values adjust led usd in loop() 
+// read/show cap values adjust led used in loop() 
 // this is mostly for debugging and can be removed / commented out in final code - js 20200421
 void capCalibration_Debug() {
   // read the sensors:
@@ -529,7 +527,7 @@ void setLedVal(int myLedVal) {
 
 
 }
-// ###### END CALIBTATION FUNCTIONS ######
+// ###### END CALIBRATION FUNCTIONS ######
 
 
 void midiOn(int chnl, int noteValue)
