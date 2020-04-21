@@ -82,15 +82,6 @@ void loop() {
 
   handleCapSensors();
 
-  if (ledVal > 220 ) {
-    digitalWrite(green, LOW);
-    digitalWrite(red, HIGH);
-    digitalWrite(blue, HIGH);
-  } else {
-    analogWrite(green, ledVal);
-    analogWrite(red, ledVal);
-    digitalWrite(blue, HIGH);
-  }
 
 }
 
@@ -250,6 +241,16 @@ void setLedVal(int myLedVal) {
 
   if (sensorValueRaw[myLedVal] > 400)    {
     ledVal = sensorValue[myLedVal];
+  }
+
+  if (ledVal > 220 ) {
+    digitalWrite(green, LOW);
+    digitalWrite(red, HIGH);
+    digitalWrite(blue, HIGH);
+  } else {
+    analogWrite(green, ledVal);
+    analogWrite(red, ledVal);
+    digitalWrite(blue, HIGH);
   }
 
 }
