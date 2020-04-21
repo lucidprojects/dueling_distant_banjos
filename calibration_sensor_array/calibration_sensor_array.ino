@@ -211,10 +211,7 @@ void runSensorCalibration(){
 // used in setup() for calibration
 void setMinMaxVals(int myVar) {
 
-  capBtns[0] =  btnSensor0.capacitiveSensor(30);
-  capBtns[1] =  btnSensor1.capacitiveSensor(30);
-  capBtns[2] =  btnSensor2.capacitiveSensor(30);
-  capBtns[3] =  btnSensor3.capacitiveSensor(30);
+  readSensors();
 
   sensorValue[myVar] = capBtns[myVar];  // take sensor X reading
 
