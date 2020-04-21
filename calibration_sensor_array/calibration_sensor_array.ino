@@ -10,9 +10,12 @@
   http://arduino.cc/en/Tutorial/Calibration
 
   Modified to iterate through an array of sensors and calibrate each sensor.  Storing values in an array of mins/maxes.
-  Uses RGB LED to denote different calibration modes.
-  Starts in yellow. blue calibrating, toggle red switching to next sensor back to blue. solid red when calibration complete
-
+  • Set calibration time per sensor in calibrationTime var, used in runSensorCalibration() fn
+  • During calirbration tap and release sensor to set min & max values
+  • Uses RGB LED to denote different calibration modes:
+    Starts in yellow. blue calibrating, toggle red switching to next sensor back to blue. solid red when calibration complete
+    Short green when completing setup()
+    Yellow to start loop()
 */
 
 #include <CapacitiveSensor.h>
@@ -39,6 +42,8 @@ CapacitiveSensor btnSensor0 = CapacitiveSensor(11, 12);
 CapacitiveSensor btnSensor1 = CapacitiveSensor(11, 10);
 CapacitiveSensor btnSensor2 = CapacitiveSensor(8, 9);
 CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 7);
+
+int calibrationTime = 3000;  // set calibration time per sensor
 
 void setup() {
   Serial.begin(9600);
@@ -165,7 +170,7 @@ void runSensorCalibration(){
 
         int millisNow = millis();
 
-        while (millis() < (millisNow + 3000)) {  // 3000 = take calibration for 3 seconds
+        while (millis() < (millisNow + calibrationTime)) {  // 3000 = take calibration for 3 seconds - set in calibrationTime var
           setMinMaxVals(c);
         }
 
