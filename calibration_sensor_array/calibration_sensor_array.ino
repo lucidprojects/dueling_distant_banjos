@@ -35,15 +35,20 @@ int sensorMin[N_CAPBTNS];   // minimum sensor value
 int sensorMax[N_CAPBTNS];   // maximum sensor value
 int sensorValueRaw[N_CAPBTNS]; // raw maximum sensor value - for debuging in loop
 
+int calibrationTime = 3000;  // set calibration time per sensor
 bool calComplete = false; // boolean to exit calibration while loop on completion
 
 //initialize senors
+// add >= 300kΩ resistor between send pin (11) & receive pin (12)
+// sensor wire connected to receive pin
+// high resistor more sensitve 1mΩ or < will make it capacitive by hovering
+// https://youtu.be/jco-uU5ZgEU?t=225  (more about capacitive send and receive)
+
 CapacitiveSensor btnSensor0 = CapacitiveSensor(11, 12);
 CapacitiveSensor btnSensor1 = CapacitiveSensor(11, 10);
 CapacitiveSensor btnSensor2 = CapacitiveSensor(8, 9);
 CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 7);
 
-int calibrationTime = 3000;  // set calibration time per sensor
 
 void setup() {
   Serial.begin(9600);
