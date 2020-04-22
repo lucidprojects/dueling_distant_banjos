@@ -6,7 +6,7 @@ module.exports = {
 	udpPort: process.env.UDP_PORT || 5000,
 	trPort: process.env.TR_PORT || 5500,
 	localArduino: process.env.LOCAL_ARDUINO || '192.168.0.169',
-	remoteRpi: process.env.REMOTE_RPI || '127.0.0.1',
+	remoteHost: process.env.REMOTE_RPI || '66.108.97.246', // '127.0.0.1',
 	timeout: 10000,
 	log: "./log/"
 };

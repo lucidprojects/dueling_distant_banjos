@@ -19,7 +19,7 @@ class UDPServer {
 	constructor() {
 		this.server = dgram.createSocket('udp4');
 		this.localArduino = config.localArduino;
-		this.remoteRpi = config.remoteRpi;
+		this.remoteHost = config.remoteHost;
 		this.port = config.udpPort;
 	}
 
@@ -84,10 +84,10 @@ class UDPServer {
 	handleMessage(msg, info) {
 		switch (`${info.address}`) {
 			case this.localArduino:
-				this.sendMessage(msg, this.remoteRpi, this.port);
+				this.sendMessage(msg, this.remoteHost, this.port);
 				break;
 
-			case this.remoteRpi:
+			case this.remoteHost:
 				this.sendMessage(msg, this.localArduino, this.port);
 				break;
 		
