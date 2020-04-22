@@ -42,7 +42,6 @@ void setup()
 {
 	// init serial
 	Serial.begin(9600);
-	while (!Serial);
 
 	// init input pins
 	for (int k = 0; k < keyCount; k++)

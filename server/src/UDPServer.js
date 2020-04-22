@@ -108,7 +108,7 @@ class UDPServer {
 				// log("udp_server", "error", error)
 				client.close();
 			} else {
-				console.log("udp_server", "info", 'Data sent !!!');
+				console.log("udp_server", "info", 'data sent to', `${host}:${port}`);
 				// log("udp_server", "info", 'Data sent !!!')
 				client.close();
 			}
