@@ -1,11 +1,12 @@
 /*
-  
+
   NETWORK - using nodejs to send signals across the interwebs via UDP to affect participants MIDI environment
   creating buffer: https://www.arduino.cc/en/Tutorial/UdpNTPClient
-  
-  MIDI - using MIDIUSB.h to send MIDI cmds to DAW   
+
+  MIDI - using MIDIUSB.h to send MIDI cmds to DAW
 
   CALIBRATION - iterate through an array of sensors and calibrate each sensor.  Storing values in an array of mins/maxes.
+  • Can calibration will run first - canCalibrationTime  eg first 10 seconds
   • Set calibration time per sensor in calibrationTime var, used in runSensorCalibration() fn
   • During calirbration tap and release sensor to set min & max values
   • Uses RGB LED to denote different calibration modes:
@@ -14,7 +15,7 @@
     Yellow to start loop()
   • Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
     use these vars for various thresholds
-    
+
 */
 
 
@@ -65,6 +66,15 @@ int ledVal = 0;
 
 //CAPACITIVE
 
+// can calibration will run first - canCalibrationTime  eg first 10 seconds
+// purple LED and set capacitance of can
+// store capacitance of can just touching / holding it 
+int canCap; // sensor object
+int canCalibrationTime = 10000;  // set calibration time for can
+int canCapMax; 
+int canCapMin;
+
+
 //initialize senors
 // add >= 300kΩ resistor between send pin (11) & receive pin (12)
 // sensor wire connected to receive pin
@@ -93,8 +103,8 @@ int slideNote[N_CAPSLIDES];
 int calibrationTime = 3000;  // set calibration time per sensor
 bool calComplete = false; // boolean to exit calibration while loop on completion
 
-// combined array for all sensor calibration - not exactly sure what to do here.  starting combined 
-// take note of order index assignment in readSensors() so iteration in separate arrays works - e.g. capSlides need be set first 
+// combined array for all sensor calibration - not exactly sure what to do here.  starting combined
+// take note of order index assignment in readSensors() so iteration in separate arrays works - e.g. capSlides need be set first
 const int N_ALL_CAPSENS = 4;  // set this to total # of sensors (butons & slides)
 int allCapSens[N_ALL_CAPSENS];   // sensor vars in an array so we can iterate through in for loop
 
@@ -107,7 +117,7 @@ int sensorMin_length;
 int sensorMax_length;
 
 int sensorMinMIN, sensorMaxMAX;  // min max values after calibration
-int sensorMinBuffer = 200; // buffer to prevent sensors from reading too low or 0 -e.g. from can capacitance 
+int sensorMinBuffer = 200; // buffer to prevent sensors from reading too low or 0
 
 
 void setup()
@@ -115,6 +125,13 @@ void setup()
   // init serial
   Serial.begin(9600);
 
+  while (!Serial); // Wait for serial port to connect so we can see what is going on.
+
+  Serial.println("Serial started");
+
+  //start with can Calibration
+  canCalibration();
+  
   // Starts LED Yellow
   analogWrite(green, 255);
   digitalWrite(red, LOW);
@@ -126,12 +143,11 @@ void setup()
   pinMode(green, OUTPUT);
   pinMode(blue, OUTPUT);
 
-  while (!Serial); // Wait for serial port to connect so we can see what is going on.
-
-  Serial.println("Serial started");
-
+  
   // take initial sensor readings - more consistent calibration readings
   readSensors();
+  
+  delay(2500); // small delay before sensor calibration starts
 
   // run callibration
   runSensorCalibration();
@@ -173,6 +189,11 @@ void setup()
 
   Serial.println("\nStarting connection to sender server...");
   Udp.begin(localPort);
+
+  Serial.print("canCapMax = ");
+  Serial.println(canCapMax);
+
+  
 }
 
 void loop()
@@ -212,7 +233,7 @@ void printWifiStatus()
 
 void handleInputs()
 {
-  baseNote = map(analogRead(pot), 0, 1023, 0, 110); 
+  baseNote = map(analogRead(pot), 0, 1023, 0, 110); // these values are analog set by pot
   //Serial.println(baseNote);
 
   for (int k = 0; k < keyCount; k++)
@@ -272,7 +293,7 @@ void handleCapBtns() {
 }
 
 void checkCapBtnVals(int myVar) {
-  if (capBtns[myVar] > sensorMinMIN + sensorMinBuffer) { //check sensor values is > than this value returned from calibration fn + buffer
+  if (capBtns[myVar] > canCapMax + sensorMinBuffer) { // threshold value is set by canCapMax (set by canCalibration() fn) + sensorMinBuffer. can be adjusted to dial in sensitivity
     capBtnState[myVar] = HIGH;
   } else {
     capBtnState[myVar] = LOW;
@@ -313,7 +334,7 @@ void handleCapSlides() {
 }
 
 void checkCapSlideVals(int myVar) {
-  if (capSlides[myVar] > sensorMinMIN + sensorMinBuffer) {  //check sensor values is > than this value returned from calibration fn + buffer
+  if (capSlides[myVar] > canCapMax + sensorMinBuffer) { // threshold value is set by canCapMax (set by canCalibration() fn) + sensorMinBuffer. can be adjusted to dial in sensitivity
     capSlideState[myVar] = HIGH;
     // slide sensors need to always be first in the shared N_ALL_CAPSENS array
     // so we can iterate properly in the N_CAPSLIDES array
@@ -335,7 +356,45 @@ void readSensors() {
   allCapSens[3] =  btnSensor2.capacitiveSensor(30);
 }
 
-// read/show cap values adjust led used in loop() 
+
+// used to set can capacitance. used in vaious thresholds throughout program
+void canCalibration() {
+
+  // purple LED to denote can calibration mode
+  analogWrite(red, 80);
+  analogWrite(green, 0);
+  analogWrite(blue, 80);
+
+  int canCapMillisNow  = millis();
+
+  while (millis() < (canCapMillisNow + canCalibrationTime)) {
+    Serial.println("check can capacitance");
+
+    canCap = slideSensor1.capacitiveSensor(30);
+
+    for (int c = 0; c < 5; c++) {
+
+      canCap = slideSensor1.capacitiveSensor(30);
+      // record the maximum sensor value
+      if (canCap > canCapMax) {
+        canCapMax = canCap;
+      }
+      // record the minimum sensor value
+      if (canCap < canCapMin) {
+        canCapMin = canCap;
+      }
+      if (canCap > 20) {
+        Serial.print("canCap = ");
+        Serial.println(canCap);
+      }
+    }
+  }
+}
+
+
+
+
+// read/show cap values adjust led usd in loop()
 // this is mostly for debugging and can be removed / commented out in final code - js 20200421
 void capCalibration_Debug() {
   // read the sensors:
