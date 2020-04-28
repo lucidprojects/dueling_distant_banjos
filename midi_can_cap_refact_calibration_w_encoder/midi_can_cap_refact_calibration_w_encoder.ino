@@ -25,6 +25,7 @@
 #include <CapacitiveSensor.h>
 
 #include "secrets.h"
+#include "encoder_mode_select.h"
 
 // WIFI
 
@@ -37,6 +38,9 @@ WiFiUDP Udp;
 
 IPAddress localRpi(192, 168, 86, 234);
 
+//NETWORK
+
+
 const int MIDI_PACKET_SIZE = 3;
 
 byte packetBufferIn[MIDI_PACKET_SIZE];
@@ -45,16 +49,23 @@ byte packetBufferOut[MIDI_PACKET_SIZE];
 unsigned int localPort = 5000;
 unsigned long timestamp;
 
+int fwd[] = {0, 0, 0, 0, 0, 0, 0, 0};
+
 // MIDI
 
 const int pot = A0;
 
-int keys[] = {2, 3, 4, 5};
+int keys[] = {2};  // only one physical button now
+//int keys[] = {2, 3, 4, 5};
 int lastKeyState[] = {0, 0, 0, 0};
 
 int keyCount = 4;
 int baseNote = 0;
 int noteValue = baseNote;
+
+byte channelsOn[] = {0x90, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98};
+byte channelsOff[] = {0x80, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
+
 
 //LED
 int red = A3; //this sets the red led pin
@@ -68,10 +79,10 @@ int ledVal = 0;
 
 // can calibration will run first - canCalibrationTime  eg first 10 seconds
 // purple LED and set capacitance of can
-// store capacitance of can just touching / holding it 
+// store capacitance of can just touching / holding it
 int canCap; // sensor object
 int canCalibrationTime = 10000;  // set calibration time for can
-int canCapMax; 
+int canCapMax;
 int canCapMin;
 
 
@@ -117,13 +128,14 @@ int sensorMin_length;
 int sensorMax_length;
 
 int sensorMinMIN, sensorMaxMAX;  // min max values after calibration
-int sensorMinBuffer = 200; // buffer to prevent sensors from reading too low or 0
+int sensorMinBuffer = 300; // buffer to prevent sensors from reading too low or 0
 
 
 void setup()
 {
   // init serial
   Serial.begin(9600);
+  pinMode (buttonPin, INPUT_PULLUP);
 
   while (!Serial); // Wait for serial port to connect so we can see what is going on.
 
@@ -131,7 +143,7 @@ void setup()
 
   //start with can Calibration
   canCalibration();
-  
+
   // Starts LED Yellow
   analogWrite(green, 255);
   digitalWrite(red, LOW);
@@ -143,10 +155,10 @@ void setup()
   pinMode(green, OUTPUT);
   pinMode(blue, OUTPUT);
 
-  
+
   // take initial sensor readings - more consistent calibration readings
   readSensors();
-  
+
   delay(2500); // small delay before sensor calibration starts
 
   // run callibration
@@ -193,7 +205,7 @@ void setup()
   Serial.print("canCapMax = ");
   Serial.println(canCapMax);
 
-  
+
 }
 
 void loop()
@@ -209,8 +221,89 @@ void loop()
 
   //  delay(200);
 
+  if (isPot < 1) readEnc(0);
+  else readEnc(isPot);
+
+  // handle button press types
+  b = checkButton();
+  encoderButton(b);
+
+  //channelSelect
+  if (selectCh == true && b == 1 ) {
+    channel = rtCounter;
+    //OLED display.write("Channel" + channel);
+    Serial.print("channel = ");
+    Serial.println(channel);
+    selectCh = false;
+    setMode(0);
+  }
+
+  //adjust ADSR
+  if (selectADSR) {
+    if (adsrTypeSet == false && b == 3 ) { // long press sets adsrType then changes encoder to ADSRval contrain range
+      adsrType = adsrTypeArray[rtCounter - 1];
+      Serial.print("adsrType = ");
+      Serial.println(adsrType);
+      //OLED display.write("adsrType" + adsrType);
+      isPot = 2;
+      adsrTypeSet = true;
+    }
+    if (adsrTypeSet) {
+      adsrVal = rtCounter;
+      if (adsrVal != lastAdsrVal) {
+        Serial.print("midi cmd = ");
+        Serial.print(channel);
+        Serial.print(", ");
+        Serial.print(adsrType);
+        Serial.print(", ");
+        Serial.println(adsrVal);
+        //send midi cmd
+        // midiCommand(channel, controller, controllerVal)
+        //this is the actaull cmd
+        // midiCommand(channel, adsrType, adsrVal);
+
+        //OLED display.write("adsrVal" + adsrVal);
+
+      }
+      lastAdsrVal = adsrVal;
+    }
+    if (selectADSR == true && b == 1 ) { // single click goes back to set adsrType
+      adsrTypeSet = false;
+      isPot = 4;
+      Serial.println("in ASDR select mode");
+    }
+    //double click to exit
+    if (selectADSR == true && b == 2 ) {
+      selectADSR = false;
+      adsrTypeSet = false;
+      // setMode(0);
+    }
+  }
+
+  //broadcast
+  if (doBroadCast == true && b == 1 ) {
+    //fwd = true
+    //    Serial.println(fwd);
+    channel = channelsOn[rtCounter - 1];
+
+    if ( fwd[rtCounter - 1] == 1 ) fwd[rtCounter - 1] = 0;
+    else fwd[rtCounter - 1] = 1;
+
+    //OLED display.write("Channel" + channel);
+    Serial.print("broadcast channel = ");
+    Serial.print(channel);
+    Serial.print(" ");
+    Serial.println(fwd[rtCounter]);
+    doBroadCast = false;
+    setMode(0);
+  }
 
 
+  //record and/or loop - can we do it with Logic X functions - currently not sending MIDI cmd for some reason ??  js 20200428 11:01am
+  if (doRecord == true && b == 1) {
+    midiCommand(channel, 49, 100, false);  // learned cmd in Logic doesn't seem to be working
+    Serial.print("sent recordloop cmd");
+  }
 }
 
 void printWifiStatus()
@@ -233,7 +326,10 @@ void printWifiStatus()
 
 void handleInputs()
 {
-  baseNote = map(analogRead(pot), 0, 1023, 0, 110); // these values are analog set by pot
+
+  if (isPot == 1) baseNote = rtCounter;
+  //else baseNote = map(analogRead(pot), 0, 1023, 0, 110); // these values are analog set by pot - removing pot for production
+
   //Serial.println(baseNote);
 
   for (int k = 0; k < keyCount; k++)
@@ -312,8 +408,11 @@ void handleCapSlides() {
 
   for (int c = 0; c <  N_CAPSLIDES; c++) {
 
-    slideNote[c] = slideNoteVal[c];
-    slideNote[c] = constrain(slideNote[c], 10, 110);
+    if (asSlides) {
+      slideNote[c] = slideNoteVal[c];
+      slideNote[c] = constrain(slideNote[c], 10, 110);
+    } else slideNote[c] = baseNote;
+
 
     int capSlideStateVal = capSlideState[c];
 
@@ -595,28 +694,28 @@ void midiOn(int chnl, int noteValue)
   switch (chnl)
   {
     case 1:
-      midiCommand(0x90, noteValue, 0x7F, true);
+      midiCommand(channelsOn[0], noteValue, 0x7F, fwd[0]);
       break;
     case 2:
-      midiCommand(0x91, noteValue, 0x7F, true);
+      midiCommand(channelsOn[1], noteValue, 0x7F, fwd[2]);
       break;
     case 3:
-      midiCommand(0x92, noteValue, 0x7F, true);
+      midiCommand(channelsOn[2], noteValue, 0x7F, fwd[3]);
       break;
     case 4:
-      midiCommand(0x93, noteValue, 0x7F, true);
+      midiCommand(channelsOn[3], noteValue, 0x7F, fwd[4]);
       break;
     case 5:
-      midiCommand(0x94, noteValue, 0x7F, true);
+      midiCommand(channelsOn[4], noteValue, 0x7F, fwd[5]);
       break;
     case 6:
-      midiCommand(0x95, noteValue, 0x7F, true);
+      midiCommand(channelsOn[5], noteValue, 0x7F, fwd[6]);
       break;
     case 7:
-      midiCommand(0x96, noteValue, 0x7F, true);
+      midiCommand(channelsOn[6], noteValue, 0x7F, fwd[7]);
       break;
     case 8:
-      midiCommand(0x97, noteValue, 0x7F, true);
+      midiCommand(channelsOn[7], noteValue, 0x7F, fwd[8]);
       break;
     default:
       break;
@@ -627,28 +726,28 @@ void midiOff(int chnl, int noteValue)
   switch (chnl)
   {
     case 1:
-      midiCommand(0x80, noteValue, 0x7F, true);
+      midiCommand(channelsOff[0], noteValue, 0x7F, fwd[0]);
       break;
     case 2:
-      midiCommand(0x81, noteValue, 0x7F, true);
+      midiCommand(channelsOff[1], noteValue, 0x7F, fwd[1]);
       break;
     case 3:
-      midiCommand(0x82, noteValue, 0x7F, true);
+      midiCommand(channelsOff[2], noteValue, 0x7F, fwd[2]);
       break;
     case 4:
-      midiCommand(0x83, noteValue, 0x7F, true);
+      midiCommand(channelsOff[3], noteValue, 0x7F, fwd[3]);
       break;
     case 5:
-      midiCommand(0x84, noteValue, 0x7F, true);
+      midiCommand(channelsOff[4], noteValue, 0x7F, fwd[4]);
       break;
     case 6:
-      midiCommand(0x85, noteValue, 0x7F, true);
+      midiCommand(channelsOff[5], noteValue, 0x7F, fwd[5]);
       break;
     case 7:
-      midiCommand(0x86, noteValue, 0x7F, true);;
+      midiCommand(channelsOff[6], noteValue, 0x7F, fwd[6]);
       break;
     case 8:
-      midiCommand(0x87, noteValue, 0x7F, true);
+      midiCommand(channelsOff[7], noteValue, 0x7F, fwd[7]);
       break;
     default:
       break;
@@ -657,7 +756,7 @@ void midiOff(int chnl, int noteValue)
 
 
 
-void midiCommand(byte cmd, byte data1, byte data2, bool fwd)
+void midiCommand(byte cmd, byte data1, byte data2, int fwd)
 {
   midiEventPacket_t midiMsg = {cmd >> 4, cmd, data1, data2};
   MidiUSB.sendMIDI(midiMsg);

@@ -10,6 +10,7 @@
   http://arduino.cc/en/Tutorial/Calibration
 
   Modified to iterate through an array of sensors and calibrate each sensor.  Storing values in an array of mins/maxes.
+  • Can calibration runs first setting can capacitance.
   • Set calibration time per sensor in calibrationTime var, used in runSensorCalibration() fn
   • During calirbration tap and release sensor to set min & max values
   • Uses RGB LED to denote different calibration modes:
@@ -27,6 +28,16 @@ int blue = A5 ; //this sets the green led pin
 int ledVal = 0;
 
 //CAPACITIVE
+
+// can calibration will run first - canCalibrationTime  eg first 10 seconds
+// purple LED and set capacitance of can
+// store capacitance of can just touching / holding it 
+int canCap; // sensor object
+int canCalibrationTime = 10000;  // set calibration time for can
+int canCapMax; 
+int canCapMin;
+
+
 const int N_CAPBTNS = 4;  // set this to total # of sensors
 int capBtns[N_CAPBTNS];   // sensor vars in an array so we can iterate through in for loop
 
@@ -53,33 +64,35 @@ CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 7);
 void setup() {
   Serial.begin(9600);
 
+  while (!Serial); // Wait for serial port to connect so we can see what is going on.
+
+  Serial.println("Serial started");
+
+  //start with can Calibration
+  canCalibration();
+  
   // Starts LED Yellow
   analogWrite(green, 255);
   digitalWrite(red, LOW);
   digitalWrite(blue, HIGH);
-
 
   // RGB LED pinModes
   pinMode(red, OUTPUT);
   pinMode(green, OUTPUT);
   pinMode(blue, OUTPUT);
 
-  while (!Serial) {
-    ; // Wait for serial port to connect so we can see what is going on.
-  }
-
-  Serial.println("Serial started");
-
-
   // take initial sensor readings - more consistent calibration readings
   readSensors();
-
+  delay(2500); // small delay before sensor calibration starts
   // run callibration
   runSensorCalibration();
+
+  Serial.print("canCapMax = ");
+  Serial.println(canCapMax);
 }
 
 void loop() {
-
+  
   handleCapSensors();
 
 
@@ -146,9 +159,49 @@ void handleCapSensors() {
   }
 }
 
+
+
+// used to set can capacitance. used in vaious thresholds throughout program
+void canCalibration() {
+
+  // purple LED to denote can calibration mode
+  analogWrite(red, 80);
+  analogWrite(green, 0);
+  analogWrite(blue, 80);
+
+  int canCapMillisNow  = millis();
+
+  while (millis() < (canCapMillisNow + canCalibrationTime)) {
+    Serial.println("check can capacitance");
+
+    canCap = btnSensor0.capacitiveSensor(30);
+
+    for (int c = 0; c < 5; c++) {
+
+      canCap = btnSensor0.capacitiveSensor(30);
+      // record the maximum sensor value
+      if (canCap > canCapMax) {
+        canCapMax = canCap;
+      }
+      // record the minimum sensor value
+      if (canCap < canCapMin) {
+        canCapMin = canCap;
+      }
+      if (canCap > 20) {
+        Serial.print("canCap = ");
+        Serial.println(canCap);
+      }
+    }
+  }
+}
+
+
+
+
 // main calibration fn used in setup()
-void runSensorCalibration(){
-    while (calComplete == false) {
+void runSensorCalibration() {
+
+  while (calComplete == false) {
     // take sensor readings again - more consistent calibration readings
     readSensors();
 
