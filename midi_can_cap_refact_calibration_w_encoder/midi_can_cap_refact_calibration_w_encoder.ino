@@ -27,6 +27,19 @@
 #include "secrets.h"
 #include "encoder_mode_select.h"
 
+// SCALE
+#include <pitchToNote.h>
+// the intervals in a major and natural minor scale:
+int major[] = {2, 2, 1, 2, 2, 2, 1};
+int naturalMinor[] = {2, 1, 2, 2, 1, 2, 2};
+// an array to hold the final notes of the scale:
+int scale[8];
+
+// start with middle C:
+int tonic = pitchC4;
+// note to play:
+int scaleValue = tonic;
+
 // WIFI
 
 char ssid[] = _SSID;
@@ -39,8 +52,6 @@ WiFiUDP Udp;
 IPAddress localRpi(192, 168, 86, 234);
 
 //NETWORK
-
-
 const int MIDI_PACKET_SIZE = 3;
 
 byte packetBufferIn[MIDI_PACKET_SIZE];
@@ -53,24 +64,17 @@ int fwd[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 // MIDI
 
-const int pot = A0;
-
-int keys[] = {2};  // only one physical button now
-//int keys[] = {2, 3, 4, 5};
-int lastKeyState[] = {0, 0, 0, 0};
-
-int keyCount = 4;
-int baseNote = 0;
+int baseNote = 35;
 int noteValue = baseNote;
 
-byte channelsOn[] = {0x90, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98};
-byte channelsOff[] = {0x80, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
+byte channelsOn[] = {0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98};
+byte channelsOff[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
 
 
 //LED
 int red = A3; //this sets the red led pin
-int green = A4 ; //this sets the green led pin
-int blue = A5 ; //this sets the green led pin
+int green = 0 ; //this sets the green led pin
+int blue = 1 ; //this sets the green led pin
 
 int ledVal = 0;
 
@@ -86,37 +90,42 @@ int canCapMax;
 int canCapMin;
 
 
-//initialize senors
+//initialize sensors
 // add >= 300kΩ resistor between send pin (11) & receive pin (12)
 // sensor wire connected to receive pin
 // higher resistor more sensitve 1mΩ or > will make it almost too sensitve - capacitve readings just by hovering
 // https://youtu.be/jco-uU5ZgEU?t=225  (more about capacitive send and receive)
 CapacitiveSensor slideSensor1 = CapacitiveSensor(11, 12);
 CapacitiveSensor slideSensor2 = CapacitiveSensor(11, 10);
-CapacitiveSensor btnSensor1 = CapacitiveSensor(8, 9);
-CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 7);
+CapacitiveSensor slideSensor3 = CapacitiveSensor(8, 9);
+CapacitiveSensor slideSensor4 = CapacitiveSensor(6, 7);
+
+CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 4);
+CapacitiveSensor btnSensor2 = CapacitiveSensor(A7, A6);
+CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 5);
+CapacitiveSensor btnSensor4 = CapacitiveSensor(2, 3);
 
 //CAP btn vars
-int capBtnState[] = {LOW, LOW};
-const int N_CAPBTNS = 2;
+int capBtnState[] = {LOW, LOW, LOW, LOW};
+const int N_CAPBTNS = 4;
 int capBtns [N_CAPBTNS];
-int lastCapBtnState[] = {LOW, LOW};
+int lastCapBtnState[] = {LOW, LOW, LOW, LOW};
 
 //CAP slide vars
-int capSlideState[] = {LOW, LOW};
-const int N_CAPSLIDES = 2;
+int capSlideState[] = {LOW, LOW, LOW, LOW};
+const int N_CAPSLIDES = 4;
 int capSlides [N_CAPSLIDES];
-int lastCapSlideState[] = {LOW, LOW};
+int lastCapSlideState[] = {LOW, LOW, LOW, LOW};
 int slideNoteVal[N_CAPSLIDES];
 int slideNote[N_CAPSLIDES];
 
 //CAP calibration
-int calibrationTime = 3000;  // set calibration time per sensor
+int calibrationTime = 4000;  // set calibration time per sensor
 bool calComplete = false; // boolean to exit calibration while loop on completion
 
 // combined array for all sensor calibration - not exactly sure what to do here.  starting combined
 // take note of order index assignment in readSensors() so iteration in separate arrays works - e.g. capSlides need be set first
-const int N_ALL_CAPSENS = 4;  // set this to total # of sensors (butons & slides)
+const int N_ALL_CAPSENS = 8;  // set this to total # of sensors (butons & slides)
 int allCapSens[N_ALL_CAPSENS];   // sensor vars in an array so we can iterate through in for loop
 
 int sensorValue[N_ALL_CAPSENS]; // the sensor value
@@ -164,12 +173,6 @@ void setup()
   // run callibration
   runSensorCalibration();
 
-  // init input pins
-  for (int k = 0; k < keyCount; k++)
-  {
-    pinMode(keys[k], INPUT_PULLUP);
-  }
-
   // check for the WiFi module:
   if (WiFi.status() == WL_NO_MODULE)
   {
@@ -206,6 +209,20 @@ void setup()
   Serial.println(canCapMax);
 
 
+  //SCALE STUFF
+  // fill the scale array with the scale you want:
+  // start with the initial note:
+  scale[0] = tonic;
+  int note = scale[0];
+  // iterate over the intervals, adding each to the next note
+  // in the scale. You can change major to naturalMinor
+  // if you want that kind of scale instead:
+  for (int n = 0; n < 7; n++) {
+    //    note = note + naturalMinor[n];
+    note = note + major[n];
+    scale[n + 1] = note;
+  }
+
 }
 
 void loop()
@@ -213,7 +230,6 @@ void loop()
 
   capCalibration_Debug();
 
-  handleInputs();
   handleCapBtns();
   handleCapSlides();
 
@@ -227,6 +243,10 @@ void loop()
   // handle button press types
   b = checkButton();
   encoderButton(b);
+
+
+  //set baseNote from Pot/encoder
+  if (isPot == 1) baseNote = rtCounter;
 
   //channelSelect
   if (selectCh == true && b == 1 ) {
@@ -304,6 +324,8 @@ void loop()
     midiCommand(channel, 49, 100, false);  // learned cmd in Logic doesn't seem to be working
     Serial.print("sent recordloop cmd");
   }
+
+
 }
 
 void printWifiStatus()
@@ -324,40 +346,12 @@ void printWifiStatus()
   Serial.println(" dBm");
 }
 
-void handleInputs()
-{
-
-  if (isPot == 1) baseNote = rtCounter;
-  //else baseNote = map(analogRead(pot), 0, 1023, 0, 110); // these values are analog set by pot - removing pot for production
-
-  //Serial.println(baseNote);
-
-  for (int k = 0; k < keyCount; k++)
-  {
-    int keyState = digitalRead(keys[k]);
-
-    if (keyState != lastKeyState[k])
-    {
-      if (keyState == LOW)
-      {
-        midiOn(k + 1, baseNote);
-      }
-      else
-      {
-        midiOff(k + 1, baseNote);
-      }
-
-      lastKeyState[k] = keyState;
-      delay(10);
-    }
-  }
-}
-
-
 void handleCapBtns() {
 
   capBtns[0] =  btnSensor1.capacitiveSensor(30);
   capBtns[1] =  btnSensor2.capacitiveSensor(30);
+  capBtns[2] =  btnSensor3.capacitiveSensor(30);
+  capBtns[3] =  btnSensor4.capacitiveSensor(30);
 
   for (int b = 0; b < N_CAPBTNS; b++) {
     checkCapBtnVals(b);
@@ -371,12 +365,18 @@ void handleCapBtns() {
     {
       if (capBtnStateVal == HIGH)
       {
-        Serial.println("turn midi signal on");
-        midiOn(3 - c, baseNote);  // the first value sent in the fn will need to be adjusted for final channel assignment
+
+        if (doScale == true) {  // all cap inputs play scale
+          //midiOn(4 - c, scale[c]);
+          midiOn(9, scale[c]);  // send scale notes all on same channel
+          Serial.print("Sending scale note scale[");
+          Serial.print(c);
+          Serial.println("]");
+        } else midiOn(4 - c, baseNote); // the first value sent in the fn will need to be adjusted for final channel assignment
       }
       else
       {
-        midiOff(3 - c, baseNote); // the first value sent in the fn will need to be adjusted for final channel assignment
+        midiOff(4 - c, baseNote); // the first value sent in the fn will need to be adjusted for final channel assignment
 
         Serial.println("turn midi signal off");
         capBtnState[c] = LOW;
@@ -401,6 +401,8 @@ void handleCapSlides() {
 
   capSlides[0] = slideSensor1.capacitiveSensor(30);
   capSlides[1] = slideSensor2.capacitiveSensor(30);
+  capSlides[2] = slideSensor3.capacitiveSensor(30);
+  capSlides[3] = slideSensor4.capacitiveSensor(30);
 
   for (int b = 0; b < N_CAPSLIDES; b++) {
     checkCapSlideVals(b);
@@ -410,7 +412,7 @@ void handleCapSlides() {
 
     if (asSlides) {
       slideNote[c] = slideNoteVal[c];
-      slideNote[c] = constrain(slideNote[c], 10, 110);
+      slideNote[c] = constrain(slideNote[c], 10, 90);
     } else slideNote[c] = baseNote;
 
 
@@ -419,11 +421,17 @@ void handleCapSlides() {
     if (capSlideStateVal == HIGH)
     {
       Serial.println("turn midi slide signal on");
-      midiOn(6 - c, slideNote[c]); // the first value sent in the fn will need to be adjusted for final channel assignment
+      if (doScale == true){ // all cap inputs play scale
+//           midiOn(8 - c, scale[4+c]); 
+             midiOn(9, scale[4+c]);  // send scale notes all on same channel
+             Serial.print("Sending scale note scale[");
+             Serial.print(c);
+             Serial.println("]");
+      } else midiOn(8 - c, slideNote[c]); // the first value sent in the fn will need to be adjusted for final channel assignment
     }
     else
     {
-      //  midiOff(6 - c, slideNote[c]);
+    //  midiOff(8 - c, slideNote[c]);
       //  Serial.println("turn midi slide signal off");  // never turning it off helps slide effect
       capSlideState[c] = LOW;
     }
@@ -438,7 +446,7 @@ void checkCapSlideVals(int myVar) {
     // slide sensors need to always be first in the shared N_ALL_CAPSENS array
     // so we can iterate properly in the N_CAPSLIDES array
     // and properlly set min / max vals
-    slideNoteVal[myVar] = map ( capSlides[myVar], sensorMin[myVar], sensorMax[myVar], 0, 110); // these values return from calibration fn
+    slideNoteVal[myVar] = map ( capSlides[myVar], sensorMin[myVar], sensorMax[myVar], 0, 90); // these values return from calibration fn
   } else {
     capSlideState[myVar] = LOW;
   }
@@ -451,8 +459,12 @@ void checkCapSlideVals(int myVar) {
 void readSensors() {
   allCapSens[0] =  slideSensor1.capacitiveSensor(30);
   allCapSens[1] =  slideSensor2.capacitiveSensor(30);
-  allCapSens[2] =  btnSensor1.capacitiveSensor(30);
-  allCapSens[3] =  btnSensor2.capacitiveSensor(30);
+  allCapSens[2] =  slideSensor3.capacitiveSensor(30);
+  allCapSens[3] =  slideSensor4.capacitiveSensor(30);
+  allCapSens[4] =  btnSensor1.capacitiveSensor(30);
+  allCapSens[5] =  btnSensor2.capacitiveSensor(30);
+  allCapSens[6] =  btnSensor3.capacitiveSensor(30);
+  allCapSens[7] =  btnSensor4.capacitiveSensor(30);
 }
 
 
@@ -513,8 +525,13 @@ void capCalibration_Debug() {
     // set ledVals fade from yellow to green based on calibrated reading
     setLedVal(c);
 
+
+    int capDebugVals;
+
+    if ( canCapMax > 100) capDebugVals = canCapMax + sensorMinBuffer; else capDebugVals = 400;
+
     //debugging - show values when sensor > 400
-    if (allCapSens[c] > 400) {
+    if (allCapSens[c] > capDebugVals) {
 
       Serial.print("sensorValue[");
       Serial.print(c);
@@ -695,28 +712,31 @@ void midiOn(int chnl, int noteValue)
   {
     case 1:
       midiCommand(channelsOn[0], noteValue, 0x7F, fwd[0]);
-      break;
+	  break;
     case 2:
-      midiCommand(channelsOn[1], noteValue, 0x7F, fwd[2]);
-      break;
+      midiCommand(channelsOn[1], noteValue, 0x7F, fwd[1]);
+	  break;
     case 3:
-      midiCommand(channelsOn[2], noteValue, 0x7F, fwd[3]);
-      break;
+      midiCommand(channelsOn[2], noteValue, 0x7F, fwd[2]);
+	  break;
     case 4:
-      midiCommand(channelsOn[3], noteValue, 0x7F, fwd[4]);
-      break;
+      midiCommand(channelsOn[3], noteValue, 0x7F, fwd[3]);
+	 break;
     case 5:
-      midiCommand(channelsOn[4], noteValue, 0x7F, fwd[5]);
+      midiCommand(channelsOn[4], noteValue, 0x7F, fwd[4]);
       break;
     case 6:
-      midiCommand(channelsOn[5], noteValue, 0x7F, fwd[6]);
+      midiCommand(channelsOn[5], noteValue, 0x7F, fwd[5]);
       break;
     case 7:
-      midiCommand(channelsOn[6], noteValue, 0x7F, fwd[7]);
-      break;
+      midiCommand(channelsOn[6], noteValue, 0x7F, fwd[6]);
+	  break;
     case 8:
-      midiCommand(channelsOn[7], noteValue, 0x7F, fwd[8]);
+      midiCommand(channelsOn[7], noteValue, 0x7F, fwd[7]);
       break;
+     case 9: // added channel 9 for scale notes to all play on same channel
+      midiCommand(channelsOn[8], noteValue, 0x7F, fwd[8]);
+      break;  
     default:
       break;
   }
@@ -749,6 +769,9 @@ void midiOff(int chnl, int noteValue)
     case 8:
       midiCommand(channelsOff[7], noteValue, 0x7F, fwd[7]);
       break;
+    case 9:
+      midiCommand(channelsOff[8], noteValue, 0x7F, fwd[8]);
+      break;  
     default:
       break;
   }

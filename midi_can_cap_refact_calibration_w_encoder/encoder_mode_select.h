@@ -25,7 +25,7 @@ bool adsrTypeSet = false;
 bool selectCh = false;
 bool selectADSR = false;
 bool asSlides = true;
-bool asCaps = true;
+bool doScale = false;
 bool doRecord = false;
 bool doBroadCast = false;
 
@@ -56,8 +56,8 @@ void slidesOrNotes() {
 
 // use cap buttons a scales
 void capsAsScales() {
-  asCaps = !asCaps;
-  Serial.println(asCaps);
+  doScale = !doScale;
+  Serial.println(doScale);
 }
 
 void doRecordLoop() {
