@@ -51,15 +51,15 @@ class UDPServer {
 
 	onMessage() {
 		// receive msg
-		this.server.on('message', (msg, info) => {
-			console.log("udp_server", `| Received ${msg.length} bytes from ${info.address}:${info.port}`);
-			console.log("cmd", msg[0]);
-			console.log("data1", msg[1]);
-			console.log("dat2", msg[2]);
+		this.server.on('message', (buffer, info) => {
+			console.log("udp_server", `| Received ${buffer.length} bytes from ${info.address}:${info.port}`);
+			console.log("cmd", buffer[0]);
+			console.log("data1", buffer[1]);
+			console.log("dat2", buffer[2]);
 			console.log('');
 			// log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port}`)
 
-			this.handleMessage(msg, info)
+			this.handleMessage(buffer, info)
 		});
 
 	}
@@ -81,14 +81,14 @@ class UDPServer {
 		});
 	}
 	
-	handleMessage(msg, info) {
+	handleMessage(buffer, info) {
 		switch (`${info.address}`) {
 			case this.localArduino:
-				this.sendMessage(msg, this.remoteHost, this.port);
+				this.sendMessage(buffer, this.remoteHost, this.port);
 				break;
 
 			case this.remoteHost:
-				this.sendMessage(msg, this.localArduino, this.port);
+				this.sendMessage(buffer, this.localArduino, this.port);
 				break;
 		
 			default:
