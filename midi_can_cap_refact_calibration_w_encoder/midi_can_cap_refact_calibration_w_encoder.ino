@@ -72,9 +72,9 @@ byte channelsOff[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
 
 
 //LED
-int red = A3; //this sets the red led pin
-int green = 0 ; //this sets the green led pin
-int blue = 1 ; //this sets the green led pin
+int red = 17; //this sets the red led pin
+int green = 18 ; //this sets the green led pin
+int blue = 19 ; //this sets the blue led pin
 
 int ledVal = 0;
 
@@ -95,15 +95,15 @@ int canCapMin;
 // sensor wire connected to receive pin
 // higher resistor more sensitve 1mΩ or > will make it almost too sensitve - capacitve readings just by hovering
 // https://youtu.be/jco-uU5ZgEU?t=225  (more about capacitive send and receive)
-CapacitiveSensor slideSensor1 = CapacitiveSensor(11, 12);
-CapacitiveSensor slideSensor2 = CapacitiveSensor(11, 10);
-CapacitiveSensor slideSensor3 = CapacitiveSensor(8, 9);
-CapacitiveSensor slideSensor4 = CapacitiveSensor(6, 7);
+CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
+CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
+CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
+CapacitiveSensor slideSensor4 = CapacitiveSensor(9, 7);
 
-CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 4);
-CapacitiveSensor btnSensor2 = CapacitiveSensor(A7, A6);
-CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 5);
-CapacitiveSensor btnSensor4 = CapacitiveSensor(2, 3);
+CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 5);
+CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 4);
+CapacitiveSensor btnSensor3 = CapacitiveSensor(14, 3);
+CapacitiveSensor btnSensor4 = CapacitiveSensor(14, 2);
 
 //CAP btn vars
 int capBtnState[] = {LOW, LOW, LOW, LOW};
@@ -137,7 +137,7 @@ int sensorMin_length;
 int sensorMax_length;
 
 int sensorMinMIN, sensorMaxMAX;  // min max values after calibration
-int sensorMinBuffer = 300; // buffer to prevent sensors from reading too low or 0
+int sensorMinBuffer = 600; // buffer to prevent sensors from reading too low or 0
 
 
 void setup()
@@ -153,16 +153,18 @@ void setup()
   //start with can Calibration
   canCalibration();
 
+  // RGB LED pinModes
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
+  pinMode(blue, OUTPUT);
+
   // Starts LED Yellow
   analogWrite(green, 255);
   digitalWrite(red, LOW);
   digitalWrite(blue, HIGH);
 
 
-  // RGB LED pinModes
-  pinMode(red, OUTPUT);
-  pinMode(green, OUTPUT);
-  pinMode(blue, OUTPUT);
+
 
 
   // take initial sensor readings - more consistent calibration readings

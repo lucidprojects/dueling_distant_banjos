@@ -13,7 +13,7 @@ To keep a physical interface as simple as possible, this sketch demonstrates gen
 4) Long Press and Hold:  holding the button for a long time 
 */
 
-#define buttonPin 5        // digital input pin
+#define buttonPin 20        // digital input pin
 
 // Button timing variables
 int debounce = 50;          // ms debounce period to prevent flickering when pressing or releasing the button
