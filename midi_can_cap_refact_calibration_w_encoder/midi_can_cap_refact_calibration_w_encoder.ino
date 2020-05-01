@@ -95,6 +95,13 @@ int canCapMin;
 // sensor wire connected to receive pin
 // higher resistor more sensitve 1mΩ or > will make it almost too sensitve - capacitve readings just by hovering
 // https://youtu.be/jco-uU5ZgEU?t=225  (more about capacitive send and receive)
+
+// input to channel mapping
+// b1: 1c  |  s1: 5c 
+// b2: 2c  |  s2: 6c   
+// b3: 3c  |  s3: 7c   
+// b4: 4c  |  s4: 8c
+
 CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
 CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
 CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
@@ -162,10 +169,6 @@ void setup()
   analogWrite(green, 255);
   digitalWrite(red, LOW);
   digitalWrite(blue, HIGH);
-
-
-
-
 
   // take initial sensor readings - more consistent calibration readings
   readSensors();
