@@ -2,7 +2,7 @@
 #include "button_multipress.h"
 
 //const int buttonPin = 5; // pushbutton is on pin 5  // defining rotary button pin in button_multipress.h
-Encoder knob(3, 4);     // initialize encoder on pins 0 and 1
+Encoder knob(A1, A2);      // initialize encoder on pins 0 and 1
 int lastKnobState = 0;   // set last knob state
 int rtCounter = 0; //incremet rtCounter for accurate counts instead of encoder variance.
 int lastRtCounter = 0;

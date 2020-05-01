@@ -313,7 +313,7 @@ void loop()
     Serial.print("broadcast channel = ");
     Serial.print(channel);
     Serial.print(" ");
-    Serial.println(fwd[rtCounter]);
+    Serial.println(fwd[rtCounter-1]);
     doBroadCast = false;
     setMode(0);
   }
