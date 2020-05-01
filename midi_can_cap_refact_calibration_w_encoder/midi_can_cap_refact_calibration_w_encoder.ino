@@ -66,6 +66,11 @@ int fwd[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 int baseNote = 35;
 int noteValue = baseNote;
+int myScaleNote;
+int pitchBend;
+byte msb;      // get the high bits
+byte lsb;  // get the low 8 bits
+
 
 byte channelsOn[] = {0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98};
 byte channelsOff[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
@@ -301,6 +306,7 @@ void loop()
     if (selectADSR == true && b == 2 ) {
       selectADSR = false;
       adsrTypeSet = false;
+      doScaleMod = false;
       // setMode(0);
     }
   }
@@ -318,7 +324,7 @@ void loop()
     Serial.print("broadcast channel = ");
     Serial.print(channel);
     Serial.print(" ");
-    Serial.println(fwd[rtCounter]);
+    Serial.println(fwd[rtCounter - 1]);
     doBroadCast = false;
     setMode(0);
   }
@@ -328,6 +334,11 @@ void loop()
   if (doRecord == true && b == 1) {
     midiCommand(channel, 49, 100, false);  // learned cmd in Logic doesn't seem to be working
     Serial.print("sent recordloop cmd");
+  }
+
+
+  if (doScaleMod == true) {
+    // could add mod variations here
   }
 
 
@@ -371,18 +382,19 @@ void handleCapBtns() {
       if (capBtnStateVal == HIGH)
       {
 
-        if (doScale == true) {  // all cap inputs play scale
+        if (doScale == true || doScaleMod == true) {  // all cap inputs play scale
           //midiOn(4 - c, scale[c]);
           midiOn(9, scale[c]);  // send scale notes all on same channel
           Serial.print("Sending scale note scale[");
           Serial.print(c);
           Serial.println("]");
+          myScaleNote = scale[c];
         } else midiOn(4 - c, baseNote); // the first value sent in the fn will need to be adjusted for final channel assignment
       }
       else
       {
-        midiOff(4 - c, baseNote); // the first value sent in the fn will need to be adjusted for final channel assignment
-
+        if (doScale == true || doScaleMod == true) midiOff(9, baseNote);
+        else midiOff(4 - c, baseNote); // the first value sent in the fn will need to be adjusted for final channel assignment
         Serial.println("turn midi signal off");
         capBtnState[c] = LOW;
       }
@@ -426,17 +438,34 @@ void handleCapSlides() {
     if (capSlideStateVal == HIGH)
     {
       Serial.println("turn midi slide signal on");
-      if (doScale == true){ // all cap inputs play scale
-//           midiOn(8 - c, scale[4+c]); 
-             midiOn(9, scale[4+c]);  // send scale notes all on same channel
-             Serial.print("Sending scale note scale[");
-             Serial.print(c);
-             Serial.println("]");
+      if (doScale == true) { // all cap inputs play scale
+        //           midiOn(8 - c, scale[4+c]);
+        midiOn(9, scale[4 + c]); // send scale notes all on same channel
+        Serial.print("Sending scale note scale[");
+        Serial.print(c);
+        Serial.println("]");
+      } if (doScaleMod == true) { // all cap inputs play scale
+        pitchBend = map(slideNoteVal[c], 10, 90, 0, 16383); //constrain values could be adjusted here
+        pitchBend = pitchBend << 1;          // shift low byte's msb to high byte
+        msb = highByte(pitchBend);      // get the high bits
+        lsb = lowByte(pitchBend) >> 1;  // get the low 8 bits
+
+        // print the values, for reference:
+
+        Serial.print("msb = ");
+        Serial.print(msb);
+        Serial.print(" lsb = ");
+        Serial.println(lsb);
+
+        // send the pitch bend message:
+        midiCommand(0xE8, lsb, msb, false);  // pitchbend weirdness - first value is import here
+
+
       } else midiOn(8 - c, slideNote[c]); // the first value sent in the fn will need to be adjusted for final channel assignment
     }
     else
     {
-    //  midiOff(8 - c, slideNote[c]);
+      //  midiOff(8 - c, slideNote[c]);
       //  Serial.println("turn midi slide signal off");  // never turning it off helps slide effect
       capSlideState[c] = LOW;
     }
@@ -717,16 +746,16 @@ void midiOn(int chnl, int noteValue)
   {
     case 1:
       midiCommand(channelsOn[0], noteValue, 0x7F, fwd[0]);
-	  break;
+      break;
     case 2:
       midiCommand(channelsOn[1], noteValue, 0x7F, fwd[1]);
-	  break;
+      break;
     case 3:
       midiCommand(channelsOn[2], noteValue, 0x7F, fwd[2]);
-	  break;
+      break;
     case 4:
       midiCommand(channelsOn[3], noteValue, 0x7F, fwd[3]);
-	 break;
+      break;
     case 5:
       midiCommand(channelsOn[4], noteValue, 0x7F, fwd[4]);
       break;
@@ -735,13 +764,13 @@ void midiOn(int chnl, int noteValue)
       break;
     case 7:
       midiCommand(channelsOn[6], noteValue, 0x7F, fwd[6]);
-	  break;
+      break;
     case 8:
       midiCommand(channelsOn[7], noteValue, 0x7F, fwd[7]);
       break;
-     case 9: // added channel 9 for scale notes to all play on same channel
+    case 9: // added channel 9 for scale notes to all play on same channel
       midiCommand(channelsOn[8], noteValue, 0x7F, fwd[8]);
-      break;  
+      break;
     default:
       break;
   }
@@ -776,7 +805,7 @@ void midiOff(int chnl, int noteValue)
       break;
     case 9:
       midiCommand(channelsOff[8], noteValue, 0x7F, fwd[8]);
-      break;  
+      break;
     default:
       break;
   }

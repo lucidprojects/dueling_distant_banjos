@@ -28,6 +28,7 @@ bool asSlides = true;
 bool doScale = false;
 bool doRecord = false;
 bool doBroadCast = false;
+bool doScaleMod = false;
 
 //bool fwd = false;
 
@@ -76,6 +77,15 @@ void broadCast() {
   
 }
 
+
+void modScale(){
+  //  Mod scale - 4btns as scales sliders modify btns
+  doScaleMod = !doScaleMod; // toggle scale mod on and off
+  Serial.println(doScaleMod);
+}
+
+
+
 void setMode(int myMode) {
   /*
     MODES
@@ -84,7 +94,7 @@ void setMode(int myMode) {
     2)ADSR - DONE  **need to integrate with cap_can**
     3)ACT AS POT note shifter - DONE  integrated
     4)SLIDES as slides or notes - DONE integrated
-    5)All cap inputs as scale buttons? - DONE **need to integrate with cap_can**
+    5)All cap inputs as scale buttons - DONE integrated
     6)Record / loop  - no MIDI cmds I can find for this - tried Logix key assignment but doesn't seem to be working.
     7)Broadcast n CHANNEL - DONE integrated
   */
@@ -97,6 +107,9 @@ void setMode(int myMode) {
        //OLED display.write("select mode");
       isPot = 0;
       selectCh = false;
+      doScaleMod = false;
+      asSlides = true;
+      doScale = false;
       break;
     case 1: // channel select mode;
       isPot = 3;
@@ -135,6 +148,12 @@ void setMode(int myMode) {
       //OLED display.write("broadcast channel" + channel);
       broadCast();
       break;
+    case 8: // Mod scale - 4btns as scales sliders modify btns
+      Serial.println("Mod Scale mode");
+      isPot = 5;
+      //OLED display.write(""Mod Scale mode);
+      modScale();
+      break;  
     default:
       break;
   }
@@ -189,8 +208,8 @@ void readEnc(int encMode) {
     // handle whether encoder acts as encoder or "potentiometer" and the range
     switch (encMode) {
       case 0: //default - mode select encoder
-        if (rtCounter < 1) rtCounter = 7;
-        if (rtCounter > 7) rtCounter = 1;
+        if (rtCounter < 1) rtCounter = 8;
+        if (rtCounter > 8) rtCounter = 1;
         break;
       case 1: //encoder as "pot" for note exploration
         constrainEnc(10, 110);  //MIDI audible note values
@@ -203,7 +222,9 @@ void readEnc(int encMode) {
         break;
       case 4: //encoder for ADSR type select
         constrainEnc(1, 4);  //(1 = attack, 2 = decay, 3 = sustain, 4 = release)
-
+        break;
+      case 5: //encoder for pitchbend
+        constrainEnc(0, 1);  // on /off for pitchbend
         break;
       default:
         break;
