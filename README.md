@@ -15,7 +15,7 @@ New structure notes:
      3) long press switches to switch octave mode
      	1) this mode is a litte buggy
      	2) enc selects octaves (1-6)
-     	3) to inact you have to press one of the cpa btns to set octave (this is the buggy part)
+     	3) to inact you have to press one of the cap btns to set octave (this is the buggy part)
      4) single click exits back to cycling through channels
      5) slides all work to pitch bend the channel (in progress - currently ch is hard coded)
      6) double click exits back to Default
