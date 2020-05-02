@@ -104,15 +104,25 @@ int canCapMin;
 // sensor wire connected to receive pin
 // higher resistor more sensitve 1mΩ or > will make it almost too sensitve - capacitve readings just by hovering
 // https://youtu.be/jco-uU5ZgEU?t=225  (more about capacitive send and receive)
-CapacitiveSensor slideSensor1 = CapacitiveSensor(11, 12);
-CapacitiveSensor slideSensor2 = CapacitiveSensor(11, 10);
-CapacitiveSensor slideSensor3 = CapacitiveSensor(8, 9);
-CapacitiveSensor slideSensor4 = CapacitiveSensor(6, 7);
+// CapacitiveSensor slideSensor1 = CapacitiveSensor(11, 12);
+// CapacitiveSensor slideSensor2 = CapacitiveSensor(11, 10);
+// CapacitiveSensor slideSensor3 = CapacitiveSensor(8, 9);
+// CapacitiveSensor slideSensor4 = CapacitiveSensor(6, 7);
 
-CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 4);
-CapacitiveSensor btnSensor2 = CapacitiveSensor(A7, A6);
-CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 5);
-CapacitiveSensor btnSensor4 = CapacitiveSensor(2, 3);
+// CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 4);
+// CapacitiveSensor btnSensor2 = CapacitiveSensor(A7, A6);
+// CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 5);
+// CapacitiveSensor btnSensor4 = CapacitiveSensor(2, 3);
+
+CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
+CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
+CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
+CapacitiveSensor slideSensor4 = CapacitiveSensor(9, 7);
+
+CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 5);
+CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 4);
+CapacitiveSensor btnSensor3 = CapacitiveSensor(14, 3);
+CapacitiveSensor btnSensor4 = CapacitiveSensor(14, 2);
 
 //CAP btn vars
 int capBtnState[] = {LOW, LOW, LOW, LOW};

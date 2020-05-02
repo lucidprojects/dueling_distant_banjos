@@ -17,9 +17,8 @@
 	use these vars for various thresholds
 */
 
-#include "wifi.h"
-#include "udp_server.h"
 #include "tcp_server.h"
+#include "udp_server.h"
 #include "cap_sen.h"
 
 void setup()
