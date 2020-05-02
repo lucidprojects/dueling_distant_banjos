@@ -66,6 +66,7 @@ void loop()
 	handleCapBtns();
 	handleCapSlides();
 	handleReceiveUdp();
+	
 	handleEncoder();
 	handleChannel();
 	handleAdsr();
