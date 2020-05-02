@@ -17,9 +17,10 @@
 	use these vars for various thresholds
 */
 
+#include "wifi.h"
 #include "udp_server.h"
-#include "cap_sen.h"
 #include "tcp_server.h"
+#include "cap_sen.h"
 
 void setup()
 {
@@ -61,10 +62,20 @@ void setup()
 void loop()
 {
 	capCalibration_Debug();
+
 	handleCapBtns();
 	handleCapSlides();
 	handleReceiveUdp();
+	handleEncoder();
+	handleChannel();
+	handleAdsr();
+	handleBroadcast();
+	handleRecord();
+	handleScale();
+}
 
+void handleEncoder()
+{
 	if (isPot < 1)
 	{
 		readEnc(0);
@@ -76,7 +87,6 @@ void loop()
 
 	// handle button press types
 	b = checkButton();
-
 	encoderButton(b);
 
 	// set baseNote from Pot/encoder
@@ -84,7 +94,10 @@ void loop()
 	{
 		baseNote = rtCounter;
 	}
+}
 
+void handleChannel()
+{
 	// channelSelect
 	if (selectCh == true && b == 1)
 	{
@@ -95,7 +108,10 @@ void loop()
 		selectCh = false;
 		setMode(0);
 	}
+}
 
+void handleAdsr()
+{
 	// adjust ADSR
 	if (selectADSR)
 	{
@@ -148,7 +164,10 @@ void loop()
 			// setMode(0);
 		}
 	}
+}
 
+void handleBroadcast()
+{
 	// broadcast
 	if (doBroadCast == true && b == 1)
 	{
@@ -173,14 +192,20 @@ void loop()
 		doBroadCast = false;
 		setMode(0);
 	}
+}
 
+void handleRecord()
+{
 	// record and/or loop - can we do it with Logic X functions - currently not sending MIDI cmd for some reason ??  js 20200428 11:01am
 	if (doRecord == true && b == 1)
 	{
 		midiCommand(channel, 49, 100, false); // learned cmd in Logic doesn't seem to be working
 		Serial.print("sent recordloop cmd");
 	}
+}
 
+void handleScale()
+{
 	if (doScaleMod == true)
 	{
 		// could add mod variations here
