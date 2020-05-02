@@ -18,12 +18,15 @@ New structure notes:
      	3) to inact you have to press one of the cpa btns to set octave (this is the buggy part)
      4) single click exits back to cycling through channels
      5) slides all work to pitch bend the channel (in progress - currently ch is hard coded)
+     6) double click exits back to Default
 3) scales (use ch select) 
 	 1) (all 8 cap sensors) - need to figure out why slides play scale & explore???
 4) scales (use ch select)
-	 1) -  w pitch bend
+	 1) 4cap btns scale notes pitch bend sliders
+     2) double click exits back to Default
 5) slides as slides - defaults to slides (1)
 	 1) single click from default mode (enc == 5) toggles boolean
+	 2) double click exits back to Default
 6) pot mode
      1) rotating encoder scrolls through 1 -110 audible MIID note vals
      2) double click exits back to Default	
@@ -32,6 +35,7 @@ New structure notes:
 8) broadcast
   	 1) rotating encoder scrolls through channels
      2) single click toggles send 1/0
+     3) double click exits back to Default
 
 <s>
 0) Default / start 
