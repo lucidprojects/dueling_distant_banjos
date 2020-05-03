@@ -1,8 +1,14 @@
 #include <WiFiNINA.h>
 #include "secrets.h"
 
+// WIFI
+
 char ssid[] = _SSID;
 char pass[] = _PASSWORD;
+
+// TCP 
+
+
 
 void printWifiStatus()
 {

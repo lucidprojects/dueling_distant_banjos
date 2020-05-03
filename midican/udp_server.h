@@ -2,6 +2,20 @@
 #include <MIDIUSB.h>
 #include <pitchToNote.h>
 
+// UDP
+
+WiFiUDP Udp;
+
+IPAddress localRpi(192, 168, 86, 234);
+
+const int MIDI_PACKET_SIZE = 3;
+
+byte packetBufferIn[MIDI_PACKET_SIZE];
+byte packetBufferOut[MIDI_PACKET_SIZE];
+
+unsigned int localPort = 5000;
+unsigned long timestamp;
+
 // MIDI
 
 int baseNote = 35;
@@ -17,20 +31,6 @@ byte channelsOn[] = {0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98};
 byte channelsOff[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
 
 int fwd[] = {0, 0, 0, 0, 0, 0, 0, 0};
-
-// UDP
-
-WiFiUDP Udp;
-
-IPAddress localRpi(192, 168, 86, 234);
-
-const int MIDI_PACKET_SIZE = 3;
-
-byte packetBufferIn[MIDI_PACKET_SIZE];
-byte packetBufferOut[MIDI_PACKET_SIZE];
-
-unsigned int localPort = 5000;
-unsigned long timestamp;
 
 void initUdp()
 {
