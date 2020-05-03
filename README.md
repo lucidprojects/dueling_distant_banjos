@@ -14,18 +14,18 @@ New structure notes:
 	 1) 4 cap btns play chords (C,F,G,Am)	
      2) default - encoder selects channel 
      3) long press switches to switch octave mode
-     	1) this mode is a litte buggy
+     	1) fixed <s>this mode is a litte buggy</s>
      	2) enc selects octaves (1-6)
-     	3) to inact you have to press one of the cap btns to set octave (this is the buggy part)
-     4) single click exits back to cycling through channels
-     5) slides all work to pitch bend the channel (in progress - currently ch is hard coded)
+     	3) fixed <s>inact you have to press one of the cap btns to set octave (this is the buggy part)</s>
+     4) double click exits back to cycling through channels
+     5) slides all work to pitch bend the channel done <s>(in progress - currently ch is hard coded)</s>
      6) double click exits back to Default
 3) scales (use ch select) 
-	 1) (all 8 cap sensors) - need to figure out why slides play scale & explore???
-4) scales (use ch select)
+	 1) (all 8 cap sensors) - fixed <s>need to figure out why slides play scale & explore???</s>
+4) scales w/ pitch bend (use ch select)
 	 1) 4cap btns scale notes pitch bend sliders
      2) double click exits back to Default
-5) slides as slides - defaults to slides (1)
+5) slides as slides or notes - defaults to slides (1)
 	 1) single click from default mode (enc == 5) toggles boolean
 	 2) double click exits back to Default
 6) pot mode

@@ -228,8 +228,8 @@ int readEnc(int encMode) {
     // handle whether encoder acts as encoder or "potentiometer" and the range
     switch (encMode) {
       case 0: //default - mode select encoder
-        if (rtCounter < 1) rtCounter = 9;
-        if (rtCounter > 9) rtCounter = 1;
+        if (rtCounter < 1) rtCounter = 8;
+        if (rtCounter > 8) rtCounter = 1;
         break;
       case 1: //encoder as "pot" for note exploration
         constrainEnc(10, 110);  //MIDI audible note values
@@ -253,7 +253,7 @@ int readEnc(int encMode) {
         constrainEnc(1, 127);  //  changes volume 1-127
         break;  
       case 8: //encoder for channels 0 - 8 (1-9)
-        constrainEnc(0, 8);  //   channels 0 - 8 (1-9)
+        constrainEnc(0, 9);  //   channels 0 - 8 (1-9)
         break;    
       default:
         break;
