@@ -9,7 +9,7 @@ New structure notes:
 0) explore - different instruments all 8 channels
      1) single click selects mode
 1) ch select
-     1) single click selects channel and exits back to Default (need to set channel prior to ADSR)
+     1) single click selects channel and exits back to Default
 2) chords (use ch select or enc ch select)  -  w pitch bend
 	 1) 4 cap btns play chords (C,F,G,Am)	
      2) default - encoder selects channel 
