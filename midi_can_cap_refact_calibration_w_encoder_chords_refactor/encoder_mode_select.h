@@ -2,15 +2,14 @@
 #include "button_multipress.h"
 
 //const int buttonPin = 5; // pushbutton is on pin 5  // defining rotary button pin in button_multipress.h
-// Encoder knob(A1, A2);     // initialize encoder on pins 0 and 1
-Encoder knob(16, 15); // initialize encoder on pins 0 and 1
-
+Encoder knob(A1, A2);     // initialize encoder on pins 0 and 1
 int lastKnobState = 0;   // set last knob state
 int rtCounter = 0; //incremet rtCounter for accurate counts instead of encoder variance.
 int lastRtCounter = 0;
 int isPot = 0;
 int b;
 int channel;  //store channel value
+int savedChannel;  //preserve channel when changing octave
 int adsrVal = 0; //ADSR value
 int lastAdsrVal; // check if ADSR val changes
 /*ADSR type
@@ -33,6 +32,8 @@ bool doBroadCast = false;
 bool doScaleMod = false;
 bool asChords = false;
 bool chordsOctave = false;
+bool firstOctaveChange = true;
+bool octaveChanged = false;
 
 
 //bool fwd = false;
@@ -92,7 +93,8 @@ void modScale() {
 void modChords() {
   //  Mod chords - 4btns as chordss sliders modify btns
   asChords = true; // toggle scale mod on and off
-  Serial.println("asChords = " + asChords);
+//  Serial.println("asChords = ");
+//  Serial.println(asChords);
 }
 
 
@@ -102,15 +104,16 @@ void modChords() {
 
 void setMode(int myMode) {
   /*
-    MODES
-    0)DEFAULT ENCODER MODE - DONE
-    1)CHANNEL SELECT - DONE
-    2)ADSR - DONE  **need to integrate with cap_can**
-    3)ACT AS POT note shifter - DONE  integrated
-    4)SLIDES as slides or notes - DONE integrated
-    5)All cap inputs as scale buttons - DONE integrated
-    6)Record / loop  - no MIDI cmds I can find for this - tried Logix key assignment but doesn't seem to be working.
-    7)Broadcast n CHANNEL - DONE integrated
+   New Mode structure notes:
+      0) explore - different instruments all 8 channels
+      1) ch select
+      2) chords (use ch select)  -  w pitch bend
+      3) scales (use ch select) (all 8 cap sensors) - need to figure out why slides play scale & explore???
+      4) scales (use ch select)  -  w pitch bend
+      5) slides as slides - defaults to slides (1)
+      6) pot mode
+      NOT DOING - 7) volume adjust per channel - to play with things on and off
+      8) broadcast
   */
 
   Serial.print("set mode = ");
@@ -133,32 +136,31 @@ void setMode(int myMode) {
       selectChannel();
       break;
     case 2: // Play chords - 4btns as chords sliders modify btns
-      Serial.println("Mod chord mode");
+      Serial.println("chord mode w/ pitch bend");
       //isPot = 6;
-      //OLED display.write(""Mod Scale mode);
+      //OLED display.write(""Chord mode");
       modChords();
       break;
     case 3: // All cap inputs as scale buttons mode
       Serial.println("All cap inputs as scale buttons mode");
-      //OLED display.write("asCaps" + asCaps);
+      //OLED display.write("asCaps" + asCaps");
       capsAsScales();
       break;
     case 4: // Mod scale - 4btns as scales sliders modify btns
       Serial.println("Mod Scale mode");
       isPot = 5;
-      //OLED display.write(""Mod Scale mode);
+      //OLED display.write(""Mod Scale mode");
       modScale();
       break;
     case 5: // Slides or notes mode
       Serial.println("Slides or notes mode");
-      //OLED display.write("asSlides" + asSlides);
+      //OLED display.write("asSlides" + asSlides");
       slidesOrNotes();
       break;
-    case 6: // Pitch bend scale - 4btns as scales sliders ptich bend btns
-      Serial.println("Mod Scale mode");
-      isPot = 5;
-      //OLED display.write(""Mod Scale mode);
-      modScale();
+    case 6: // Explore mode - encoder as pot
+      Serial.println("Explore mode enc as pot");
+      isPot = 1;
+      //OLED display.write("Explore mode");
       break;
    case 7: // volume adjust per channel
       Serial.println("volume adjust X CHANNEL");
@@ -250,10 +252,16 @@ int readEnc(int encMode) {
       case 7: //encoder for volume adjustment
         constrainEnc(1, 127);  //  changes volume 1-127
         break;  
+      case 8: //encoder for channels 0 - 8 (1-9)
+        constrainEnc(0, 8);  //   channels 0 - 8 (1-9)
+        break;    
       default:
         break;
     }
-    Serial.println(rtCounter);
+//    Serial.print("rtCounter from readEnc() = ");
+    if (asChords == true && chordsOctave == false) Serial.println(rtCounter);
+        else Serial.println(rtCounter);
+        
     //OLED display.write("mode" + rtCounter);
   }
 }

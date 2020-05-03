@@ -5,6 +5,7 @@
 ### Encoder
 
 New structure notes:
+
 0) explore - different instruments all 8 channels
      1) single click selects mode
 1) ch select

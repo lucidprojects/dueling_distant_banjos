@@ -71,14 +71,16 @@ int pitchBend;
 byte msb;      // get the high bits
 byte lsb;  // get the low 8 bits
 int stopPitchBend = 1;
+unsigned long startPitchMillis;
+unsigned long currentPitchMillis;
 
-byte channelsOn[] = {0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98};
+byte channelsOn[] = {0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98}; // from 144 (0x90) to 152 (0x98)
 byte channelsOff[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
-byte ctrlCchannels[] = {0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8};
+byte ctrlChannels[] = {0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8};
 
 int chordsNotes [] = {24, 28, 29, 31, 33, 35, 36, 40}; // changed to low note vals to allow for octave changes {60, 64, 65, 67, 69, 71};
 int myO; // set base octave for chords
-int prevOctave; //holds previous octave val to check against
+int prevOctave = 0; //holds previous octave val to check against
 
 //LED
 int red = A3; //this sets the red led pin
@@ -104,25 +106,15 @@ int canCapMin;
 // sensor wire connected to receive pin
 // higher resistor more sensitve 1mΩ or > will make it almost too sensitve - capacitve readings just by hovering
 // https://youtu.be/jco-uU5ZgEU?t=225  (more about capacitive send and receive)
-// CapacitiveSensor slideSensor1 = CapacitiveSensor(11, 12);
-// CapacitiveSensor slideSensor2 = CapacitiveSensor(11, 10);
-// CapacitiveSensor slideSensor3 = CapacitiveSensor(8, 9);
-// CapacitiveSensor slideSensor4 = CapacitiveSensor(6, 7);
+CapacitiveSensor slideSensor1 = CapacitiveSensor(11, 12);
+CapacitiveSensor slideSensor2 = CapacitiveSensor(11, 10);
+CapacitiveSensor slideSensor3 = CapacitiveSensor(8, 9);
+CapacitiveSensor slideSensor4 = CapacitiveSensor(6, 7);
 
-// CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 4);
-// CapacitiveSensor btnSensor2 = CapacitiveSensor(A7, A6);
-// CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 5);
-// CapacitiveSensor btnSensor4 = CapacitiveSensor(2, 3);
-
-CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
-CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
-CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
-CapacitiveSensor slideSensor4 = CapacitiveSensor(9, 7);
-
-CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 5);
-CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 4);
-CapacitiveSensor btnSensor3 = CapacitiveSensor(14, 3);
-CapacitiveSensor btnSensor4 = CapacitiveSensor(14, 2);
+CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 4);
+CapacitiveSensor btnSensor2 = CapacitiveSensor(A7, A6);
+CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 5);
+CapacitiveSensor btnSensor4 = CapacitiveSensor(2, 3);
 
 //CAP btn vars
 int capBtnState[] = {LOW, LOW, LOW, LOW};
@@ -310,15 +302,20 @@ void loop()
 
   if (asChords == true) {
 
-    if (b == 3 ) {
+    if (b == 3) {
       chordsOctave = true;
+      Serial.println("entering change octave mode");
+
     }
     else if (b == 1) {
       chordsOctave = false;
     }
   }
 
+  // change octave
+  octaveChange();
 
+  currentPitchMillis = millis();
 }
 
 void printWifiStatus()
@@ -361,83 +358,80 @@ void handleCapBtns() {
 
         if (doScale == true || doScaleMod == true) {  // all cap inputs play scale w/ or w/o pitch bend
           //midiOn(4 - c, scale[c]);
-          midiOn(9, scale[c]);  // send scale notes all on same channel
+          midiOn(channel, scale[c]);  // send scale notes all on same channel
           Serial.print("Sending scale note scale[");
           Serial.print(c);
           Serial.println("]");
           myScaleNote = scale[c];
         } else if (asChords == true) {
 
-          Serial.print("isPot = ");
-          Serial.println(isPot);
+          //          Serial.print("isPot = ");
+          //          Serial.println(isPot);
 
-          if (rtCounter == 2) myO = 3; // sets initial middle octave.
+          if (firstOctaveChange == true) myO = 3; // sets initial middle octave.
           int myOctave = myO * 12;
-          
+          firstOctaveChange = false;
+
           if (chordsOctave == true) {
-           // octaveChange();
-            Serial.println("asChords enc changed to set octave mode");
-            prevOctave = myO;
-            isPot = 6; //octaves
-            myO = rtCounter;
+            // octaveChange();
+            Serial.println("longpress enc enter set octave mode");
           }
           else {
-            Serial.println("asChords enc changed to set channel mode");
-            isPot = 3; // channels
-            channel = rtCounter;
-            if (myO != prevOctave) Serial.println("octave changed");
-
+            isPot = 8; // channels
+            if (octaveChanged == true) {
+              channel = savedChannel;
+              octaveChanged = false;
+            }
+            else {
+              channel = rtCounter; // read from encoder
+              channel = channel; // adjust for 0 base indices
+              savedChannel = channel;
+            }
           }
-
-
-
-          //          if (rtCounter == 9) rtCounter = 3; // sets middle octave.
-          //
-          //          int myO = rtCounter; // set octave based on encoder val
-          //          if (rtCounter == 2) myO = 3; // sets middle octave.
-          //          int myOctave = myO * 12;
 
           if (c == 0) {
             //C chord
             Serial.println(chordsNotes[0] + myOctave);
-            Serial.println(channelsOn[channel - 1]);
-            midiOn(channel - 1, chordsNotes[0] + myOctave);  // send C note all on same channel
-            midiOn(channel - 1, chordsNotes[1] + myOctave);  // send E note all on same channel
-            midiOn(channel - 1, chordsNotes[3] + myOctave);  // send G note all on same channel
+            Serial.println(channelsOn[channel]);
+            midiOn(channel, chordsNotes[0] + myOctave);  // send C note all on same channel
+            midiOn(channel, chordsNotes[1] + myOctave);  // send E note all on same channel
+            midiOn(channel, chordsNotes[3] + myOctave);  // send G note all on same channel
           }
           if (c == 1) {
             //F chord
             Serial.println(chordsNotes[0] + myOctave);
-            Serial.println(channelsOn[channel - 1]);
-            midiOn(channel - 1, chordsNotes[2] + myOctave);  // send F note all on same channel
-            midiOn(channel - 1, chordsNotes[4] + myOctave);  // send A note all on same channel
-            midiOn(channel - 1, chordsNotes[0] + myOctave);  // send C note all on same channel
+            Serial.println(channelsOn[channel]);
+            midiOn(channel, chordsNotes[2] + myOctave);  // send F note all on same channel
+            midiOn(channel, chordsNotes[4] + myOctave);  // send A note all on same channel
+            midiOn(channel, chordsNotes[0] + myOctave);  // send C note all on same channel
           }
           if (c == 2) {
             //G chord
             Serial.println(chordsNotes[0] + myOctave);
-            Serial.println(channelsOn[channel - 1]);
-            midiOn(channel - 1, chordsNotes[3] + myOctave);  // send G note all on same channel
-            midiOn(channel - 1, chordsNotes[5] + myOctave);  // send B note all on same channel
-            midiOn(channel - 1, chordsNotes[4] + myOctave);  // send A note all on same channel
+            Serial.println(channelsOn[channel]);
+            midiOn(channel, chordsNotes[3] + myOctave);  // send G note all on same channel
+            midiOn(channel, chordsNotes[5] + myOctave);  // send B note all on same channel
+            midiOn(channel, chordsNotes[4] + myOctave);  // send A note all on same channel
           }
           if (c == 3) {
             //Am chord
             Serial.println(chordsNotes[0] + myOctave);
-            Serial.println(channelsOn[channel - 1]);
-            midiOn(channel - 1, chordsNotes[4] + myOctave);  // send A note all on same channel
-            midiOn(channel - 1, chordsNotes[6] + myOctave);  // send C note all on same channel
-            midiOn(channel - 1, chordsNotes[7] + myOctave);  // send E note all on same channel
+            Serial.println(channelsOn[channel]);
+            midiOn(channel, chordsNotes[4] + myOctave);  // send A note all on same channel
+            midiOn(channel, chordsNotes[6] + myOctave);  // send C note all on same channel
+            midiOn(channel, chordsNotes[7] + myOctave);  // send E note all on same channel
           }
 
-          Serial.print(rtCounter);
-          Serial.print(" myO = ");
+          Serial.print("my channel = ");
+          Serial.println(channel);
+          Serial.print("myO = ");
           Serial.print(myO);
           Serial.print(" myOctave = ");
           Serial.println(myOctave);
 
           Serial.print("playing chord ");
           Serial.println(c);
+          Serial.println("");
 
 
           //            Serial.print(c);
@@ -446,7 +440,7 @@ void handleCapBtns() {
       }
       else
       {
-        if (doScale == true || doScaleMod == true) midiOff(9, baseNote);
+        if (doScale == true || doScaleMod == true) midiOff(ctrlChannels[channel], baseNote);
         else if (asChords == true) {} //Serial.print("keep playing");
         else midiOff(4 - c, baseNote); // the first value sent in the fn will need to be adjusted for final channel assignment
         // Serial.println("turn midi signal off");
@@ -467,12 +461,30 @@ void checkCapBtnVals(int myVar) {
   }
 }
 
-//void octaveChange() {
-//  Serial.println("asChords enc changed to set octave mode");
-//  prevOctave = myO;
-//  isPot = 6; //octaves
-//  myO = rtCounter;
-//}
+void octaveChange() {
+
+  if (chordsOctave == true) {
+
+    //prevOctave = myO;
+    isPot = 6; //octaves
+    myO = rtCounter;
+    if (myO != prevOctave) {
+      Serial.print("octave changed - myO = ");
+      Serial.println(myO);
+      Serial.println("");
+      prevOctave = myO;
+    }
+    if (chordsOctave == true && b == 2 ) { // longpress to enter back into chords mode
+      chordsOctave = false;
+      modChords();
+      isPot = 3;
+      rtCounter = savedChannel + 1; // set rtCounter back to saved channel when entering back into chords play mode
+      channel = savedChannel;
+      octaveChanged = true;
+      Serial.println("changing back to set channel mode");
+    }
+  }
+}
 
 
 void handleCapSlides() {
@@ -481,6 +493,9 @@ void handleCapSlides() {
   capSlides[1] = slideSensor2.capacitiveSensor(30);
   capSlides[2] = slideSensor3.capacitiveSensor(30);
   capSlides[3] = slideSensor4.capacitiveSensor(30);
+
+  int pitchTime = millis();
+
 
   for (int b = 0; b < N_CAPSLIDES; b++) {
     checkCapSlideVals(b);
@@ -493,15 +508,16 @@ void handleCapSlides() {
       slideNote[c] = constrain(slideNote[c], 10, 90);
     } else slideNote[c] = baseNote;
 
-
     int capSlideStateVal = capSlideState[c];
 
     if (capSlideStateVal == HIGH)
     {
       //Serial.println("turn midi slide signal on");
       if (doScale == true) { // all cap inputs play scale
-        midiOn(9, scale[4 + c]); // send scale notes all on same channel
-      } if (doScaleMod == true || asChords == true) { // all cap inputs play scale
+        midiOn(channel, scale[4 + c]); // send scale notes all on same channel
+      } else if (doScaleMod == true || asChords == true) { // all cap inputs play scale
+
+        //midiOn(channel, scale[4 + c]); // send scale notes all on same channel
         pitchBend = map(slideNoteVal[c], 10, 90, 0, 16383); //mapped values could be adjusted here
         pitchBend = pitchBend << 1;          // shift low byte's msb to high byte
         msb = highByte(pitchBend);      // get the high bits
@@ -514,26 +530,26 @@ void handleCapSlides() {
         Serial.println(lsb);
 
         // send the pitch bend message:
-        midiCommand(0xE8, lsb, msb, false);  // pitchbend weirdness - first value is controller channel
-
-        Serial.print("capSlides val = ");
-        Serial.println(capSlides[c]);
-        stopPitchBend = 0;  // var used to stop when slider is let go
+        midiCommand(ctrlChannels[channel - 1], lsb, msb, false); // midiCommand(0xE8, lsb, msb, false); - first value is controller channel
+        stopPitchBend = 0;  // var used to stop when slider is let go;  // var used to stop when slider is let go
+      
       } else midiOn(8 - c, slideNote[c]); // the first value sent in the fn will need to be adjusted for final channel assignment
     }
     else
     {
-      //  midiOff(8 - c, slideNote[c]);
-      //  Serial.println("turn midi slide signal off");  // never turning it off helps slide effect
-      capSlideState[c] = LOW;
-      //      Serial.print("i'm low");
-      if ( stopPitchBend == 0) {  //stop pitchBend
-        pitchBend = 0;
-        msb = 0;
-        lsb = 0;
-        midiCommand(0xE8, lsb, msb, false);  // pitchbend weirdness - first value is controller channel
-        stopPitchBend = 1;
-      }
+      //  midiOff(8 - c, slideNote[c]);   //  Serial.println("turn midi slide signal off");  // never turning it off helps slide effect
+        capSlideState[c] = LOW;
+    }
+
+    if (currentPitchMillis - startPitchMillis > 1500 && stopPitchBend == 0) {
+      Serial.print("pitchTime is here yo - ");
+      Serial.println(millis());
+      startPitchMillis = currentPitchMillis;
+      pitchBend = 0;
+      msb = 0;
+      lsb = 0;
+      midiCommand(ctrlChannels[channel - 1], lsb, msb, false); // pitchbend weirdness - first value is controller channel
+      stopPitchBend = 1;
     }
 
     delay(10);
@@ -551,6 +567,7 @@ void checkCapSlideVals(int myVar) {
     capSlideState[myVar] = LOW;
   }
 }
+
 
 
 // ###### CALIBRATION FUNCTIONS ######
@@ -877,7 +894,42 @@ void midiOff(int chnl, int noteValue)
   }
 }
 
-
+void midiCtrl(int chnl, int noteValue)
+{
+  // Serial.println(chnl);
+  switch (chnl)
+  {
+    case 1:
+      midiCommand(ctrlChannels[0], noteValue, 0x7F, fwd[0]);
+      break;
+    case 2:
+      midiCommand(ctrlChannels[1], noteValue, 0x7F, fwd[1]);
+      break;
+    case 3:
+      midiCommand(ctrlChannels[2], noteValue, 0x7F, fwd[2]);
+      break;
+    case 4:
+      midiCommand(ctrlChannels[3], noteValue, 0x7F, fwd[3]);
+      break;
+    case 5:
+      midiCommand(ctrlChannels[4], noteValue, 0x7F, fwd[4]);
+      break;
+    case 6:
+      midiCommand(ctrlChannels[5], noteValue, 0x7F, fwd[5]);
+      break;
+    case 7:
+      midiCommand(ctrlChannels[6], noteValue, 0x7F, fwd[6]);
+      break;
+    case 8:
+      midiCommand(ctrlChannels[7], noteValue, 0x7F, fwd[7]);
+      break;
+    case 9: // added channel 9 for scale notes to all play on same channel
+      midiCommand(ctrlChannels[8], noteValue, 0x7F, fwd[8]);
+      break;
+    default:
+      break;
+  }
+}
 
 void midiCommand(byte cmd, byte data1, byte data2, int fwd)
 {
