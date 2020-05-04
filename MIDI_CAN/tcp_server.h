@@ -40,7 +40,8 @@ void initWifi()
 	if (WiFi.status() == WL_NO_MODULE)
 	{
 		Serial.println("Communication with WiFi module failed!");
-		while (true);
+		while (true)
+			;
 	}
 
 	String fv = WiFi.firmwareVersion();
@@ -55,7 +56,7 @@ void initWifi()
 	{
 		Serial.print("Attempting to connect to SSID: ");
 		Serial.println(ssid);
-		
+
 		// Connect to WPA/WPA2 network. Change this line if using open or WEP network:
 		status = WiFi.begin(ssid, pass);
 
@@ -67,7 +68,7 @@ void initWifi()
 	printWifiStatus();
 
 	// start the web server on port 5555
-	server.begin(); 
+	server.begin();
 	Serial.println("\nStarting server on port 5555");
 }
 

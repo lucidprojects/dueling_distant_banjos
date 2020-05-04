@@ -6,31 +6,26 @@
 
 WiFiUDP Udp;
 
-IPAddress localRpi(192, 168, 86, 234);
+IPAddress localServer(192, 168, 86, 234);
 
 const int MIDI_PACKET_SIZE = 3;
 
 byte packetBufferIn[MIDI_PACKET_SIZE];
 byte packetBufferOut[MIDI_PACKET_SIZE];
 
-unsigned int localPort = 5000;
-unsigned long timestamp;
-
 // MIDI
-
-int baseNote = 35;
-int noteValue = baseNote;
-
-int myScaleNote;
-int pitchBend;
 
 byte msb; // get the high bits
 byte lsb; // get the low 8 bits
 
 byte channelsOn[] = {0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98};
 byte channelsOff[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
+byte ctrlChannels[] = {0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8};
 
 int fwd[] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+unsigned int localPort = 5000;
+unsigned long timestamp;
 
 void initUdp()
 {
@@ -45,7 +40,7 @@ void handleSendUpd(byte cmd, byte data1, byte data2)
 	packetBufferOut[1] = data1;
 	packetBufferOut[2] = data2;
 
-	Udp.beginPacket(localRpi, 5000);
+	Udp.beginPacket(localServer, 5000);
 	Udp.write(packetBufferOut, MIDI_PACKET_SIZE);
 	Udp.endPacket();
 }
@@ -128,6 +123,43 @@ void midiOff(int chnl, int noteValue)
 		break;
 	case 9:
 		midiCommand(channelsOff[8], noteValue, 0x7F, fwd[8]);
+		break;
+	default:
+		break;
+	}
+}
+
+void midiCtrl(int chnl, int noteValue)
+{
+	// Serial.println(chnl);
+	switch (chnl)
+	{
+	case 1:
+		midiCommand(ctrlChannels[0], noteValue, 0x7F, fwd[0]);
+		break;
+	case 2:
+		midiCommand(ctrlChannels[1], noteValue, 0x7F, fwd[1]);
+		break;
+	case 3:
+		midiCommand(ctrlChannels[2], noteValue, 0x7F, fwd[2]);
+		break;
+	case 4:
+		midiCommand(ctrlChannels[3], noteValue, 0x7F, fwd[3]);
+		break;
+	case 5:
+		midiCommand(ctrlChannels[4], noteValue, 0x7F, fwd[4]);
+		break;
+	case 6:
+		midiCommand(ctrlChannels[5], noteValue, 0x7F, fwd[5]);
+		break;
+	case 7:
+		midiCommand(ctrlChannels[6], noteValue, 0x7F, fwd[6]);
+		break;
+	case 8:
+		midiCommand(ctrlChannels[7], noteValue, 0x7F, fwd[7]);
+		break;
+	case 9: // added channel 9 for scale notes to all play on same channel
+		midiCommand(ctrlChannels[8], noteValue, 0x7F, fwd[8]);
 		break;
 	default:
 		break;
