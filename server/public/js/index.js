@@ -36,10 +36,9 @@ const getData = async () => {
 	return response.json();
 }
 
-
-const postData = async () => {
+const putData = async () => {
 	let payload = {
-		method: 'POST',
+		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json'
 		},
@@ -48,20 +47,18 @@ const postData = async () => {
 
 	const response = await fetch("/api/data", payload);
 
-	return response.json(); // parses JSON response into native JavaScript objects
+	return response.json(); 
 }
 
 const setState = (data) => {
-	for (var i = 0; i < dataNames.length; i++) {
+	for (let i = 0; i < dataNames.length; i++) {
 		state[dataNames[i]] = data[dataNames[i]];
 	}
 }
 
 const setValues = () => {
-	for (var i = 0; i < dataNames.length; i++) {
-		if (dataNames[i].value != '') {
-			elements[dataNames[i]].innerHTML = state[dataNames[i]];
-		}
+	for (let i = 0; i < dataNames.length; i++) {
+		elements[dataNames[i]].innerHTML = state[dataNames[i]];
 	}
 }
 
@@ -70,15 +67,13 @@ const handleEdit = () => {
 
 	if (edit) {
 		show();
-		console.log("show");
 	} else {
 		hide();
-		console.log("hide");
 	}
 }
 
 const hide = () => {
-	for (var i = 0; i < elements.inputs.length; i++) {
+	for (let i = 0; i < elements.inputs.length; i++) {
 		elements.inputs[i].style.visibility = "hidden";
 	}
 
@@ -86,26 +81,34 @@ const hide = () => {
 }
 
 const show = () => {
-	for (var i = 0; i < elements.inputs.length; i++) {
+	for (let i = 0; i < elements.inputs.length; i++) {
 		elements.inputs[i].style.visibility = "visible";
 	}
 
 	elements.submit.style.visibility = "visible";
 }
 
-const handleSubmit = () => {
-	for (var i = 0; i < dataNames.length; i++) {
-		if (dataNames[i].value != '') {
-			state[dataNames[i]] = document.getElementById(dataNames[i]).value;
+const handleSubmit = async () => {
+	let val;
+
+	for (let i = 0; i < dataNames.length; i++) {
+		val = document.getElementById(dataNames[i]).value
+
+		if (val != '') {
+			state[dataNames[i]] = val;
 			document.getElementById(dataNames[i]).value = ""
 		}
 	}
 
-	setValues();
-
-	// let carla = await postData();
-
 	hide();
+
+	let response = await putData();
+
+	if (response.error) {
+		console.log("Something went wrong trying to update data");
+	} else {
+		setValues();
+	}
 }
 
 const init = async () => {

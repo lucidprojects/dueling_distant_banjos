@@ -7,7 +7,6 @@ module.exports = {
 	trPort: process.env.TR_PORT || 5500,
 	localArduino: process.env.LOCAL_ARDUINO || '192.168.0.169',
 	remoteHost: process.env.REMOTE_HOST || '66.108.97.246',
-	// remoteHost: process.env.REMOTE_HOST ||  '127.0.0.1',
 	timeout: 10000,
 	log: "./log/"
 };

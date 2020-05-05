@@ -1,20 +1,16 @@
 'use strict'
 
 const express = require('express');
-const helmet = require('helmet');
 const http = require('http');
+const bodyParser = require('body-parser');
+const helmet = require('helmet');
 const logger = require('morgan');
+// const Traceroute = require('./Traceroute')
 const config = require('../config/config');
-const fs = require('fs');
 
-// -----> Create Config File For Client <-----
+// TODO: Run this every so often and send data to arduino
+// new Traceroute().startTrace({});
 
-const toWrite = `
-	const API_URL = '${config.host}';
-	const API_PORT = '${config.port}';
-`
-
-fs.writeFileSync(__dirname + '/../public/js/env.js', toWrite)
 
 // -----> Create HTTP Server <-----
 
@@ -24,6 +20,7 @@ const server = http.createServer(app);
 
 // -----> Set Middleware <-----
 
+app.use(bodyParser.json());
 app.use(logger('common'));
 app.use(helmet());
 
@@ -48,8 +45,11 @@ app.get('/api/data', function (req, res) {
 	// res.status(500).json({ error: 'message' }) // error stuff
 })
 
-app.post('/api/data', function (req, res) {
-	res.send('POST request to homepage')
+app.put('/api/data', function (req, res) {
+	console.log(req.body);
+
+	res.json({})
+	// res.status(500).json({ error: 'message' }) // error stuff
 })
 
 module.exports = server;

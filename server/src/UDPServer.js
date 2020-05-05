@@ -1,19 +1,13 @@
 /*
-   
+
    adapted from https://github.com/rodrigoms2004/ServerSocketTCP_UDP/blob/master/udp_server.js
    created 04/15/2020
 */
 'use strict';
 
-// TODO:
-// 1) Test!
-
 const dgram = require('dgram');
 const config = require('../config/config');
-
-// const {
-// 	log
-// } = require('./util/loggerTool');
+// const { log } = require('./util/loggerTool');
 
 class UDPServer {
 	constructor() {
@@ -35,7 +29,7 @@ class UDPServer {
 	onClose() {
 		//emits after the socket is closed using socket.close()
 		this.server.on('close', () => {
-			console.log("udp_server", "info", 'Socket is closed !');
+			console.log("udp_server", "info", 'Socket is closed!');
 			// log("udp_server", "info", 'Socket is closed !')
 		})
 	}
@@ -72,11 +66,11 @@ class UDPServer {
 			const family = address.family;
 			const ipaddr = address.address;
 
-			console.log("udp_server", "info", 'Server is listening at port ' + port);
+			console.log("udp_server", "info", 'listening on port: ' + port);
 			// log("udp_server", "info", 'Server is listening at port ' + port)
-			console.log("udp_server", "info", 'Server ip :' + ipaddr);
+			console.log("udp_server", "info", 'Server ip: ' + ipaddr);
 			// log("udp_server", "info", 'Server ip :' + ipaddr)
-			console.log("udp_server", "info", 'Server ipv : ' + family);
+			console.log("udp_server", "info", 'Server ipv: ' + family);
 			// log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
 		});
 	}
