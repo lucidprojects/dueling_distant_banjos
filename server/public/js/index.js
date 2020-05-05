@@ -25,7 +25,7 @@ const state = {
 	localPort: '',
 	remoteIp: '',
 	remotePort: '',
-	capBuff: '',
+	capBuff: 0,
 };
 
 var edit = false;

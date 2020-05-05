@@ -4,6 +4,10 @@
 
 #include "secrets.h"
 
+// CAPACITIVE
+
+int sensorMinBuffer = 600;
+
 // WIFI
 
 char ssid[] = _SSID;
@@ -11,10 +15,11 @@ char pass[] = _PASSWORD;
 
 // TCP
 
-int keyIndex = 0; // your network key Index number (needed only for WEP)
-
 int status = WL_IDLE_STATUS;
+
 WiFiServer server(5555);
+
+String response;
 
 void printWifiStatus()
 {
@@ -40,8 +45,7 @@ void initWifi()
 	if (WiFi.status() == WL_NO_MODULE)
 	{
 		Serial.println("Communication with WiFi module failed!");
-		while (true)
-			;
+		while (true);
 	}
 
 	String fv = WiFi.firmwareVersion();
@@ -72,100 +76,108 @@ void initWifi()
 	Serial.println("\nStarting server on port 5555");
 }
 
+void handleResponse(WiFiClient client)
+{
+	// HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
+	// and a content-type so the client knows what's coming, then a blank line:
+	client.println("HTTP/1.1 200 OK");
+	client.println("Content-type:application/json");
+	client.println();
+
+	// the content of the HTTP response follows the header:
+	client.print(response);
+
+	// The HTTP response ends with another blank line:
+	client.println();
+}
+
+void handleData(String currentLine)
+{
+	// Check to see if the client request was "GET /H" or "GET /L":
+	if (currentLine.startsWith("data"))
+	{
+		if (currentLine.endsWith("}"))
+		{
+			response = "{\"message\":\"success\"}";
+
+			currentLine.remove(0, 6);
+			
+			JSONVar newData = JSON.parse(currentLine);
+
+			// JSON.typeof(jsonVar) can be used to get the type of the var
+			if (JSON.typeof(newData) == "undefined")
+			{
+				Serial.println("Parsing input failed!");
+				response = "{\"error\":true}";
+				return;
+			}
+
+			if (newData.hasOwnProperty("capBuff"))
+			{
+				sensorMinBuffer = newData["capBuff"];
+				Serial.print("sensorMinBuffer set to: ");
+				Serial.println(sensorMinBuffer);
+			}
+
+		}
+	}
+
+	if (currentLine.endsWith("GET /"))
+	{
+		Serial.println("GET req made");
+		response = "{\"capBuff\":\"" + String(sensorMinBuffer) + "\", \"message\":\"success\"}";
+	}
+
+}
+
+// TODO: Handle in LOOP (make fn)
 void webApi()
 {
 	WiFiClient client = server.available(); // listen for incoming clients
 
 	if (client)
-	{								  // if you get a client,
-		Serial.println("new client"); // print a message out the serial port
-		String currentLine = "";	  // make a String to hold incoming data from the client
-		while (client.connected())
-		{ // loop while the client's connected
-			if (client.available())
-			{							// if there's bytes to read from the client,
-				char c = client.read(); // read a byte, then
-				if (c == '\n')
-				{ // if the byte is a newline character
+	{								  
+		Serial.println("new client");
+		String currentLine = ""; // make a String to hold incoming data from the client
 
+		// loop while the client's connected
+		while (client.connected())
+		{
+			// if there's bytes to read from the client,
+			if (client.available())
+			{							
+				char c = client.read(); // read a byte, then
+
+				// if the byte is a newline character
+				if (c == '\n')
+				{
 					// if the current line is blank, you got two newline characters in a row.
 					// that's the end of the client HTTP request, so send a response:
 					if (currentLine.length() == 0)
 					{
-						// HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-						// and a content-type so the client knows what's coming, then a blank line:
-						client.println("HTTP/1.1 200 OK");
-						client.println("Content-type:text/html");
-						client.println();
-
-						// the content of the HTTP response follows the header:
-						client.print("Click <a href=\"/H\">here</a> turn the LED on pin 9 on<br>");
-						client.print("Click <a href=\"/L\">here</a> turn the LED on pin 9 off<br>");
-
-						// The HTTP response ends with another blank line:
-						client.println();
-						// break out of the while loop:
+						handleResponse(client);
 						break;
 					}
+					// if you got a newline, then clear currentLine
 					else
-					{ // if you got a newline, then clear currentLine:
+					{
 						currentLine = "";
 					}
 				}
+
+				// if you got anything else but a carriage return character,
+				// add it to the end of the currentLine
 				else if (c != '\r')
-				{					  // if you got anything else but a carriage return character,
-					currentLine += c; // add it to the end of the currentLine
+				{					  
+					currentLine += c;
 				}
 
-				// Check to see if the client request was "GET /H" or "GET /L":
-				if (currentLine.startsWith("data"))
-				{
-					if (currentLine.endsWith("}"))
-					{
-						currentLine.remove(0, 6);
-						Serial.println(currentLine);
-
-						JSONVar myObject = JSON.parse(currentLine);
-
-						// JSON.typeof(jsonVar) can be used to get the type of the var
-						if (JSON.typeof(myObject) == "undefined")
-						{
-							Serial.println("Parsing input failed!");
-							return;
-						}
-
-						if (myObject.hasOwnProperty("buffer"))
-						{
-							Serial.print("myObject[\"buffer\"] = ");
-							Serial.println((int)myObject["buffer"]);
-						}
-
-						if (myObject.hasOwnProperty("ip"))
-						{
-							Serial.print("myObject[\"ip\"] = ");
-							Serial.println((const char *)myObject["ip"]);
-						}
-
-						Serial.print("myObject = ");
-						Serial.println(myObject);
-
-						Serial.println();
-					}
-				}
-
-				if (currentLine.endsWith("GET /H"))
-				{
-					Serial.println("ON");
-				}
-
-				if (currentLine.endsWith("GET /L"))
-				{
-					Serial.println("OFF");
-				}
+				handleData(currentLine);
 			}
 		}
+
 		// close the connection:
 		client.stop();
-		Serial.println("client disonnected");
+		Serial.println("client disconnected");
 	}
 }

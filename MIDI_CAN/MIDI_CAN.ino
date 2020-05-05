@@ -24,13 +24,12 @@ void setup()
 {
 	// init serial
 	Serial.begin(9600);
-	while (!Serial)
-		;
+	while (!Serial);
 
 	Serial.println("Serial started");
 
 	//start with can Calibration
-	canCalibration();
+	// canCalibration(); DOC:
 
 	// encoder button
 	pinMode(buttonPin, INPUT_PULLUP);
@@ -46,13 +45,13 @@ void setup()
 	digitalWrite(blue, HIGH);
 
 	// take initial sensor readings - more consistent calibration readings
-	readSensors();
+	// readSensors(); DOC:
 
 	// small delay before sensor calibration starts
-	delay(2500);
+	// delay(2500); DOC:
 
 	// start capacitive sensors
-	initCapacitive();
+	// initCapacitive(); DOC:
 
 	// connect to wifi and start TCP server
 	initWifi();
@@ -66,17 +65,18 @@ void setup()
 
 void loop()
 {
-	// capCalibration_Debug(); // uncomment out to show sensor values in serial monitor
-
-	handleCapBtns();
-	handleCapSlides();
-	handleReceiveUdp();
-	handleEncoder();
-	handleChannel();
-	handleBroadcast();
-	handleRecord();
-	handleScale();
-	handleChords();
+	webApi();
+	
+	// handleCapBtns(); DOC:
+	// handleCapSlides(); DOC:
+	// handleReceiveUdp(); DOC:
+	// handleEncoder(); DOC:
+	// handleChannel(); DOC:
+	// handleBroadcast(); DOC:
+	// handleRecord(); DOC:
+	// handleScale(); DOC:
+	// handleChords(); DOC:
+	// capCalibration_Debug(); // uncomment out to show sensor values in  serial monitor
 }
 
 void handleEncoder()

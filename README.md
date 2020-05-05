@@ -10,7 +10,7 @@ New structure notes:
      1) single click selects mode
 1) ch select
      1) single click selects channel and exits back to Default
-2) chords (use ch select or enc ch select)  -  w pitch bend
+2) chords (use ch select or enc ch select) - w pitch bend
 	 1) 4 cap btns play chords (C,F,G,Am)	
      2) default - encoder selects channel 
      3) long press switches to switch octave mode
@@ -29,7 +29,7 @@ New structure notes:
 	 1) single click from default mode (enc == 5) toggles boolean
 	 2) double click exits back to Default
 6) pot mode
-     1) rotating encoder scrolls through 1 -110 audible MIID note vals
+     1) rotating encoder scrolls through 1-110 audible MIDI note vals
      2) double click exits back to Default	
 7) volume adjust per channel - to play with things on and off
 	 1) not started - need to add handling to adjust volume per channel

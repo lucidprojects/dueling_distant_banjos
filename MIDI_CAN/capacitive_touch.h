@@ -7,7 +7,7 @@
 // can calibration will run first - canCalibrationTime  eg first 10 seconds
 // purple LED and set capacitance of can
 // store capacitance of can just touching / holding it
-int canCap;						// sensor object
+int canCap;	// sensor object
 int canCalibrationTime = 2000; // set calibration time for can
 int canCapMax;
 int canCapMin;
@@ -78,7 +78,8 @@ int sensorMin_length;
 int sensorMax_length;
 
 int sensorMinMIN, sensorMaxMAX; // min max values after calibration
-int sensorMinBuffer = 600;		// buffer to prevent sensors from reading too low or 0
+
+// int sensorMinBuffer = 600; // buffer to prevent sensors from reading too low or 0 // NOTE: defined in tcp_server.h so it can be set via api
 
 // CHORDS and SCALE
 
