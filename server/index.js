@@ -8,7 +8,7 @@ const config = require('./config/config');
 
 const udpServer = new UDPServer();
 
-// udpServer.run();
+udpServer.run();
 
 // -----> Start API <-----
 

@@ -4,9 +4,9 @@
 
 Encoder knob(A6, A7); // initialize encoder
 
-//const int buttonPin = 5;  // defining rotary button pin in button_multipress.h
+//const int buttonPin = 5; // defining rotary button pin in button_multipress.h
 int lastKnobState = 0; // set last knob state
-int rtCounter = 0;	   //incremet rtCounter for accurate counts instead of encoder variance.
+int rtCounter = 0;	   // incremet rtCounter for accurate counts instead of encoder variance.
 int lastRtCounter = 0;
 
 int isPot = 0;
@@ -14,7 +14,6 @@ int b;
 
 int channel;	  //store channel value
 int savedChannel; //preserve channel when changing octave
-
 
 bool selectCh = false;
 bool asSlides = true;

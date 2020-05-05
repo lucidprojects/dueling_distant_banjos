@@ -6,6 +6,7 @@
 
 WiFiUDP Udp;
 
+// TODO: API CAN CHANGE THIS
 IPAddress localServer(192, 168, 86, 234);
 
 const int MIDI_PACKET_SIZE = 3;
