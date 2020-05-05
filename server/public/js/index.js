@@ -59,7 +59,9 @@ const setState = (data) => {
 
 const setValues = () => {
 	for (var i = 0; i < dataNames.length; i++) {
-		elements[dataNames[i]].innerHTML = state[dataNames[i]];
+		if (dataNames[i].value != '') {
+			elements[dataNames[i]].innerHTML = state[dataNames[i]];
+		}
 	}
 }
 
