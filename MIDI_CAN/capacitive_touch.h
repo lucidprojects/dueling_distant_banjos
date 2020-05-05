@@ -685,7 +685,7 @@ void handleCapBtns()
 			}
 
 			lastCapBtnState[c] = capBtnStateVal;
-			delay(10);
+//			delay(10);
 		}
 	}
 }
