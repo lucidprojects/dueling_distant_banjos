@@ -8,7 +8,7 @@
 // purple LED and set capacitance of can
 // store capacitance of can just touching / holding it
 int canCap;						// sensor object
-int canCalibrationTime = 10000; // set calibration time for can
+int canCalibrationTime = 2000; // set calibration time for can
 int canCapMax;
 int canCapMin;
 
@@ -25,26 +25,26 @@ int canCapMin;
 // b4: 4c  |  s4: 8c
 
 // NOTE: JAKE PINOUT
-// CapacitiveSensor slideSensor1 = CapacitiveSensor(11, 12);
-// CapacitiveSensor slideSensor2 = CapacitiveSensor(11, 10);
-// CapacitiveSensor slideSensor3 = CapacitiveSensor(8, 9);
-// CapacitiveSensor slideSensor4 = CapacitiveSensor(6, 7);
+CapacitiveSensor slideSensor1 = CapacitiveSensor(10, 12);
+CapacitiveSensor slideSensor2 = CapacitiveSensor(10, 11);
+CapacitiveSensor slideSensor3 = CapacitiveSensor(7, 9);
+CapacitiveSensor slideSensor4 = CapacitiveSensor(7, 8);
 
-// CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 4);
-// CapacitiveSensor btnSensor2 = CapacitiveSensor(A7, A6);
-// CapacitiveSensor btnSensor3 = CapacitiveSensor(6, 5);
-// CapacitiveSensor btnSensor4 = CapacitiveSensor(2, 3);
+CapacitiveSensor btnSensor1 = CapacitiveSensor(4, 6);
+CapacitiveSensor btnSensor2 = CapacitiveSensor(4, 5);
+CapacitiveSensor btnSensor3 = CapacitiveSensor(7, 3);
+CapacitiveSensor btnSensor4 = CapacitiveSensor(4, 2);
 
 // NOTE: NOAH PINOUT
-CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
-CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
-CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
-CapacitiveSensor slideSensor4 = CapacitiveSensor(9, 7);
-
-CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 5);
-CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 4);
-CapacitiveSensor btnSensor3 = CapacitiveSensor(17, 3);
-CapacitiveSensor btnSensor4 = CapacitiveSensor(17, 2);
+//CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
+//CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
+//CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
+//CapacitiveSensor slideSensor4 = CapacitiveSensor(9, 7);
+//
+//CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 5);
+//CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 4);
+//CapacitiveSensor btnSensor3 = CapacitiveSensor(17, 3);
+//CapacitiveSensor btnSensor4 = CapacitiveSensor(17, 2);
 
 // CAP slide vars
 int capSlideState[] = {LOW, LOW, LOW, LOW};
@@ -61,7 +61,7 @@ int capBtns[N_CAPBTNS];
 int lastCapBtnState[] = {LOW, LOW, LOW, LOW};
 
 // CAP calibration
-int calibrationTime = 4000; // set calibration time per sensor
+int calibrationTime = 1000; // set calibration time per sensor
 bool calComplete = false;	// boolean to exit calibration while loop on completion
 
 // combined array for all sensor calibration - not exactly sure what to do here.  starting combined
@@ -391,7 +391,7 @@ void octaveChange()
 	if (chordsOctave == true)
 	{
 		// prevOctave = myO;
-		isPot = 6; //octaves
+		isPot = 4; //octaves
 
 		myO = rtCounter;
 		if (myO != prevOctave)
@@ -409,7 +409,7 @@ void octaveChange()
 			chordsOctave = false;
 			modChords();
 
-			isPot = 3;
+			isPot = 6;
 			rtCounter = savedChannel + 1; // set rtCounter back to saved channel when entering back into chords play mode
 
 			channel = savedChannel;
@@ -536,7 +536,7 @@ void handleCapSlides()
 			stopPitchBend = 1;
 		}
 
-		delay(10);
+		// delay(10); // fu delay
 	}
 }
 
@@ -591,7 +591,7 @@ void handleCapBtns()
 					}
 					else
 					{
-						isPot = 8; // channels
+						isPot = 6; // channels
 						if (octaveChanged == true)
 						{
 							channel = savedChannel;

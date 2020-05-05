@@ -14,21 +14,9 @@ int b;
 
 int channel;	  //store channel value
 int savedChannel; //preserve channel when changing octave
-int adsrVal = 0;  //ADSR value
-int lastAdsrVal;  // check if ADSR val changes
-int adsrType;
 
-/*ADSR type
-  1 ~ 49 (73 in hex) = Attack
-  2 ~ 4B (75 in hex) = Decay
-  3 ~ 40 (64 in hex)? = Sustain  (Hold Pedal)
-  4 ~ 48 (72 in hex) = Release
-*/
-int adsrTypeArray[4] = {73, 75, 64, 72};
 
-bool adsrTypeSet = false;
 bool selectCh = false;
-bool selectADSR = false;
 bool asSlides = true;
 bool doScale = false;
 bool doRecord = false;
@@ -56,16 +44,6 @@ void selectChannel()
 	selectCh = true; // set mode bool to true for handling in loop
 }
 
-// eneable ADSR select in the loop
-void ADSR()
-{
-	if (b == 1)
-	{
-		b = 0; //set b = 0 to prevent click entering mode
-	}
-
-	selectADSR = true; // set mode bool to true for handling in loop
-}
 
 // use slides as slides or notes
 void slidesOrNotes()
@@ -145,61 +123,61 @@ void setMode(int myMode)
 	switch (myMode)
 	{
 	case 0: // set default encoderMode
-		//OLED display.write("select mode");
-		isPot = 0;
-		selectCh = false;
-		doScaleMod = false;
-		asSlides = true;
-		doScale = false;
-		asChords = false;
-		break;
-	case 1: // channel select mode;
-		isPot = 3;
-		Serial.println("channel select mode");
-		//OLED display.write("select channel");
-		selectChannel();
-		break;
-	case 2: // Play chords - 4btns as chords sliders modify btns
-		Serial.println("chord mode w/ pitch bend");
-		//isPot = 6;
-		//OLED display.write(""Chord mode");
-		modChords();
-		break;
-	case 3: // All cap inputs as scale buttons mode
-		Serial.println("All cap inputs as scale buttons mode");
-		//OLED display.write("asCaps" + asCaps");
-		capsAsScales();
-		break;
-	case 4: // Mod scale - 4btns as scales sliders modify btns
-		Serial.println("Mod Scale mode");
-		isPot = 5;
-		//OLED display.write(""Mod Scale mode");
-		modScale();
-		break;
-	case 5: // Slides or notes mode
-		Serial.println("Slides or notes mode");
-		//OLED display.write("asSlides" + asSlides");
-		slidesOrNotes();
-		break;
-	case 6: // Explore mode - encoder as pot
-		Serial.println("Explore mode enc as pot");
-		isPot = 1;
-		//OLED display.write("Explore mode");
-		break;
-	case 7: // volume adjust per channel
-		Serial.println("volume adjust X CHANNEL");
-		isPot = 7;
-		//OLED display.write(""volume adjust channel" + channel);
-		// volumeAdjust();
-		break;
-	case 8: // Broadcast X CHANNEL
-		Serial.println("Broadcast X CHANNEL");
-		isPot = 3;
-		//OLED display.write("broadcast channel" + channel);
-		broadCast();
-		break;
-	default:
-		break;
+      //OLED display.write("select mode");
+      isPot = 0;
+      selectCh = false;
+      doScaleMod = false;
+      asSlides = true;
+      doScale = false;
+      asChords = false;
+      break;
+    case 1: // channel select mode;
+      isPot = 2;
+      Serial.println("channel select mode");
+      //OLED display.write("select channel");
+      selectChannel();
+      break;
+    case 2: // Play chords - 4btns as chords sliders modify btns
+      Serial.println("chord mode w/ pitch bend");
+      //OLED display.write(""Chord mode");
+      isPot = 6;
+      modChords();
+      break;
+    case 3: // All cap inputs as scale buttons mode
+      Serial.println("All cap inputs as scale buttons mode");
+      //OLED display.write("asCaps" + asCaps");
+      capsAsScales();
+      break;
+    case 4: // Mod scale - 4btns as scales sliders modify btns
+      Serial.println("Mod Scale mode");
+      isPot = 3;
+      //OLED display.write(""Mod Scale mode");
+      modScale();
+      break;
+    case 5: // Slides or notes mode
+      Serial.println("Slides or notes mode");
+      //OLED display.write("asSlides" + asSlides");
+      slidesOrNotes();
+      break;
+    case 6: // Explore mode - encoder as pot
+      Serial.println("Explore mode enc as pot");
+      isPot = 1;
+      //OLED display.write("Explore mode");
+      break;
+   case 7: // volume adjust per channel
+      Serial.println("volume adjust X CHANNEL");
+      isPot = 5;
+      //OLED display.write(""volume adjust channel" + channel);
+     // volumeAdjust();
+      break;
+   case 8: // Broadcast X CHANNEL
+      Serial.println("Broadcast X CHANNEL");
+      isPot = 2;
+      //OLED display.write("broadcast channel" + channel);
+      broadCast();
+      break;    
+    default:
+      break;
 	}
 }
 
@@ -250,6 +228,9 @@ int readEnc(int encMode)
 		// divide value by abs. value to get 1 or -1:
 		knobChange = knobChange / abs(knobChange);
 
+    // save the current state for comparison next time:
+    lastKnobState = knobState;
+    
 		// if knobChange == 1, turned up/right rtCounter++, else rtCounter--
 		if (knobChange == 1)
 		{
@@ -260,8 +241,8 @@ int readEnc(int encMode)
 			rtCounter--;
 		}
 
-		// save the current state for comparison next time:
-		lastKnobState = knobState;
+//		// save the current state for comparison next time:
+//		lastKnobState = knobState;
 
 		// handle whether encoder acts as encoder or "potentiometer" and the range
 		switch (encMode)
@@ -281,26 +262,20 @@ int readEnc(int encMode)
 		case 1:	// encoder as "pot" for note exploration
 			constrainEnc(10, 110); // MIDI audible note values
 			break;
-		case 2:	// encoder for ADSR
-			constrainEnc(1, 127); // MIDI ADSR values
-			break;
-		case 3:	// encoder for channel select in ADSR & broadcast funcs
+		case 2:	// encoder for channel select 
 			constrainEnc(1, 9); // # of MIDI channels
 			break;
-		case 4:	// encoder for ADSR type select
-			constrainEnc(1, 4); // (1 = attack, 2 = decay, 3 = sustain, 4 = release)
-			break;
-		case 5:	// encoder for pitchbend
+		case 3:	// encoder for pitchbend
 			constrainEnc(0, 1); // on/off for pitchbend
 			break;
-		case 6:	//encoder for chord octave switching
+		case 4:	//encoder for chord octave switching
 			constrainEnc(0, 6); // n * 12 to change 7 octaves
 			break;
-		case 7:	//encoder for volume adjustment
+		case 5:	//encoder for volume adjustment
 			constrainEnc(1, 127); //  changes volume 1-127
 			break;
-		case 8:	//encoder for channels 0 - 8 (1-9)
-			constrainEnc(0, 9); //   channels 0 - 8 (1-9)
+		case 6:	//encoder for chord channels 0 - 9 (1-9)
+			constrainEnc(1, 9); //   channels 0 - 9 (1-9)
 			break;
 		default:
 			break;
