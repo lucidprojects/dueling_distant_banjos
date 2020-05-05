@@ -73,7 +73,6 @@ void loop()
 	handleReceiveUdp();
 	handleEncoder();
 	handleChannel();
-	handleAdsr();
 	handleBroadcast();
 	handleRecord();
 	handleScale();
@@ -113,62 +112,6 @@ void handleChannel()
 		Serial.println(channel);
 		selectCh = false;
 		setMode(0);
-	}
-}
-
-void handleAdsr()
-{
-	// adjust ADSR
-	if (selectADSR)
-	{
-		// long press sets adsrType then changes encoder to ADSRval contrain range
-		if (adsrTypeSet == false && b == 3)
-		{
-			adsrType = adsrTypeArray[rtCounter - 1];
-			Serial.print("adsrType = ");
-			Serial.println(adsrType);
-			//OLED display.write("adsrType" + adsrType);
-			isPot = 2;
-			adsrTypeSet = true;
-		}
-
-		if (adsrTypeSet)
-		{
-			adsrVal = rtCounter;
-			if (adsrVal != lastAdsrVal)
-			{
-				Serial.print("midi cmd = ");
-				Serial.print(channel);
-				Serial.print(", ");
-				Serial.print(adsrType);
-				Serial.print(", ");
-				Serial.println(adsrVal);
-				// send midi cmd
-				// midiCommand(channel, controller, controllerVal)
-				// this is the actaull cmd
-				// midiCommand(channel, adsrType, adsrVal);
-				// OLED display.write("adsrVal" + adsrVal);
-			}
-
-			lastAdsrVal = adsrVal;
-		}
-
-		// single click goes back to set adsrType
-		if (selectADSR == true && b == 1)
-		{
-			adsrTypeSet = false;
-			isPot = 4;
-			Serial.println("in ASDR select mode");
-		}
-
-		// double click to exit
-		if (selectADSR == true && b == 2)
-		{
-			selectADSR = false;
-			adsrTypeSet = false;
-			doScaleMod = false;
-			// setMode(0);
-		}
 	}
 }
 
