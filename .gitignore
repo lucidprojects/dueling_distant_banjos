@@ -1,6 +1,8 @@
 # vscode
 .vscode/
 
+env.js
+
 # don't share secrets, otherwise
 # they aren't secrets...
 secrets.h

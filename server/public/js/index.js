@@ -1,7 +1,5 @@
 'use strict';
 
-const localServer = window.location.hostname;
-
 const elements = {
 	edit: document.getElementById('edit'),
 	submit: document.getElementById('submit'),
@@ -23,38 +21,23 @@ const dataNames = [
 ];
 
 const state = {
-	localIp: '1',
-	localPort: '2',
-	remoteIp: '3',
-	remotePort: '4',
-	capBuff: '5',
+	localIp: '',
+	localPort: '',
+	remoteIp: '',
+	remotePort: '',
+	capBuff: '',
 };
 
 var edit = false;
 
 const getData = async () => {
-	let host = localServer + "/api/data";
+	const response = await fetch("/api/data");
 
-	const response = await fetch(host);
-
-	// return response.json(); // parses JSON response into native JavaScript objects
-	setState(response.json);
+	return response.json();
 }
 
-const setState = (data) => {
-	console.log(data);
-
-	// for (var i = 0; i < dataNames.length; i++) {
-	// 	if (dataNames[i].value != '') {
-	// 		state[dataNames[i]] = document.getElementById(dataNames[i]).value;
-	// 		document.getElementById(dataNames[i]).value = ""
-	// 	}
-	// }
-}
 
 const postData = async () => {
-	let host = localServer + "/api/data";
-
 	let payload = {
 		method: 'POST',
 		headers: {
@@ -63,9 +46,15 @@ const postData = async () => {
 		body: JSON.stringify(state)
 	}
 
-	const response = await fetch(host, payload);
+	const response = await fetch("/api/data", payload);
 
 	return response.json(); // parses JSON response into native JavaScript objects
+}
+
+const setState = (data) => {
+	for (var i = 0; i < dataNames.length; i++) {
+		state[dataNames[i]] = data[dataNames[i]];
+	}
 }
 
 const setValues = () => {
@@ -117,10 +106,20 @@ const handleSubmit = () => {
 	hide();
 }
 
-// assign listeners
-elements.edit.onclick = handleEdit;
-elements.submit.onclick = handleSubmit;
+const init = async () => {
+	// assign listeners
+	elements.edit.onclick = handleEdit;
+	elements.submit.onclick = handleSubmit;
 
-// let carl = await getData();
+	// get initial data
+	let response = await getData();
 
-setValues();
+	if (response.error) {
+		console.log("Something went wrong trying to get initial data from Arduino");
+	} else {
+		setState(response);
+		setValues();
+	}
+}
+
+init();
