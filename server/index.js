@@ -2,9 +2,8 @@
 
 const UDPServer = require('./src/UDPServer')
 const Traceroute = require('./src/Traceroute')
-// const server = require('./src/HTTPServer')
+const HTTPServer = require('./src/HTTPServer')
 
-// NOTE: -----> Start Server <-----
 
 // server.listen(config.port, (err) => {
 // 	var start = true;
@@ -21,8 +20,16 @@ const Traceroute = require('./src/Traceroute')
 // 	}
 // })
 
+// NOTE: -----> Start UDP Server <-----
+
 const udpServer = new UDPServer();
+
 
 udpServer.run();
 
+
+// HTTP server will accept udpserv as arg to us it. same with TR
+
 // new Traceroute().startTrace({});
+
+// const server = new HTTPServer(udpServer, )
