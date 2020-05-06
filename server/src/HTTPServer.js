@@ -123,9 +123,9 @@ app.get('/api/data', async (req, res) => {
 
 	const state = {
 		localIp: config.host,
-		localPort: config.port,
+		localPort: config.udpPort,
 		remoteIp: config.remoteHost,
-		remotePort: config.remotePort,
+		remotePort: config.udpPort,
 		capBuff: parseInt(data.capBuff),
 	};
 
