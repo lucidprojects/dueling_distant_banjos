@@ -19,6 +19,7 @@
 #include "tcp_server.h"
 #include "udp_server.h"
 #include "capacitive_touch.h"
+#include "display.h"
 
 void setup()
 {
@@ -27,6 +28,8 @@ void setup()
 	while (!Serial);
 
 	Serial.println("Serial started");
+
+	draw();
 
 	//start with can Calibration
 	canCalibration();

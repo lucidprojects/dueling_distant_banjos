@@ -8,6 +8,7 @@ const elements = {
 	remoteIp: document.getElementById('remote-ip'),
 	remotePort: document.getElementById('remote-port'),
 	capBuff: document.getElementById('cap-buff'),
+	capBuffInput: document.getElementById('capBuff'),
 	inputs: document.getElementsByClassName('input-field')
 };
 
@@ -73,18 +74,20 @@ const handleEdit = () => {
 }
 
 const hide = () => {
-	for (let i = 0; i < elements.inputs.length; i++) {
-		elements.inputs[i].style.visibility = "hidden";
-	}
+	// for (let i = 0; i < elements.inputs.length; i++) {
+	// 	elements.inputs[i].style.visibility = "hidden";
+	// }
 
+	elements.capBuffInput.style.visibility = "hidden";
 	elements.submit.style.visibility = "hidden";
 }
 
 const show = () => {
-	for (let i = 0; i < elements.inputs.length; i++) {
-		elements.inputs[i].style.visibility = "visible";
-	}
+	// for (let i = 0; i < elements.inputs.length; i++) {
+	// 	elements.inputs[i].style.visibility = "visible";
+	// }
 
+	elements.capBuffInput.style.visibility = "visible";
 	elements.submit.style.visibility = "visible";
 }
 

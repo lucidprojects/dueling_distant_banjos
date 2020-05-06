@@ -8,7 +8,7 @@
 // purple LED and set capacitance of can
 // store capacitance of can just touching / holding it
 int canCap;	// sensor object
-int canCalibrationTime = 2000; // set calibration time for can
+int canCalibrationTime = 3000; // set calibration time for can
 int canCapMax;
 int canCapMin;
 
@@ -25,26 +25,26 @@ int canCapMin;
 // b4: 4c  |  s4: 8c
 
 // NOTE: JAKE PINOUT
-CapacitiveSensor slideSensor1 = CapacitiveSensor(10, 12);
-CapacitiveSensor slideSensor2 = CapacitiveSensor(10, 11);
-CapacitiveSensor slideSensor3 = CapacitiveSensor(7, 9);
-CapacitiveSensor slideSensor4 = CapacitiveSensor(7, 8);
+// CapacitiveSensor slideSensor1 = CapacitiveSensor(10, 12);
+// CapacitiveSensor slideSensor2 = CapacitiveSensor(10, 11);
+// CapacitiveSensor slideSensor3 = CapacitiveSensor(7, 9);
+// CapacitiveSensor slideSensor4 = CapacitiveSensor(7, 8);
 
-CapacitiveSensor btnSensor1 = CapacitiveSensor(4, 6);
-CapacitiveSensor btnSensor2 = CapacitiveSensor(4, 5);
-CapacitiveSensor btnSensor3 = CapacitiveSensor(7, 3);
-CapacitiveSensor btnSensor4 = CapacitiveSensor(4, 2);
+// CapacitiveSensor btnSensor1 = CapacitiveSensor(4, 6);
+// CapacitiveSensor btnSensor2 = CapacitiveSensor(4, 5);
+// CapacitiveSensor btnSensor3 = CapacitiveSensor(7, 3);
+// CapacitiveSensor btnSensor4 = CapacitiveSensor(4, 2);
 
 // NOTE: NOAH PINOUT
-//CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
-//CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
-//CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
-//CapacitiveSensor slideSensor4 = CapacitiveSensor(9, 7);
-//
-//CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 5);
-//CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 4);
-//CapacitiveSensor btnSensor3 = CapacitiveSensor(17, 3);
-//CapacitiveSensor btnSensor4 = CapacitiveSensor(17, 2);
+CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
+CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
+CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
+CapacitiveSensor slideSensor4 = CapacitiveSensor(9, 7);
+
+CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 5);
+CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 4);
+CapacitiveSensor btnSensor3 = CapacitiveSensor(17, 3);
+CapacitiveSensor btnSensor4 = CapacitiveSensor(17, 2);
 
 // CAP slide vars
 int capSlideState[] = {LOW, LOW, LOW, LOW};
@@ -61,12 +61,12 @@ int capBtns[N_CAPBTNS];
 int lastCapBtnState[] = {LOW, LOW, LOW, LOW};
 
 // CAP calibration
-int calibrationTime = 1000; // set calibration time per sensor
+int calibrationTime = 2000; // set calibration time per sensor
 bool calComplete = false;	// boolean to exit calibration while loop on completion
 
 // combined array for all sensor calibration - not exactly sure what to do here.  starting combined
 // take note of order index assignment in readSensors() so iteration in separate arrays works - e.g. capSlides need be set first
-const int N_ALL_CAPSENS = 8;   // set this to total # of sensors (butons & slides)
+const int N_ALL_CAPSENS = 8;   // set this to total # of sensors (buttons & slides)
 int allCapSens[N_ALL_CAPSENS]; // sensor vars in an array so we can iterate through in for loop
 
 int sensorValue[N_ALL_CAPSENS];	   // the sensor value

@@ -122,10 +122,10 @@ app.get('/api/data', async (req, res) => {
 	console.log(data);
 
 	const state = {
-		localIp: '1',
-		localPort: '2',
-		remoteIp: '3',
-		remotePort: '4',
+		localIp: config.host,
+		localPort: config.port,
+		remoteIp: config.remoteHost,
+		remotePort: config.remotePort,
 		capBuff: parseInt(data.capBuff),
 	};
 
