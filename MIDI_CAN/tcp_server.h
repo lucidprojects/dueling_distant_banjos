@@ -1,4 +1,4 @@
-#include <SPI.h>
+//#include <SPI.h>
 #include <WiFiNINA.h>
 #include <Arduino_JSON.h>
 

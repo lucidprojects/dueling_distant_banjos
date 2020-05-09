@@ -25,26 +25,26 @@ int canCapMin;
 // b4: 4c  |  s4: 8c
 
 // NOTE: JAKE PINOUT
-// CapacitiveSensor slideSensor1 = CapacitiveSensor(10, 12);
-// CapacitiveSensor slideSensor2 = CapacitiveSensor(10, 11);
-// CapacitiveSensor slideSensor3 = CapacitiveSensor(7, 9);
-// CapacitiveSensor slideSensor4 = CapacitiveSensor(7, 8);
+ CapacitiveSensor slideSensor1 = CapacitiveSensor(10, 12);
+ CapacitiveSensor slideSensor2 = CapacitiveSensor(10, 11);
+ CapacitiveSensor slideSensor3 = CapacitiveSensor(7, 9);
+ CapacitiveSensor slideSensor4 = CapacitiveSensor(7, 8);
 
-// CapacitiveSensor btnSensor1 = CapacitiveSensor(4, 6);
-// CapacitiveSensor btnSensor2 = CapacitiveSensor(4, 5);
-// CapacitiveSensor btnSensor3 = CapacitiveSensor(7, 3);
-// CapacitiveSensor btnSensor4 = CapacitiveSensor(4, 2);
+ CapacitiveSensor btnSensor1 = CapacitiveSensor(4, 6);
+ CapacitiveSensor btnSensor2 = CapacitiveSensor(4, 5);
+ CapacitiveSensor btnSensor3 = CapacitiveSensor(7, 3);
+ CapacitiveSensor btnSensor4 = CapacitiveSensor(4, 2);
 
 // NOTE: NOAH PINOUT
-CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
-CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
-CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
-CapacitiveSensor slideSensor4 = CapacitiveSensor(9, 7);
-
-CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 5);
-CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 4);
-CapacitiveSensor btnSensor3 = CapacitiveSensor(17, 3);
-CapacitiveSensor btnSensor4 = CapacitiveSensor(17, 2);
+//CapacitiveSensor slideSensor1 = CapacitiveSensor(12, 11);
+//CapacitiveSensor slideSensor2 = CapacitiveSensor(12, 10);
+//CapacitiveSensor slideSensor3 = CapacitiveSensor(9, 8);
+//CapacitiveSensor slideSensor4 = CapacitiveSensor(9, 7);
+//
+//CapacitiveSensor btnSensor1 = CapacitiveSensor(6, 5);
+//CapacitiveSensor btnSensor2 = CapacitiveSensor(6, 4);
+//CapacitiveSensor btnSensor3 = CapacitiveSensor(17, 3);
+//CapacitiveSensor btnSensor4 = CapacitiveSensor(17, 2);
 
 // CAP slide vars
 int capSlideState[] = {LOW, LOW, LOW, LOW};

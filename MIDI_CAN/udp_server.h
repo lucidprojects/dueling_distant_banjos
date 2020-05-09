@@ -7,7 +7,14 @@
 WiFiUDP Udp;
 
 // TODO: API CAN CHANGE THIS
-IPAddress localServer(192, 168, 0, 168);
+
+//ADDRESS OF SERVER / COMPUTER 
+
+//JAKE
+IPAddress localServer(192, 168, 86, 234);
+
+//NOAH
+//IPAddress localServer(192, 168, 0, 168);
 
 const int MIDI_PACKET_SIZE = 3;
 
