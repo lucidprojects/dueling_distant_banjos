@@ -108,19 +108,6 @@ curl ifconfig.io
      2) requires setup in DAW for MIDI cmd mapping to respective tracks.
 
 
-### Calibration
-CALIBRATION - iterate through an array of sensors and calibrate each sensor.  Storing values in an array of mins/maxes.
-1) Can calibration will run first - canCalibrationTime  eg first 10 seconds - used as threshold to prevent cap readings from holding the can
-     1) OLED will show S: C (for can) and V: (CAN_SENSOR_VALUE)
-2) Set calibration time per sensor in calibrationTime var, used in runSensorCalibration() fn
-3) During calibration tap and release sensor to set min & max values.  It will iterate through the 8 capacitve sensors
-     1) OLED will show S: (SENSOR_NUMBER) 
-     2) V: (SENSORMAX)
-	
-     • Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
-	use these vars for various thresholds
-
-
 ### Playing Music
 1) use explore mode to experiment with different didgital instruments set up in the DAW
 2) use channel select to selet channels for scales
@@ -133,7 +120,20 @@ CALIBRATION - iterate through an array of sensors and calibrate each sensor.  St
 9) mute on/off preconfigured tracks in DAW
 
 
+### Calibration
+CALIBRATION - iterate through an array of sensors and calibrate each sensor.  Storing values in an array of mins/maxes.
+1) Can calibration will run first - canCalibrationTime  eg first 10 seconds - used as threshold to prevent cap readings from holding the can
+     1) OLED will show S: C (for can) and V: (CAN_SENSOR_VALUE)
+2) Set calibration time per sensor in calibrationTime var, used in runSensorCalibration() fn
+3) During calibration tap and release sensor to set min & max values.  It will iterate through the 8 capacitve sensors
+     1) OLED will show S: (SENSOR_NUMBER) 
+     2) V: (SENSORMAX)
+	
+     • Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
+	use these vars for various thresholds
 
+### Calibration and Modes video
+[![midi_can oled](http://img.youtube.com/vi/G5dJEBQeuGQ/0.jpg)](http://www.youtube.com/watch?v=G5dJEBQeuGQ "MIDI_CAN")
 
 
 ## Resources
