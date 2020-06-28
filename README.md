@@ -97,7 +97,7 @@ curl ifconfig.io
 6) pot mode
      1) rotating encoder scrolls through 1-110 audible MIDI note vals
      2) double click exits back to Default	
-7) <s>volume adjust per channel - to play with things on and off</s>
+7) <s>volume adjust per channel - to play with things on and off</s><br>
 <s> 1) not started - need to add handling to adjust volume per channel</s>
 8) broadcast
   	1) rotating encoder scrolls through channels
@@ -108,7 +108,7 @@ curl ifconfig.io
      2) requires setup in DAW for MIDI cmd mapping to respective tracks.
 
 
-### Calibraton
+### Calibration
 CALIBRATION - iterate through an array of sensors and calibrate each sensor.  Storing values in an array of mins/maxes.
 1) Can calibration will run first - canCalibrationTime  eg first 10 seconds - used as threshold to prevent cap readings from holding the can
      1) OLED will show S: C (for can) and V: (CAN_SENSOR_VALUE)
