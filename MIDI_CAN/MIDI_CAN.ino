@@ -15,172 +15,205 @@
 	• Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
 	use these vars for various thresholds
 */
-
+#include "display.h"
 #include "tcp_server.h"
 #include "udp_server.h"
 #include "capacitive_touch.h"
-#include "display.h"
+
 
 void setup()
 {
-	// init serial
-	Serial.begin(9600);
-	while (!Serial);
+  // init serial
+  Serial.begin(9600);
+  while (!Serial);
 
-	Serial.println("Serial started");
+  Serial.println("Serial started");
 
-	draw();
+  //modeText = "calibrate";
+  disCh = 0;
+  //display.clearDisplay();
+  draw();
+  drawMode(10, rtCounter);
+  //  drawSensorCal(00);
+  //drawCh(disCh);
 
-	//start with can Calibration
-	canCalibration();
+  //start with can Calibration
+  canCalibration();
 
-	// encoder button
-	pinMode(buttonPin, INPUT_PULLUP);
+  // encoder button
+  pinMode(buttonPin, INPUT_PULLUP);
 
-	// RGB LED pinModes
-	pinMode(red, OUTPUT);
-	pinMode(green, OUTPUT);
-	pinMode(blue, OUTPUT);
+  // RGB LED pinModes
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
+  pinMode(blue, OUTPUT);
 
-	// Starts LED Yellow
-	analogWrite(green, 255);
-	digitalWrite(red, LOW);
-	digitalWrite(blue, HIGH);
+  // Starts LED Yellow
+  analogWrite(green, 255);
+  digitalWrite(red, LOW);
+  digitalWrite(blue, HIGH);
 
-	// take initial sensor readings - more consistent calibration readings
-	readSensors(); 
+  // take initial sensor readings - more consistent calibration readings
+  readSensors();
 
-	// small delay before sensor calibration starts
-	delay(2500); 
+  // small delay before sensor calibration starts
+  delay(2500);
 
-	// start capacitive sensors
-	initCapacitive(); 
+  // start capacitive sensors
+  initCapacitive();
 
-	// connect to wifi and start TCP server
-	initWifi();
+  // connect to wifi and start TCP server
+  initWifi();
 
-	// Start UPD server
-	initUdp();
+  // Start UPD server
+  initUdp();
 
-	Serial.print("canCapMax = ");
-	Serial.println(canCapMax);
+  Serial.print("canCapMax = ");
+  Serial.println(canCapMax);
+  setMode(0);
+  drawModeSelect(true);
+  drawOctave(3);
+  drawSlidesONotes(asSlides);
 }
 
 void loop()
 {
-	webApi();
-	
-	handleCapBtns();
-	handleCapSlides();
-	handleReceiveUdp();
-	handleEncoder();
-	handleChannel();
-	handleBroadcast();
-	handleRecord();
-	handleScale();
-	handleChords();
-	// capCalibration_Debug(); // uncomment out to show sensor values in  serial monitor
+  webApi();
+
+  handleCapBtns();
+  handleCapSlides();
+  handleReceiveUdp();
+  handleEncoder();
+  handleChannel();
+  handleBroadcast();
+  handleChVolume();
+  handleRecord();
+  handleScale();
+  handleChords();
+  // capCalibration_Debug(); // uncomment out to show sensor values in  serial monitor
+
 }
 
 void handleEncoder()
 {
-	if (isPot < 1)
-	{
-		readEnc(0);
-	}
-	else
-	{
-		readEnc(isPot);
-	}
+  if (isPot < 1)
+  {
+    readEnc(0);
+  }
+  else
+  {
+    readEnc(isPot);
+  }
 
-	// handle button press types
-	b = checkButton();
-	encoderButton(b);
+  // handle button press types
+  b = checkButton();
+  encoderButton(b);
 
-	// set baseNote from Pot/encoder
-	if (isPot == 1)
-	{
-		baseNote = rtCounter;
-	}
+  // set baseNote from Pot/encoder
+  if (isPot == 1)
+  {
+    baseNote = rtCounter;
+  }
 }
 
 void handleChannel()
 {
-	// channelSelect
-	if (selectCh == true && b == 1)
-	{
-		channel = rtCounter;
-		// OLED display.write("Channel" + channel);
-		Serial.print("channel = ");
-		Serial.println(channel);
-		selectCh = false;
-		setMode(0);
-	}
+  // channelSelect
+  if (selectCh == true && b == 1)
+  {
+    channel = rtCounter;
+    // OLED display.write("Channel" + channel);
+    Serial.print("channel = ");
+    Serial.println(channel);
+    selectCh = false;
+    setMode(0);
+  }
 }
 
 void handleBroadcast()
 {
-	// broadcast
-	if (doBroadCast == true && b == 1)
-	{
-		// fwd = true
-		// Serial.println(fwd);
-		channel = channelsOn[rtCounter - 1];
+  // broadcast
+  if (doBroadCast == true) drawBroadcast(fwd[rtCounter - 1]);
 
-		if (fwd[rtCounter - 1] == 1)
-		{
-			fwd[rtCounter - 1] = 0;
-		}
-		else
-		{
-			fwd[rtCounter - 1] = 1;
-		}
+  if (doBroadCast == true && b == 1)
+  {
+    // fwd = true
+    // Serial.println(fwd);
+    channel = channelsOn[rtCounter - 1];
 
-		// OLED display.write("Channel" + channel);
-		Serial.print("broadcast channel = ");
-		Serial.print(channel);
-		Serial.print(" ");
-		Serial.println(fwd[rtCounter - 1]);
-		doBroadCast = false;
-		setMode(0);
-	}
+    if (fwd[rtCounter - 1] == 1)
+    {
+      fwd[rtCounter - 1] = 0;
+      drawBroadcast(false);
+    }
+    else
+    {
+      fwd[rtCounter - 1] = 1;
+      drawBroadcast(true);
+    }
+
+    // OLED display.write("Channel" + channel);
+    Serial.print("broadcast channel = ");
+    Serial.print(channel);
+    Serial.print(" ");
+    Serial.println(fwd[rtCounter - 1]);
+    doBroadCast = false;
+    setMode(8);
+  }
 }
+
+void handleChVolume()
+{
+  // ChVolume
+  if (chVolume == true) {
+    //Serial.println("channel vol on");
+    //    capChVol = !capChVol;  // set cap buttons to be channel vol on
+  } else {
+    // Serial.println("channel vol off");
+    capChVol = false; // set cap buttons to be channel vol off
+  }
+
+}
+
+
 
 void handleRecord()
 {
-	// record and/or loop - can we do it with Logic X functions
-	// WARN: currently not sending MIDI cmd for some reason ?? js 20200428 11:01am
-	if (doRecord == true && b == 1)
-	{
-		midiCommand(channel, 49, 100, false); // learned cmd in Logic doesn't seem to be working
-		Serial.print("sent recordloop cmd");
-	}
+  // record and/or loop - can we do it with Logic X functions
+  // WARN: currently not sending MIDI cmd for some reason ?? js 20200428 11:01am
+  if (doRecord == true && b == 1)
+  {
+    midiCommand(channel, 49, 100, false); // learned cmd in Logic doesn't seem to be working
+    Serial.print("sent recordloop cmd");
+  }
 }
 
 void handleScale()
 {
-	if (doScaleMod == true)
-	{
-		// could add mod variations here
-	}
+  if (doScaleMod == true)
+  {
+    // could add mod variations here
+  }
 }
 
 void handleChords()
 {
-	if (asChords == true)
-	{
-		if (b == 3)
-		{
-			chordsOctave = true;
-			Serial.println("entering change octave mode");
-		}
-		else if (b == 1)
-		{
-			chordsOctave = false;
-		}
-	}
+  if (asChords == true)
+  {
+    if (b == 3)
+    {
+      chordsOctave = true;
+      Serial.println("entering change octave mode");
+    }
+    else if (b == 1)
+    {
+      chordsOctave = false;
+      drawOctaveSelect(false);
+      setMode(2);
+    }
+  }
 
-	octaveChange(); // change octave
+  octaveChange(); // change octave
 
-	currentPitchMillis = millis();
+  currentPitchMillis = millis();
 }
