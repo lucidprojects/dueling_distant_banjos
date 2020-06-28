@@ -34,11 +34,10 @@ git clone https://github.com/lucidprojects/dueling_distant_banjos.git
 ```
 cd midi_can
 ```
-4) Create a 'secrets.h' e.g. 
+4) Create a 'secrets.h' e.g.  - This file is ignored from the repo for privacy
 ```
 nano secrets.h
 ``` 
-This file is ignored from the repo for privacy
 
 5) Paste, update with your credientials and save. 
 ```
