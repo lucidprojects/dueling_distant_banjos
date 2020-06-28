@@ -16,18 +16,33 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 ## Functionality 
 
 ### Usage
-1) Create repo dir ```mkdir music_can```
-1) Clone repo ```git clone https://github.com/lucidprojects/dueling_distant_banjos.git```
-2) Enter dir  ```cd music_can```
+1) Create repo dir 
+```
+mkdir music_can
+```
+2) Enter dir  
+```
+cd music_can
+```
+3) Clone repo 
+```
+git clone https://github.com/lucidprojects/dueling_distant_banjos.git
+```
 
 #### Arduino
-3) Enter Arduino dir ```cd midi_can```
-4) Create a 'secrets.h' e.g. ```nano secrets.h``` 
+3) Enter Arduino dir 
+```
+cd midi_can
+```
+4) Create a 'secrets.h' e.g. 
+```
+nano secrets.h
+``` 
    This file is ignored from the repo for privacy
 5) Paste, update with your credientials and save. 
      ```
      #define _SSID "YOUR_WIFI_NETWORK"
-     #define _PASSWORD "YOUR_WIFI_PASSWORD"`
+     #define _PASSWORD "YOUR_WIFI_PASSWORD"
      ```
 6) Connect MIDI_CAN usb to computer
 7) Compile,upload to MUSIC_CAN and go through calibration. ([see calibration steps](#calibration)) 
@@ -36,15 +51,19 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 8) Update network settings 
      1) Set remote and local IP addresss /server/config/config.js
      ```
-     localArduino: process.env.LOCAL_ARDUINO || '127.0.0.1', //YOUR LOCAL ARDUINO IP
-	remoteHost: process.env.REMOTE_HOST || '127.0.0.1', //YOUR PERFORMANCE PARTNERS IP
+     localArduino: process.env.LOCAL_ARDUINO || '127.0.0.1', //UPDATE YOUR LOCAL ARDUINO IP
+	remoteHost: process.env.REMOTE_HOST || '127.0.0.1', //UPDATE YOUR PERFORMANCE PARTNERS IP
      ```
-     2) Set local Server IP 
-     ```IPAddress localServer(192, XXX, XXX, XXX);```
+     2) Set local Server IP - line 14 udp_server.h
+     ```
+     IPAddress localServer(192, XXX, XXX, XXX); //UPDATE TO YOUR LOCAL LAPTOP/SERVER IP
+     ``` 
      3) Open agreed upon w/ partner UDP port on router 
 9) Once config is set run node server
-```node index.js```
-10) visit localhost:5050
+```
+node index.js
+```
+10) visit localhost:5050 - web admin to allow you to confirm network config and make minor changes
 11) Network debug cmds
 ```
 Cmd for checking open port
@@ -54,9 +73,7 @@ cmd for checking public IP
 curl ifconfig.io  
 ```
 
-
 ### Encoder Functions
-
 0) explore - different instruments all 8 channels
      1) single click selects mode
 1) ch select
@@ -80,15 +97,40 @@ curl ifconfig.io
 6) pot mode
      1) rotating encoder scrolls through 1-110 audible MIDI note vals
      2) double click exits back to Default	
-7) volume adjust per channel - to play with things on and off
-	1) not started - need to add handling to adjust volume per channel
+~~7) volume adjust per channel - to play with things on and off~~
+	~~1) not started - need to add handling to adjust volume per channel~~
 8) broadcast
   	1) rotating encoder scrolls through channels
      2) single click toggles send 1/0
      3) double click exits back to Default
+9) track mute on/off
+  	1) tappng cap sensor turns sends cmd to mute on/off pre-mapped tracks
+     2) requires setup in DAW for MIDI cmd mapping to respective tracks.
+
+
+### Calibraton
+CALIBRATION - iterate through an array of sensors and calibrate each sensor.  Storing values in an array of mins/maxes.
+1) Can calibration will run first - canCalibrationTime  eg first 10 seconds - used as threshold to prevent cap readings from holding the can
+     1) OLED will show S: C (for can) and V: (CAN_SENSOR_VALUE)
+2) Set calibration time per sensor in calibrationTime var, used in runSensorCalibration() fn
+3) During calibration tap and release sensor to set min & max values.  It will iterate through the 8 capacitve sensors
+     1) OLED will show S: [SENSOR_NUMBER] 
+     2)                V: (SENSORMAX)
+	• Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
+	use these vars for various thresholds
 
 
 ### Playing Music
+1) use explore mode to experiment with different didgital instruments set up in the DAW
+2) use channel select to selet channels for scales
+3) scales play preconfigured minor or major scale (all 8 cap sensors)
+4) scales pb (pitch bend) pitch bend the scale notes (4 cap buttons as scale notes, slides pb)
+5) slides as notes - configure slide sensors to be notes instead
+6) use pot for adjust basenote value sent in explore mode
+~~7) volume adjust - not done ~~ using mute on/off instead
+8) broadcast sets which channels to sent to partner
+9) mute on/off preconfigured tracks in DAW
+
 
 
 
