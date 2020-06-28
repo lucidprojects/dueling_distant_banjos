@@ -114,9 +114,10 @@ CALIBRATION - iterate through an array of sensors and calibrate each sensor.  St
      1) OLED will show S: C (for can) and V: (CAN_SENSOR_VALUE)
 2) Set calibration time per sensor in calibrationTime var, used in runSensorCalibration() fn
 3) During calibration tap and release sensor to set min & max values.  It will iterate through the 8 capacitve sensors
-     1) OLED will show S: [SENSOR_NUMBER] 
-     2) V: [SENSORMAX]
-	• Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
+     1) OLED will show S: (SENSOR_NUMBER) 
+     2) V: (SENSORMAX)
+	
+     • Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
 	use these vars for various thresholds
 
 
