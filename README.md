@@ -97,8 +97,8 @@ curl ifconfig.io
 6) pot mode
      1) rotating encoder scrolls through 1-110 audible MIDI note vals
      2) double click exits back to Default	
-~~7) volume adjust per channel - to play with things on and off~~
-	~~1) not started - need to add handling to adjust volume per channel~~
+7) <s>volume adjust per channel - to play with things on and off</s>
+<s> 1) not started - need to add handling to adjust volume per channel</s>
 8) broadcast
   	1) rotating encoder scrolls through channels
      2) single click toggles send 1/0
