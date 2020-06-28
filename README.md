@@ -39,6 +39,7 @@ cd midi_can
 nano secrets.h
 ``` 
 This file is ignored from the repo for privacy
+
 5) Paste, update with your credientials and save. 
 ```
 #define _SSID "YOUR_WIFI_NETWORK"
