@@ -30,8 +30,8 @@ byte channelsOn[] = {0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98};
 byte channelsOff[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
 byte ctrlChannels[] = {0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8};
 
-// int fwd[] = {0, 0, 0, 0, 0, 0, 0, 0}; 
-int fwd[] = {1, 1, 1, 1, 1, 1, 1, 1};
+ int fwd[] = {0, 0, 0, 0, 0, 0, 0, 0}; 
+//int fwd[] = {1, 1, 1, 1, 1, 1, 1, 1};
 
 unsigned int localPort = 5000;
 unsigned long timestamp;
@@ -174,6 +174,63 @@ void midiCtrl(int chnl, int noteValue)
 		break;
 	}
 }
+
+
+void midiVolCtrl(int chnl, int noteValue)
+{
+
+  // Serial.println(chnl);
+  switch (chnl)
+  
+  {
+  case 1:
+    midiCommand(ctrlChannels[0], noteValue, 0x6F, fwd[0]);
+    break;
+  case 2:
+    midiCommand(ctrlChannels[1], noteValue, 0x6F, fwd[1]);
+    break;
+  case 3:
+    midiCommand(ctrlChannels[2], noteValue, 0x6F, fwd[2]);
+    break;
+  case 4:
+    midiCommand(ctrlChannels[3], noteValue, 0x6F, fwd[3]);
+    break;
+  case 5:
+    midiCommand(ctrlChannels[4], noteValue, 0x6F, fwd[4]);
+    break;
+  case 6:
+    midiCommand(ctrlChannels[5], noteValue, 0x6F, fwd[5]);
+    break;
+  case 7:
+    midiCommand(ctrlChannels[6], noteValue, 0x6F, fwd[6]);
+    break;
+  case 8:
+    midiCommand(ctrlChannels[7], noteValue, 0x6F, fwd[7]);
+    break;
+  case 9: // added channel 9 for scale notes to all play on same channel
+    midiCommand(ctrlChannels[8], noteValue, 0x6F, fwd[8]);
+    break;
+  default:
+    break;
+  }
+  Serial.print("midiVolCtrl chnl = ");
+  Serial.print(chnl);
+  Serial.print(" noteValue = ");    
+  Serial.println  (noteValue);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void handleReceiveUdp()
 {

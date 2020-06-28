@@ -1,8 +1,62 @@
-# WebCan
+# MUSIC_CAN aka MIDD_CAN
+
+## Concept
+MUSIC_CAN is an ode to the original project name “MIDI_CAN.”  Built to embrace all that music can do for our psyche, culture, and society,  MUSIC_CAN is a networked, multimode, instrument / MIDI controller.
+ 
+During the pandemic and the new socially distant world we find ourselves in, we are now more separate than ever.  With rolling stay at home orders, what can we do to continue our collaborative nature?  How can we still connect even though we can't physically?
+ 
+We wanted to make something to connect us, even though we are miles apart. So, we built the MUSIC_CAN. 
+ 
+With an Arduino Nano 33 IoT microcontroller, an 8 sensor capacitive touch array and a rotary encoder for its hardware and a software stack that features Arduino, NodeJS, MIDI, UDP, and your DAW of choice, the MIDI_CAN allows for multiple input modes and musical interactions. The unique inputs on the MUSIC_CAN allow for creating distinctive and pleasing electronic music. The MUSIC_CAN can be played by itself or collaboratively over a network and is designed to be used with one or more musicians / devices. 
+ 
+Music is a powerful force for connection. MUSIC_CAN strives to actively bring people together through the act of creative, collaborative musical performance. Through the process of making networked music, we hope to create a venue to expose listeners to inclusiveness, positivity, love, and different philosophical systems to help us all become more aware and compassionate.
+
+The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherwood. Jake and Nikhil Kumar will be performing with the MUSIC_CAN at NMF 2020. All 3 are 2021 M.P.S. Candidates at the New York University, Tisch School of the Arts, Interactive Telecommunications Program. 
 
 ## Functionality 
 
-### Encoder
+### Usage
+1) Create repo dir ```mkdir music_can```
+1) Clone repo ```git clone https://github.com/lucidprojects/dueling_distant_banjos.git```
+2) Enter dir  ```cd music_can```
+
+#### Arduino
+3) Enter Arduino dir ```cd midi_can```
+4) Create a 'secrets.h' e.g. ```nano secrets.h``` 
+   This file is ignored from the repo for privacy
+5) Paste, update with your credientials and save. 
+     ```
+     #define _SSID "YOUR_WIFI_NETWORK"
+     #define _PASSWORD "YOUR_WIFI_PASSWORD"`
+     ```
+6) Connect MIDI_CAN usb to computer
+7) Compile,upload to MUSIC_CAN and go through calibration. ([see calibration steps](#calibration)) 
+
+#### Network
+8) Update network settings 
+     1) Set remote and local IP addresss /server/config/config.js
+     ```
+     localArduino: process.env.LOCAL_ARDUINO || '127.0.0.1', //YOUR LOCAL ARDUINO IP
+	remoteHost: process.env.REMOTE_HOST || '127.0.0.1', //YOUR PERFORMANCE PARTNERS IP
+     ```
+     2) Set local Server IP 
+     ```IPAddress localServer(192, XXX, XXX, XXX);```
+     3) Open agreed upon w/ partner UDP port on router 
+     4) Once config is set run node server
+     ```node index.js```
+     5) Network debug cmds
+     ```
+     Cmd for checking open port
+     nc -z -v -u XX.XX.XXX.XXX XXXX  (partner IP and port)
+
+     cmd for checking public IP 
+     curl ifconfig.io  
+     ```
+
+
+
+
+### Encoder Functions
 
 New structure notes:
 
@@ -17,7 +71,7 @@ New structure notes:
      	1) fixed <s>this mode is a litte buggy</s>
      	2) enc selects octaves (1-6)
      	3) fixed <s>inact you have to press one of the cap btns to set octave (this is the buggy part)</s>
-     4) double click exits back to cycling through channels
+     4) Single click exits back to cycling through channels
      5) slides all work to pitch bend the channel done <s>(in progress - currently ch is hard coded)</s>
      6) double click exits back to Default
 3) scales (use ch select) 
