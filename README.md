@@ -40,10 +40,10 @@ nano secrets.h
 ``` 
    This file is ignored from the repo for privacy
 5) Paste, update with your credientials and save. 
-     ```
-     #define _SSID "YOUR_WIFI_NETWORK"
-     #define _PASSWORD "YOUR_WIFI_PASSWORD"
-     ```
+```
+#define _SSID "YOUR_WIFI_NETWORK"
+#define _PASSWORD "YOUR_WIFI_PASSWORD"
+```
 6) Connect MIDI_CAN usb to computer
 7) Compile,upload to MUSIC_CAN and go through calibration. ([see calibration steps](#calibration)) 
 
@@ -115,7 +115,7 @@ CALIBRATION - iterate through an array of sensors and calibrate each sensor.  St
 2) Set calibration time per sensor in calibrationTime var, used in runSensorCalibration() fn
 3) During calibration tap and release sensor to set min & max values.  It will iterate through the 8 capacitve sensors
      1) OLED will show S: [SENSOR_NUMBER] 
-     2)                V: (SENSORMAX)
+     2) V: [SENSORMAX]
 	• Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
 	use these vars for various thresholds
 
