@@ -59,12 +59,17 @@ nano secrets.h
      IPAddress localServer(192, XXX, XXX, XXX); //UPDATE TO YOUR LOCAL LAPTOP/SERVER IP
      ``` 
      3) Open agreed upon w/ partner UDP port on router 
-9) Once config is set run node server
+9) Make sure all require node packages are installed.  In the server dir run
+```
+npm install
+```
+
+10) Once config is set run node server
 ```
 node index.js
 ```
-10) visit localhost:5050 - web admin to allow you to confirm network config and make minor changes
-11) Network debug cmds
+11) visit localhost:5050 - web admin to allow you to confirm network config and make minor changes
+12) Network debug cmds
 ```
 Cmd for checking open port
 nc -z -v -u XX.XX.XXX.XXX XXXX  (partner IP and port)
