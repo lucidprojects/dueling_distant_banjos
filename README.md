@@ -64,7 +64,7 @@ nano secrets.h
 npm install
 ```
 
-10) Once config is set run node server
+10) Once config is set and npm packages installed, run node server
 ```
 node index.js
 ```
