@@ -115,7 +115,7 @@ curl ifconfig.io
 4) scales pb (pitch bend) pitch bend the scale notes (4 cap buttons as scale notes, slides pb)
 5) slides as notes - configure slide sensors to be notes instead
 6) use pot for adjust basenote value sent in explore mode
-7) ~~volume adjust - not done ~~ using mute on/off instead
+7) <s>volume adjust - not done </s> using mute on/off instead
 8) broadcast sets which channels to sent to partner
 9) mute on/off preconfigured tracks in DAW
 
