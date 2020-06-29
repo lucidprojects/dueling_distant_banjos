@@ -132,6 +132,10 @@ CALIBRATION - iterate through an array of sensors and calibrate each sensor.  St
      • Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
 	use these vars for various thresholds
 
+### OLED Info
+![MUSIC_CAN Oled details](https://github.com/lucidprojects/dueling_distant_banjos/tree/master/img/midi_can_oled_all.jpg?raw=true)
+
+
 ### Calibration and Modes video 
 [![midi_can oled](http://img.youtube.com/vi/G5dJEBQeuGQ/0.jpg)](http://www.youtube.com/watch?v=G5dJEBQeuGQ "MIDI_CAN")
 
