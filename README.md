@@ -132,9 +132,9 @@ CALIBRATION - iterate through an array of sensors and calibrate each sensor.  St
      • Assigns min sensorMin[] in sensorMinMIN & max sensorMax[] in sensorMaxMAX
 	use these vars for various thresholds
 
-### Calibration and Modes video
-<!-- [![midi_can oled](http://img.youtube.com/vi/G5dJEBQeuGQ/0.jpg)](http://www.youtube.com/watch?v=G5dJEBQeuGQ "MIDI_CAN") -->
-<iframe width="560" height="315" src="https://www.youtube.com/embed/G5dJEBQeuGQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+### Calibration and Modes video 
+[![midi_can oled](http://img.youtube.com/vi/G5dJEBQeuGQ/0.jpg)](http://www.youtube.com/watch?v=G5dJEBQeuGQ "MIDI_CAN")
+(clicks through to youtube)
 
 ## Resources
 
