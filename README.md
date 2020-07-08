@@ -159,6 +159,6 @@ CALIBRATION - iterate through an array of sensors and calibrate each sensor.  St
 	- [node-gyp error installing fiber@2.0.2 on macOS Catalina](npm_config_node_gyp)
 
 ### Helpful software
-[MIDI Monitor](https://www.macupdate.com/app/mac/9950/midi-monitor)
-[LoopBack](https://rogueamoeba.com/loopback/)
-[SoundFlower - for Catalina](https://github.com/mattingalls/Soundflower/releases/tag/2.0b2)
+[MIDI Monitor](https://www.macupdate.com/app/mac/9950/midi-monitor)<br>
+[LoopBack](https://rogueamoeba.com/loopback/)<br>
+[SoundFlower - for Catalina](https://github.com/mattingalls/Soundflower/releases/tag/2.0b2)<br>
