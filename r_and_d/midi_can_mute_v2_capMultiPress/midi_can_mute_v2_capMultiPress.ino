@@ -90,7 +90,8 @@ void loop()
   handleRecord();
   handleScale();
   handleChords();
-  // capCalibration_Debug(); // uncomment out to show sensor values in  serial monitor
+  //handleAllCapsMulti();
+   //capCalibration_Debug(); // uncomment out to show sensor values in  serial monitor
 
 }
 
@@ -190,10 +191,10 @@ void handleRecord()
 
 void handleScale()
 {
-  if (doScaleMod == true)
+  if (doScale == true || doScaleMod == true)
   {
     // could add mod variations here
-    
+    channel = rtCounter;
 
     
   }
@@ -220,3 +221,10 @@ void handleChords()
 
   currentPitchMillis = millis();
 }
+//void handleAllCapsMulti()
+//{
+//    // handle button press types
+//  capB = checkCapButton();
+//  capMultiTouch(capB);
+//
+//}

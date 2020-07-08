@@ -190,10 +190,10 @@ void handleRecord()
 
 void handleScale()
 {
-  if (doScaleMod == true)
+  if (doScale == true || doScaleMod == true)
   {
     // could add mod variations here
-    
+    channel = rtCounter;
 
     
   }
