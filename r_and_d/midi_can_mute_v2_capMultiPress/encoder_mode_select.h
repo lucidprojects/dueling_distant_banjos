@@ -187,6 +187,7 @@ void setMode(int myMode)
     case 3: // All cap inputs as scale buttons mode
       Serial.println("All cap inputs as scale buttons mode");
       //OLED display.write("asCaps" + asCaps");
+      isPot = 6;
       capsAsScales();
       disMode = 3;
       drawMode(3, rtCounter);
@@ -197,6 +198,7 @@ void setMode(int myMode)
       Serial.println("Mod Scale mode");
 //      isPot = 3;
       //OLED display.write(""Mod Scale mode");
+      isPot = 6;
       modScale();
       disMode = 4;
       drawMode(4, rtCounter);
@@ -241,7 +243,7 @@ void setMode(int myMode)
       break;
     case 9: // Adjust channel volume ON/OFF
       Serial.println("Adjust channel volume ON/OFF");
-      isPot = 3;
+      isPot = 6;  //isPot = 3; (pot 3 is 0 or 1, pot 6 is 1 - 9)
       //OLED display.write("CH volue" + chVolume);
       chVolOnOff();
       disMode = 9;
