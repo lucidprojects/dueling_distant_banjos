@@ -1,9 +1,10 @@
 /*
-
    adapted from https://github.com/rodrigoms2004/ServerSocketTCP_UDP/blob/master/udp_server.js
    created 04/15/2020
 */
 'use strict';
+
+// TODO: ust `dtls` (https://github.com/nodertc/dtls/blob/master/example.js)
 
 const dgram = require('dgram');
 const config = require('../config/config');
@@ -74,7 +75,7 @@ class UDPServer {
 			// log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
 		});
 	}
-	
+
 	handleMessage(buffer, info) {
 		switch (`${info.address}`) {
 			case this.localArduino:
@@ -84,16 +85,14 @@ class UDPServer {
 			case this.remoteHost:
 				this.sendMessage(buffer, this.localArduino, this.port);
 				break;
-		
+
 			default:
 				console.log("info", "received udp from unknown source", `${info.address}:${info.port}`);
 				break;
 		}
 	}
-	
+
 	sendMessage(buffer, host, port) {
-		// TODO: 
-		// Use server obj or use this new client??
 		const client = dgram.createSocket('udp4');
 
 		client.send(buffer, port, host, (error, bytes) => {

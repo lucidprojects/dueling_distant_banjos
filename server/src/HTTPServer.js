@@ -5,12 +5,8 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const logger = require('morgan');
-// const Traceroute = require('./Traceroute')
 const config = require('../config/config');
-
-// TODO: Run this every so often and send data to arduino
-// new Traceroute().startTrace({});
-
+// const Traceroute = require('./Traceroute')
 
 // -----> Arduino <-----
 
