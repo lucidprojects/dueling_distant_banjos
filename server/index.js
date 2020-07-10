@@ -2,7 +2,9 @@
 
 const UDPServer = require('./src/UDPServer')
 const HTTPServer = require('./src/HTTPServer')
-const config = require('./config/config');
+const {
+	log
+} = require('./util/log');
 
 // TODO: implement logger in `util`
 // NOTE: 
@@ -16,16 +18,12 @@ const config = require('./config/config');
 
 // -----> Start UDP Server <-----
 
-const udpServer = new UDPServer();
+const udpServer = new UDPServer(log);
 
 udpServer.run();
 
-// -----> Start API <-----
+// -----> Start HTTP Server <-----
 
-HTTPServer.listen(config.port, (err) => {
-	if (err) {
-		console.log('api_server', 'error', err);
-	}
+const httpServer = new HTTPServer(udpServer, log);
 
-	console.log('api_server', 'info', 'listening on port:', config.port);
-})
+httpServer.run()

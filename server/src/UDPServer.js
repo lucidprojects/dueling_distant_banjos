@@ -2,27 +2,27 @@
    adapted from https://github.com/rodrigoms2004/ServerSocketTCP_UDP/blob/master/udp_server.js
    created 04/15/2020
 */
-'use strict';
+'use strict'
 
 // TODO: ust `dtls` (https://github.com/nodertc/dtls/blob/master/example.js)
 
-const dgram = require('dgram');
-const config = require('../config/config');
-// const { log } = require('./util/loggerTool');
+const dgram = require('dgram')
+const config = require('../config/config')
 
 class UDPServer {
-	constructor() {
-		this.server = dgram.createSocket('udp4');
-		this.localArduino = config.localArduino;
-		this.remoteHost = config.remoteHost;
-		this.port = config.udpPort;
+	constructor(log) {
+		this.server = dgram.createSocket('udp4')
+		this.localArduino = config.localArduino
+		this.remoteHost = config.remoteHost
+		this.port = config.udpPort
+		this.log = log
 	}
 
 	run() {
-		this.onClose();
-		this.onError();
-		this.onMessage();
-		this.onListen();
+		this.onClose()
+		this.onError()
+		this.onMessage()
+		this.onListen()
 
 		this.server.bind(this.port)
 	}

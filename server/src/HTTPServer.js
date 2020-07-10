@@ -8,6 +8,8 @@ const logger = require('morgan');
 const config = require('../config/config');
 // const Traceroute = require('./Traceroute')
 
+// TODO: Need to make a HTTPServer class
+
 // -----> Arduino <-----
 
 const getArduino = () => {
@@ -136,4 +138,22 @@ app.put('/api/data', async (req, res) => {
 	// res.status(500).json({ error: 'message' }) // error stuff
 })
 
-module.exports = server;
+class HTTPServer {
+	constructor(udpServer, log) {
+		this.server = server
+		this.udpServer = udpServer
+		this.log = log
+	}
+
+	run() {
+		this.server.listen(config.port, (err) => {
+			if (err) {
+				console.log('api_server', 'error', err);
+			}
+
+			console.log('api_server', 'info', 'listening on port:', config.port);
+		})
+	}
+}
+
+module.exports = HTTPServer
