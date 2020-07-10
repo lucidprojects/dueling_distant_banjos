@@ -6,10 +6,6 @@
 
 WiFiUDP Udp;
 
-// TODO: API CAN CHANGE THIS
-
-//ADDRESS OF SERVER / COMPUTER 
-
 //JAKE
 IPAddress localServer(192, 168, 86, 234);
 

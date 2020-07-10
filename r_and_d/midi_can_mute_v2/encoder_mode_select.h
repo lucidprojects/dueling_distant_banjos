@@ -124,14 +124,14 @@ void modeChSelect() {
 void setMode(int myMode)
 {
   /*
-   		NOTE: MODES
+   	NOTE: MODES
   	0) explore
   		- different instruments all 8 channels
   	1) ch select
   	2) chords (use ch select)
   		-  w pitch bend
   	3) scales (use ch select) (all 8 cap sensors)
-  		- TODO: need to figure out why slides play scale & explore???
+  		- need to figure out why slides play scale & explore???
   	4) scales (use ch select)
   		- w pitch bend
   	5) slides as slides

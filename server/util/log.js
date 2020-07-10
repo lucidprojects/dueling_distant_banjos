@@ -13,42 +13,31 @@ udp_server.js
 // 		 -  log("udp_server", "info", 'Server ip :' + ipaddr)
 // 		 -  log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
 
+
+const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
-require('winston-daily-rotate-file')
-const conf = require('../config/config')
+
+const filename = path.join(__dirname, +'log/' + moment().format('YYYYMMDDHHmmss') + '.log')
 
 const transports = [
-	new winston.transports.DailyRotateFile({
-		name: 'logs',
-		filename: conf.logdir + 'access%DATE%.log',
-		maxSize: '1000k',
-		maxFiles: '15d',
-		zippedArchive: false
+	new winston.transports.File({
+		filename: filename
 	}),
-	new winston.transports.DailyRotateFile({
-		level: 'error',
-		name: 'logs',
-		filename: conf.logdir + 'error%DATE%.log',
-		maxSize: '1000k',
-		maxFiles: '15d',
-		zippedArchive: false
-	}),
+	// new winston.transports.Console({
+	// 	colorize: true
+	// }),
 	new winston.transports.Console({
-		colorize: true
+		format: winston.format.combine(
+			winston.format.colorize(),
+			winston.format.simple()
+		)
 	})
 ]
 
 const logger = winston.createLogger({
-	// format: winston.format.json(),
-	// defaultMeta: { timestamp: new Date() },
 	transports: transports
 })
-
-
-// if (process.env.NODE_ENV !== 'production') {
-//     logger.add(new winston.transports.Console({ format: winston.format.simple() }))
-// }
 
 const log = async (service, level, msg) => {
 	logger.log({
@@ -57,8 +46,7 @@ const log = async (service, level, msg) => {
 		level: level,
 		message: msg
 	})
-} // end infoLog
-
+}
 
 module.exports = {
 	log

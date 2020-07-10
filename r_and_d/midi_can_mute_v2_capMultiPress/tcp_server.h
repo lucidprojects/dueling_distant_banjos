@@ -141,7 +141,6 @@ void handleData(String currentLine)
 
 }
 
-// TODO: Handle in LOOP (make fn)
 void webApi()
 {
   WiFiClient client = server.available(); // listen for incoming clients

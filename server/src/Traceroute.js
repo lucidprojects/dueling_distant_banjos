@@ -5,10 +5,10 @@
 */
 'use strict';
 
-// TODO:
-// 1) Return data needed for midi stuff
-// 2) Remove DNS?
-// 3) Clean up code
+// NOTE:
+// 		 1) Return data needed for midi stuff
+// 		 2) Remove DNS?
+// 		 3) Clean up code
 
 const dgram = require('dgram');
 const rSocket = require('raw-socket');
@@ -18,9 +18,11 @@ const config = require('../config/config');
 class Traceroute {
 	constructor() {
 		this.udpSocket = dgram.createSocket('udp4');
-		this.icmpSocket = rSocket.createSocket({protocol: rSocket.Protocol.ICMP});
+		this.icmpSocket = rSocket.createSocket({
+			protocol: rSocket.Protocol.ICMP
+		});
 		this.MAX_HOPS;
-		this.MAX_TIMEOUT; 
+		this.MAX_TIMEOUT;
 		this.DESTINATION_HOST;
 		this.DESTINATION_IP;
 		this.NO_REVERSE_LOOKUP = false;
