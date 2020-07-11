@@ -13,6 +13,37 @@ Music is a powerful force for connection. MUSIC_CAN strives to actively bring pe
 
 The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherwood. Jake and Nikhil Kumar will be performing with the MUSIC_CAN at NMF 2020. All 3 are 2021 M.P.S. Candidates at the New York University, Tisch School of the Arts, Interactive Telecommunications Program. 
 
+
+
+#2020-07-10 Update
+
+##New Features
+1) Cap sensors now have multipress
+	a) (single click, double click, long press, long press and hold)
+	###Current multipress functionality
+		1) long press sends volume down cmd for use with soundbite tracks to turn off volume
+	 	2) long press and hold switches between capslides as variable slides or single notes / cmds
+
+2) Chords mode now plays full octave of chords when !asSlides Mode
+	1) going back to asSlides mode turns pitch bend back on (I haven't used this much at all in practice)
+
+##Improvements
+1) Channel selection now works in all modes via the encoder
+	1) pot mode and volume mode still require channel selection.
+		
+2) Reordered modes			 
+	1) Moved channel select to spot/mode #5 prior to pot mode #6 
+	2) See [Encoder Functions](#user-content-encoder-functions)	
+			 
+3) Updated Mute on/off to allow for more Channels	
+	1) Encoder increments channels by 8 (1 = 1st 8 ch, 2 = 2nd 8 etc)	
+
+##DAW set up
+1) Added additional sample Channels
+
+2) Added ability to turn off channel with sample looping (this is kind of a hack)
+
+
 ## Functionality 
 
 ### Usage
@@ -78,39 +109,47 @@ cmd for checking public IP
 curl ifconfig.io  
 ```
 
-### Encoder Functions
+### Encoder Functions - UPDATED
 0) explore - different instruments all 8 channels
      1) single click selects mode
-1) ch select
-     1) single click selects channel and exits back to Default
-2) chords (use ch select or enc ch select) - w pitch bend
-	1) 4 cap btns play chords (C,F,G,Am)	
+
+1) chords (use ch select or enc ch select) - w pitch bend
+	 1) 4 cap btns play chords (C, Dm, Em, F)	
      2) default - encoder selects channel 
-     3) long press switches to switch octave mode
+     3) encoder long press switches to switch octave mode
      	1) enc selects octaves (1-6)
      4) Single click exits back to cycling through channels
      5) slides all work to pitch bend the channel done <s>(in progress - currently ch is hard coded)</s>
      6) double click exits back to Default
-3) scales (use ch select) 
+     **New
+     7) Setting !asSlides (cap long press and hold toggles asSlides) make all 8 cap sensors play cords (C, Dm, Em, F, G, A, B, C2)
+     
+     
+2) scales <s>(use ch select)</s> 
 	1) (all 8 cap sensors)
-4) scales w/ pitch bend (use ch select)
+	2) encoder selects channel
+3) scales w/ pitch bend (use ch select)
 	1) 4cap btns scale notes pitch bend sliders
-     2) double click exits back to Default
-5) slides as slides or notes - defaults to slides (1)
+    2) double click exits back to Default
+    3) encoder selects channel
+4) slides as slides or notes - defaults to slides (1)
 	1) single click from default mode (enc == 5) toggles boolean
 	2) double click exits back to Default
+
+5) ch select
+    1) single click selects channel and exits back to Default
 6) pot mode
-     1) rotating encoder scrolls through 1-110 audible MIDI note vals
-     2) double click exits back to Default	
+    1) rotating encoder scrolls through 1-110 audible MIDI note vals
+    2) double click exits back to Default	
 7) <s>volume adjust per channel - to play with things on and off</s><br>
 <s> 1) not started - need to add handling to adjust volume per channel</s>
 8) broadcast
   	1) rotating encoder scrolls through channels
-     2) single click toggles send 1/0
-     3) double click exits back to Default
+    2) single click toggles send 1/0
+    3) double click exits back to Default
 9) track mute on/off
   	1) tappng cap sensor turns sends cmd to mute on/off pre-mapped tracks
-     2) requires setup in DAW for MIDI cmd mapping to respective tracks.
+    2) requires setup in DAW for MIDI cmd mapping to respective tracks.
 
 
 ### Playing Music

@@ -214,9 +214,9 @@ void drawOctaveSelect(bool disOctaveSelect) {
 void drawSlidesONotes(bool disSlide) {
   display.setRotation(4);
   display.setTextSize(1);  // Normal 1:1 pixel scale
-  //  display.setTextColor(WHITE, BLACK); // Draw white text
-  //  display.setCursor(60, 24); // Start at top-left corner
-  //  display.println(F(" "));
+    display.setTextColor(WHITE, BLACK); // Draw white text
+    display.setCursor(60, 24); // Start at top-left corner
+    display.println(F(" "));
 
   if (disSlide == true)
   {
