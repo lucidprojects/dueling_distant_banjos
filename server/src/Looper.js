@@ -19,14 +19,17 @@ class Looper {
 		if (this.state.isRecording) {
 			this.startTime = Date.now()
 
-			log('looper', 'info', 'playing loop')
+			this.log('looper', 'info', 'start recording')
+		} else {
+
+			this.log('looper', 'info', 'start recording')
 		}
 	}
 
 	play() {
 		this.state.isPlaying = true
 
-		log('looper', 'info', 'playing loop')
+		this.log('looper', 'info', 'playing loop')
 
 		this.player = setInterval(() => {
 			const buffer = this.getData()
@@ -50,7 +53,7 @@ class Looper {
 
 		clearInterval(this.player)
 
-		log('looper', 'info', 'stopping loop')
+		this.log('looper', 'info', 'stopping loop')
 	}
 
 	getData() {
@@ -58,9 +61,9 @@ class Looper {
 	}
 
 	saveData(buffer) {
-		this.recordedDuffer[this.elapsedMillis()] = buffer
+		this.recordedData[this.elapsedMillis()] = buffer
 
-		log('looper', 'info', 'stopping loop')
+		this.log('looper', 'info', `saving data: [${buffer[0]},${buffer[1]},${buffer[2]}]`)
 	}
 
 	elapsedMillis() {

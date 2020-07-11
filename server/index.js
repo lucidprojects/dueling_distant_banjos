@@ -4,7 +4,8 @@ const HTTPServer = require('./src/HTTPServer')
 const Looper = require('./src/Looper')
 const UDPServer = require('./src/UDPServer')
 const {
-	log
+	log,
+	logger
 } = require('./util/log')
 
 // NOTE: 
@@ -26,6 +27,6 @@ udpServer.run()
 
 // -----> Start UDP Server <-----
 
-const httpServer = new HTTPServer(log, looper)
+const httpServer = new HTTPServer(log, logger, looper)
 
 httpServer.run()

@@ -10,7 +10,8 @@ const config = require('../config/config');
 // const Traceroute = require('./Traceroute')
 
 var log
-var loooper
+var looper
+var logger
 
 // -----> Arduino <-----
 
@@ -103,86 +104,91 @@ const app = express();
 
 const server = http.createServer(app);
 
-// -----> Set Middleware <-----
+const init = () => {
+	// -----> Set Middleware <-----
 
-app.use(bodyParser.json());
-app.use(morgan('combined', {
-	stream: winston.stream
-}))
-app.use(helmet());
+	app.use(bodyParser.json());
+	app.use(morgan('combined', {
+		stream: logger.stream
+	}))
+	app.use(helmet());
 
-// -----> Set Static Directory <-----
+	// -----> Set Static Directory <-----
 
-app.use(express.static('public'));
+	app.use(express.static('public'));
 
-// -----> Default Error Handler <-----
+	// -----> Default Error Handler <-----
 
-app.use(function (err, req, res, next) {
-	res.locals.message = err.message
-	res.locals.error = err
-	// res.locals.error = req.app.get('env') === 'development' ? err : {}
-	// set locals, only providing error in development
+	app.use(function (err, req, res, next) {
+		res.locals.message = err.message
+		res.locals.error = err
+		// res.locals.error = req.app.get('env') === 'development' ? err : {}
+		// set locals, only providing error in development
 
-	// log error
-	winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+		// log error
+		winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
 
-	// render the error page
-	res.status(err.status || 500)
-	res.render('error')
-})
+		// render the error page
+		res.status(err.status || 500)
+		res.render('error')
+	})
 
-// -----> API Routes <-----
+	// -----> API Routes <-----
 
-app.get('/api/data', async (req, res) => {
-	const data = await getArduino(req.body)
-	// log(data);
+	app.get('/api/data', async (req, res) => {
+		const data = await getArduino(req.body)
+		// log(data);
 
-	const state = {
-		localIp: config.host,
-		localPort: config.udpPort,
-		remoteIp: config.remoteHost,
-		remotePort: config.udpPort,
-		capBuff: parseInt(data.capBuff),
-	}
+		const state = {
+			localIp: config.host,
+			localPort: config.udpPort,
+			remoteIp: config.remoteHost,
+			remotePort: config.udpPort,
+			capBuff: parseInt(data.capBuff),
+		}
 
-	res.json(state)
-	// res.status(500).json({ error: 'message' }) // error stuff
-})
+		res.json(state)
+		// res.status(500).json({ error: 'message' }) // error stuff
+	})
 
-app.put('/api/data', async (req, res) => {
-	await putArduino(req.body);
+	app.put('/api/data', async (req, res) => {
+		await putArduino(req.body);
 
-	res.json({})
-	// res.status(500).json({ error: 'message' }) // error stuff
-})
+		res.json({})
+		// res.status(500).json({ error: 'message' }) // error stuff
+	})
 
-app.get('/looper/record', async (req, res) => {
-	looper.record()
+	app.get('/looper/record', async (req, res) => {
+		looper.record()
 
-	res.status(200)
-})
+		res.status(200).end()
+	})
 
-app.get('/looper/play', async (req, res) => {
-	looper.play()
+	app.get('/looper/play', async (req, res) => {
+		looper.play()
 
-	res.status(200)
-})
+		res.status(200).end()
+	})
 
-app.get('/looper/stop', async (req, res) => {
-	looper.stop()
+	app.get('/looper/stop', async (req, res) => {
+		looper.stop()
 
-	res.status(200)
-})
+		res.status(200).end()
+	})
+}
 
 class HTTPServer {
-	constructor(_log, _looper) {
+	constructor(_log, _logger, _looper) {
 		this.server = server
 
 		log = _log
+		logger = _logger
 		looper = _looper
 	}
 
 	run() {
+		init()
+
 		this.server.listen(config.port, (err) => {
 			if (err) {
 				log('http_server', 'error', err)

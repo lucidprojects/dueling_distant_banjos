@@ -45,5 +45,6 @@ const log = async (service, level, msg) => {
 }
 
 module.exports = {
-	log
+	log,
+	logger
 }
