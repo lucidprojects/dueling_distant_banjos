@@ -33,7 +33,7 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 		
 2) Reordered modes			 
 	1) Moved channel select to spot/mode #5 prior to pot mode #6 
-	2) See [Encoder Functions](#user-content-encoder-functions)	
+	2) See [Encoder Functions](#encoder-functions---updated)	
 			 
 3) Updated Mute on/off to allow for more Channels	
 	1) Encoder increments channels by 8 (1 = 1st 8 ch, 2 = 2nd 8 etc)	
