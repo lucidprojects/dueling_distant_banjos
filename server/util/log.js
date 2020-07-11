@@ -5,28 +5,18 @@ udp_server.js
 */
 'use strict';
 
-// NOTE: notes on use
-// 		 - const { log } = require('./util/loggerTool')
-// 		 - log("udp_server", "error", error)
-// 		 - log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port}`)
-// 		 -  log("udp_server", "info", 'Server is listening at port ' + port)
-// 		 -  log("udp_server", "info", 'Server ip :' + ipaddr)
-// 		 -  log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
-
-
 const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
 
-const filename = path.join(__dirname, +'log/' + moment().format('YYYYMMDDHHmmss') + '.log')
+const filename = path.join(__dirname, '../log/' + moment().format('YYYYMMDDHHmmss') + '.log')
+
+// TODO: create custom format: https://github.com/winstonjs/winston#formats
 
 const transports = [
 	new winston.transports.File({
 		filename: filename
 	}),
-	// new winston.transports.Console({
-	// 	colorize: true
-	// }),
 	new winston.transports.Console({
 		format: winston.format.combine(
 			winston.format.colorize(),

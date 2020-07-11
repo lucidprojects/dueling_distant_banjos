@@ -8,6 +8,8 @@ const logger = require('morgan');
 const config = require('../config/config');
 // const Traceroute = require('./Traceroute')
 
+var log
+
 // TODO: Need to make a HTTPServer class
 
 // -----> Arduino <-----
@@ -21,11 +23,13 @@ const getArduino = () => {
 			method: 'GET'
 		};
 
-		console.log('api_server', 'info', 'GET', config.localArduino)
+		// console.log('api_server', 'info', 'GET', config.localArduino)
+		log('api_server', 'info', 'GET', config.localArduino)
 
 		let resData = "";
 		const req = http.request(options, (res) => {
-			console.log('api_server', 'info', 'status code:', res.statusCode);
+			// console.log('api_server', 'info', 'status code:', res.statusCode);
+			log('api_server', 'info', 'status code:', res.statusCode);
 
 			res.on('data', (chunk) => {
 				resData += chunk;
@@ -34,12 +38,12 @@ const getArduino = () => {
 			res.on('end', () => {
 				let parsedData = JSON.parse(resData);
 
-				// console.log(parsedData);
-
 				if (parsedData.message == "success") {
-					console.log('api_server', 'error', 'failed to get data from arduino');
+					// console.log('api_server', 'error', 'failed to get data from arduino');
+					log('api_server', 'error', 'failed to get data from arduino');
 				} else {
-					console.log('api_server', 'info', 'successfully requested data from arduino');
+					// console.log('api_server', 'info', 'successfully requested data from arduino');
+					log('api_server', 'info', 'successfully requested data from arduino');
 				}
 
 				resolve(parsedData);
@@ -47,7 +51,8 @@ const getArduino = () => {
 		});
 
 		req.on('error', err => {
-			console.log('api_server', 'error', err);
+			// console.log('api_server', 'error', err);
+			log('api_server', 'error', err);
 		});
 
 		req.end();
@@ -69,11 +74,13 @@ const putArduino = (rawData) => {
 		}
 	};
 
-	console.log('api_server', 'info', 'PUT', config.localArduino)
+	// console.log('api_server', 'info', 'PUT', config.localArduino)
+	log('api_server', 'info', 'PUT', config.localArduino)
 
 	let resData = "";
 	const req = http.request(options, (res) => {
-		console.log('api_server', 'info', 'status code:', res.statusCode);
+		// console.log('api_server', 'info', 'status code:', res.statusCode);
+		log('api_server', 'info', 'status code:', res.statusCode);
 
 		res.on('data', (chunk) => {
 			resData += chunk;
@@ -81,9 +88,11 @@ const putArduino = (rawData) => {
 
 		res.on('end', () => {
 			if (JSON.parse(resData).message == "success") {
-				console.log('api_server', 'info', 'arduino updated');
+				// console.log('api_server', 'info', 'arduino updated');
+				log('api_server', 'info', 'arduino updated');
 			} else {
-				console.log('api_server', 'error', 'failed to updated arduino');
+				// console.log('api_server', 'error', 'failed to updated arduino');
+				log('api_server', 'error', 'failed to updated arduino');
 			}
 
 			return new Promise((resolve) => resolve());
@@ -91,7 +100,8 @@ const putArduino = (rawData) => {
 	});
 
 	req.on('error', err => {
-		console.log('api_server', 'error', err);
+		// console.log('api_server', 'error', err);
+		log('api_server', 'error', err);
 	});
 
 	req.end();
@@ -117,7 +127,8 @@ app.use(express.static('public'));
 
 app.get('/api/data', async (req, res) => {
 	const data = await getArduino(req.body);
-	console.log(data);
+	// console.log(data);
+	log(data);
 
 	const state = {
 		localIp: config.host,
@@ -138,20 +149,25 @@ app.put('/api/data', async (req, res) => {
 	// res.status(500).json({ error: 'message' }) // error stuff
 })
 
+// TODO: figure out how use log object for things outside of class (maybe top level log?)
 class HTTPServer {
-	constructor(udpServer, log) {
+	constructor(udpServer, _log) {
 		this.server = server
 		this.udpServer = udpServer
-		this.log = log
+		// this.log = log
+
+		log = _log
 	}
 
 	run() {
 		this.server.listen(config.port, (err) => {
 			if (err) {
-				console.log('api_server', 'error', err);
+				// this.log('api_server', 'error', err);
+				log('api_server', 'error', err);
 			}
 
-			console.log('api_server', 'info', 'listening on port:', config.port);
+			// this.log('api_server', 'info', 'listening on port: ' + config.port);
+			log('api_server', 'info', 'listening on port: ' + config.port);
 		})
 	}
 }

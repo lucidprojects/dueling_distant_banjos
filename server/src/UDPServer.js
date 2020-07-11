@@ -22,37 +22,33 @@ class UDPServer {
 		this.onClose()
 		this.onError()
 		this.onMessage()
-		this.onListen()
+		this.onListen();
 
 		this.server.bind(this.port)
 	}
 
 	onClose() {
-		//emits after the socket is closed using socket.close()
 		this.server.on('close', () => {
-			console.log("udp_server", "info", 'Socket is closed!');
-			// log("udp_server", "info", 'Socket is closed !')
+			this.log("udp_server", "info", 'Socket is closed !')
 		})
 	}
 
 	onError() {
-		// emits when any error occurs
 		this.server.on('error', (error) => {
-			console.log("udp_server", "error", error);
-			// log("udp_server", "error", error)
+			this.log("udp_server", "error", error)
+
 			this.server.close();
 		});
 	}
 
 	onMessage() {
-		// receive msg
 		this.server.on('message', (buffer, info) => {
-			console.log("udp_server", `| Received ${buffer.length} bytes from ${info.address}:${info.port}`);
-			console.log("cmd", buffer[0]);
-			console.log("data1", buffer[1]);
-			console.log("dat2", buffer[2]);
-			console.log('');
-			// log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port}`)
+			// 	console.log("udp_server", `| Received ${buffer.length} bytes from ${info.address}:${info.port}`);
+			// 	console.log("cmd", buffer[0]);
+			// 	console.log("data1", buffer[1]);
+			// 	console.log("data2", buffer[2]);
+			// 	console.log('');
+			this.log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port} \n [${buffer[0]},${buffer[1]},${buffer[2]}]`)
 
 			this.handleMessage(buffer, info)
 		});
@@ -60,19 +56,15 @@ class UDPServer {
 	}
 
 	onListen() {
-		//emits when socket is ready and listening for datagram msgs
 		this.server.on('listening', () => {
 			const address = this.server.address();
 			const port = address.port;
 			const family = address.family;
 			const ipaddr = address.address;
 
-			console.log("udp_server", "info", 'listening on port: ' + port);
-			// log("udp_server", "info", 'Server is listening at port ' + port)
-			console.log("udp_server", "info", 'Server ip: ' + ipaddr);
-			// log("udp_server", "info", 'Server ip :' + ipaddr)
-			console.log("udp_server", "info", 'Server ipv: ' + family);
-			// log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
+			this.log("udp_server", "info", 'Server is listening at port ' + port)
+			this.log("udp_server", "info", 'Server ip :' + ipaddr)
+			this.log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
 		});
 	}
 
@@ -87,7 +79,7 @@ class UDPServer {
 				break;
 
 			default:
-				console.log("info", "received udp from unknown source", `${info.address}:${info.port}`);
+				this.log("info", "received udp from unknown source", `${info.address}:${info.port}`);
 				break;
 		}
 	}
@@ -97,12 +89,12 @@ class UDPServer {
 
 		client.send(buffer, port, host, (error, bytes) => {
 			if (error) {
-				console.log("udp_server", "error", error);
-				// log("udp_server", "error", error)
+				this.log("udp_server", "error", error)
+
 				client.close();
 			} else {
-				console.log("udp_server", "info", 'data sent to', `${host}:${port}`);
-				// log("udp_server", "info", 'Data sent !!!')
+				this.log("udp_server", "info", 'data sent to', `${host}:${port}`);
+
 				client.close();
 			}
 		});
