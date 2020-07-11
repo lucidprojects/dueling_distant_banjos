@@ -15,9 +15,9 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 
 
 
-#2020-07-10 Update
+# 2020-07-10 Update
 
-##New Features
+## New Features
 1) Cap sensors now have multipress
 	a) (single click, double click, long press, long press and hold)
 	###Current multipress functionality
@@ -27,7 +27,7 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 2) Chords mode now plays full octave of chords when !asSlides Mode
 	1) going back to asSlides mode turns pitch bend back on (I haven't used this much at all in practice)
 
-##Improvements
+## Improvements
 1) Channel selection now works in all modes via the encoder
 	1) pot mode and volume mode still require channel selection.
 		
@@ -38,7 +38,7 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 3) Updated Mute on/off to allow for more Channels	
 	1) Encoder increments channels by 8 (1 = 1st 8 ch, 2 = 2nd 8 etc)	
 
-##DAW set up
+## DAW set up
 1) Added additional sample Channels
 
 2) Added ability to turn off channel with sample looping (this is kind of a hack)
