@@ -18,11 +18,16 @@ const transports = [
 		filename: filename
 	}),
 	new winston.transports.Console({
-		format: winston.format.combine(
-			winston.format.colorize(),
-			winston.format.simple()
-		)
+		handleExceptions: true,
+		json: false,
+		colorize: true,
 	})
+	// new winston.transports.Console({
+	// 	format: winston.format.combine(
+	// 		winston.format.colorize(),
+	// 		winston.format.simple()
+	// 	)
+	// })
 ]
 
 const logger = winston.createLogger({
