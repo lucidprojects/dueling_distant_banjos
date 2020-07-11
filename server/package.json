@@ -7,7 +7,7 @@
 		"test": "echo \"HAHAHAHAHHAHAHAHAHAHAHAHAHAHAHAHAHAHAH\" && exit 1",
 		"jake": "REMOTE_HOST='70.19.54.90' LOCAL_ARDUINO='192.168.86.246' node index.js",
 		"noah": "REMOTE_HOST='66.108.97.246' LOCAL_ARDUINO='192.168.0.169' node index.js",
-		"looper": "REMOTE_HOST='66.108.97.246' LOCAL_ARDUINO='192.168.0.169' node index.js"
+		"looper": "REMOTE_HOST='127.0.0.1' LOCAL_ARDUINO='127.0.0.1' node index.js"
 	},
 	"author": "",
 	"license": "ISC",

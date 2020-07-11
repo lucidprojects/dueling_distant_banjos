@@ -67,7 +67,7 @@ class Looper {
 	}
 
 	elapsedMillis() {
-		return Date.now() - this.startTime
+		return `${Date.now() - this.startTime}`
 	}
 }
 
