@@ -10,6 +10,7 @@ const config = require('../config/config');
 // const Traceroute = require('./Traceroute')
 
 var log
+var loooper
 
 // -----> Arduino <-----
 
@@ -133,9 +134,8 @@ app.use(function (err, req, res, next) {
 // -----> API Routes <-----
 
 app.get('/api/data', async (req, res) => {
-	const data = await getArduino(req.body);
-	// console.log(data);
-	log(data);
+	const data = await getArduino(req.body)
+	// log(data);
 
 	const state = {
 		localIp: config.host,
@@ -143,7 +143,7 @@ app.get('/api/data', async (req, res) => {
 		remoteIp: config.remoteHost,
 		remotePort: config.udpPort,
 		capBuff: parseInt(data.capBuff),
-	};
+	}
 
 	res.json(state)
 	// res.status(500).json({ error: 'message' }) // error stuff
@@ -156,23 +156,39 @@ app.put('/api/data', async (req, res) => {
 	// res.status(500).json({ error: 'message' }) // error stuff
 })
 
-// TODO: figure out how use log object for things outside of class (maybe top level log?)
+app.get('/looper/record', async (req, res) => {
+	looper.record()
+
+	res.status(200)
+})
+
+app.get('/looper/play', async (req, res) => {
+	looper.play()
+
+	res.status(200)
+})
+
+app.get('/looper/stop', async (req, res) => {
+	looper.stop()
+
+	res.status(200)
+})
+
 class HTTPServer {
-	constructor(udpServer, _log) {
+	constructor(_log, _looper) {
 		this.server = server
-		this.udpServer = udpServer
-		// this.log = log
 
 		log = _log
+		looper = _looper
 	}
 
 	run() {
 		this.server.listen(config.port, (err) => {
 			if (err) {
-				log('http_server', 'error', err);
+				log('http_server', 'error', err)
 			}
 
-			log('http_server', 'info', 'listening on port: ' + config.port);
+			log('http_server', 'info', 'listening on port: ' + config.port)
 		})
 	}
 }

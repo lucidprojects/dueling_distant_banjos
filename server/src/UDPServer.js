@@ -10,12 +10,14 @@ const dgram = require('dgram')
 const config = require('../config/config')
 
 class UDPServer {
-	constructor(log) {
+	constructor(log, looper) {
 		this.server = dgram.createSocket('udp4')
 		this.localArduino = config.localArduino
 		this.remoteHost = config.remoteHost
 		this.port = config.udpPort
 		this.log = log
+		this.looper = looper
+		this.udpServer = this
 	}
 
 	run() {
@@ -43,11 +45,6 @@ class UDPServer {
 
 	onMessage() {
 		this.server.on('message', (buffer, info) => {
-			// 	console.log("udp_server", `| Received ${buffer.length} bytes from ${info.address}:${info.port}`);
-			// 	console.log("cmd", buffer[0]);
-			// 	console.log("data1", buffer[1]);
-			// 	console.log("data2", buffer[2]);
-			// 	console.log('');
 			this.log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port} \n [${buffer[0]},${buffer[1]},${buffer[2]}]`)
 
 			this.handleMessage(buffer, info)
@@ -71,11 +68,12 @@ class UDPServer {
 	handleMessage(buffer, info) {
 		switch (`${info.address}`) {
 			case this.localArduino:
-				this.sendMessage(buffer, this.remoteHost, this.port);
+				this.sendMessage(buffer, this.remoteHost, this.port)
+				this.checkLooper(buffer)
 				break;
 
 			case this.remoteHost:
-				this.sendMessage(buffer, this.localArduino, this.port);
+				this.sendMessage(buffer, this.localArduino, this.port)
 				break;
 
 			default:
@@ -99,6 +97,12 @@ class UDPServer {
 			}
 		});
 	}
+
+	checkLooper(buffer) {
+		if (this.looper.state.isRecording) {
+			this.looper.saveData(buffer)
+		}
+	}
 }
 
-module.exports = UDPServer;
+module.exports = UDPServer
