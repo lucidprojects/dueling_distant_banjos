@@ -18,21 +18,22 @@ const transports = [
 		filename: filename
 	}),
 	new winston.transports.Console({
-		handleExceptions: true,
-		json: false,
-		colorize: true,
+		format: winston.format.combine(
+			winston.format.colorize(),
+			winston.format.simple()
+		)
 	})
-	// new winston.transports.Console({
-	// 	format: winston.format.combine(
-	// 		winston.format.colorize(),
-	// 		winston.format.simple()
-	// 	)
-	// })
 ]
 
 const logger = winston.createLogger({
 	transports: transports
 })
+
+logger.stream = {
+	write: function (message, encoding) {
+		logger.info(message)
+	}
+}
 
 const log = async (service, level, msg) => {
 	logger.log({

@@ -11,4 +11,4 @@ module.exports = {
 	remoteHost: process.env.REMOTE_HOST || '127.0.0.1',
 	timeout: 10000,
 	log: "./log/"
-};
+}
