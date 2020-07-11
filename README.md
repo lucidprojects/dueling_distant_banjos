@@ -38,7 +38,7 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 3) Updated Mute on/off to allow for more Channels	
 	1) Encoder increments channels by 8 (1 = 1st 8 ch, 2 = 2nd 8 etc)	
 	
-4) !asSlides now proper sends single MIDI cmds instead of sending a bunch in quick succession 	
+4) !asSlides now properly sends single MIDI cmds instead of sending a bunch in quick succession 	
 
 ### DAW set up
 1) Added additional sample Channels
