@@ -6,15 +6,7 @@
 
 WiFiUDP Udp;
 
-<<<<<<< HEAD
 // JAKE
-=======
-// TODO: API CAN CHANGE THIS
-
-//ADDRESS OF SERVER / COMPUTER
-
-//JAKE
->>>>>>> master
 IPAddress localServer(192, 168, 86, 234);
 
 // NOAH
@@ -35,11 +27,7 @@ byte channelsOff[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88};
 byte ctrlChannels[] = {0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8};
 
 int fwd[] = {0, 0, 0, 0, 0, 0, 0, 0};
-<<<<<<< HEAD
 // int fwd[] = {1, 1, 1, 1, 1, 1, 1, 1};
-=======
-//int fwd[] = {1, 1, 1, 1, 1, 1, 1, 1};
->>>>>>> master
 
 unsigned int localPort = 5000;
 unsigned long timestamp;
