@@ -20,7 +20,7 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 ### New Features
 1) Cap sensors now have multipress
 	1) (single click, double click, long press, long press and hold)
-	####Current multipress functionality
+	#### Current multipress functionality
 	1) long press sends volume down cmd for use with soundbite tracks to turn off volume
 	2) long press and hold switches between capslides as variable slides or single notes / cmds
 
