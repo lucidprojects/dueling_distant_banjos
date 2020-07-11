@@ -137,6 +137,7 @@ curl ifconfig.io
 4) slides as slides or notes - defaults to slides (1)
 	1) single click from default mode (enc == 5) toggles boolean
 	2) double click exits back to Default
+	3) encoder selects channel
 
 5) ch select
     1) single click selects channel and exits back to Default
@@ -152,18 +153,20 @@ curl ifconfig.io
 9) track mute on/off
   	1) tappng cap sensor turns sends cmd to mute on/off pre-mapped tracks
     2) requires setup in DAW for MIDI cmd mapping to respective tracks.
+    3) encode select 8 channel array to mute or unmute (1 = 1st 8 ch, 2 = 2nd 8 etc)
 
 
 ### Playing Music
 1) use explore mode to experiment with different didgital instruments set up in the DAW
-2) use channel select to selet channels for scales
+2) chords 4 w/ pitch bend or chords 8 (full octave)
 3) scales play preconfigured minor or major scale (all 8 cap sensors)
 4) scales pb (pitch bend) pitch bend the scale notes (4 cap buttons as scale notes, slides pb)
 5) slides as notes - configure slide sensors to be notes instead
-6) use pot for adjust basenote value sent in explore mode
-7) <s>volume adjust - not done </s> using mute on/off instead
-8) broadcast sets which channels to sent to partner
-9) mute on/off preconfigured tracks in DAW
+6) use channel select to selet channels pot & volume adjust
+7) use pot for adjust basenote value sent in explore mode
+8) <s>volume adjust - not done </s> using mute on/off instead
+9) broadcast sets which channels to sent to partner
+10) mute on/off preconfigured tracks in DAW
 
 
 ### Calibration
