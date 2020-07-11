@@ -162,7 +162,7 @@ curl ifconfig.io
 3) scales play preconfigured minor or major scale (all 8 cap sensors)
 4) scales pb (pitch bend) pitch bend the scale notes (4 cap buttons as scale notes, slides pb)
 5) slides as notes - configure slide sensors to be notes instead
-6) use channel select to selet channels pot & volume adjust
+6) use channel select to select channels pot & volume adjust
 7) use pot for adjust basenote value sent in explore mode
 8) <s>volume adjust - not done </s> using mute on/off instead
 9) broadcast sets which channels to sent to partner
