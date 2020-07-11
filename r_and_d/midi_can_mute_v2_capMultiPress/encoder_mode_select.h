@@ -25,9 +25,13 @@ bool asChords = false;
 bool chordsOctave = false;
 bool firstOctaveChange = true;
 bool octaveChanged = false;
+bool chMute = false;
+bool capChMute = false;
 bool chVolume = false;
+bool volAdjust = false;
 bool capChVol = false;
 
+int lastVolInc = 0;
 
 //String modeText;
 
@@ -89,9 +93,15 @@ void broadCast()
 }
 
 
-void chVolOnOff()
+void volumeAdjust(){
+  volAdjust = true; // set mode bool to true for adjusting volume
+}
+
+
+
+void chMuteOnOff()
 {
-  chVolume = !chVolume;
+  chMute = !chMute;
 }
 
 
@@ -156,25 +166,18 @@ void setMode(int myMode)
       doScale = false;
       asChords = false;
       chVolume = false;
+      chMute = false;
+      volAdjust = false;
       disMode = 0;
       drawMode(0, 0);
       drawModeSelect(true);
       drawSlidesONotes(asSlides);
       drawOctaveSelect(false);
       doBroadCast = false;
+      rtCounter = 0;
       break;
-    case 1: // channel select mode;
-      isPot = 2;
-      Serial.println("channel select mode");
-      //OLED display.write("select channel");
-      selectChannel();
-      disMode = 1;
-      //      modeText = "Ch Select";
-      drawMode(1, rtCounter);
-      drawModeSelect(false);
-
-      break;
-    case 2: // Play chords - 4btns as chords sliders modify btns
+   
+    case 1: // Play chords - 4btns as chords sliders modify btns
       Serial.println("chord mode w/ pitch bend");
       //OLED display.write(""Chord mode");
       isPot = 6;
@@ -184,7 +187,7 @@ void setMode(int myMode)
       drawMode(2, rtCounter);
       //      drawModeSelect(false);
       break;
-    case 3: // All cap inputs as scale buttons mode
+    case 2: // All cap inputs as scale buttons mode
       Serial.println("All cap inputs as scale buttons mode");
       //OLED display.write("asCaps" + asCaps");
       isPot = 6;
@@ -194,7 +197,7 @@ void setMode(int myMode)
       //      drawModeSelect(false);
       modeChSelect();
       break;
-    case 4: // Mod scale - 4btns as scales sliders modify btns
+    case 3: // Mod scale - 4btns as scales sliders modify btns
       Serial.println("Mod Scale mode");
 //      isPot = 3;
       //OLED display.write(""Mod Scale mode");
@@ -205,7 +208,7 @@ void setMode(int myMode)
 //      modeChSelect();
       //      drawModeSelect(false);
       break;
-    case 5: // Slides or notes mode
+    case 4: // Slides or notes mode
       Serial.println("Slides or notes mode");
       //OLED display.write("asSlides" + asSlides");
       slidesOrNotes();
@@ -213,6 +216,17 @@ void setMode(int myMode)
       drawMode(5, rtCounter);
       drawSlidesONotes(asSlides);
       //      drawModeSelect(false);
+      break;
+    case 5: // channel select mode;
+      isPot = 2;
+      Serial.println("channel select mode");
+      //OLED display.write("select channel");
+      selectChannel();
+      disMode = 1;
+      //      modeText = "Ch Select";
+      drawMode(1, rtCounter);
+      drawModeSelect(false);
+
       break;
     case 6: // Explore mode - encoder as pot
       Serial.println("Explore mode enc as pot");
@@ -229,7 +243,7 @@ void setMode(int myMode)
       drawMode(7, rtCounter);
       //      drawModeSelect(false);
       //OLED display.write(""volume adjust channel" + channel);
-      // volumeAdjust();
+       volumeAdjust();
       break;
     case 8: // Broadcast X CHANNEL
       Serial.println("Broadcast X CHANNEL");
@@ -245,7 +259,7 @@ void setMode(int myMode)
       Serial.println("Adjust channel volume ON/OFF");
       isPot = 6;  //isPot = 3; (pot 3 is 0 or 1, pot 6 is 1 - 9)
       //OLED display.write("CH volue" + chVolume);
-      chVolOnOff();
+      chMuteOnOff();
       disMode = 9;
       drawMode(9, rtCounter);
       //      drawModeSelect(false);
@@ -346,20 +360,20 @@ int readEnc(int encMode)
           case 0: // set default encoderMode
             drawMode(0, rtCounter);
             break;
-          case 1: // channel select mode;
-            drawMode(1, rtCounter);
-            break;
-          case 2: // Play chords - 4btns as chords sliders modify btns
+          case 1: // Play chords - 4btns as chords sliders modify btns
             drawMode(2, rtCounter);
             break;
-          case 3: // All cap inputs as scale buttons mode
+          case 2: // All cap inputs as scale buttons mode
             drawMode(3, rtCounter);
             break;
-          case 4: // Mod scale - 4btns as scales sliders modify btns
+          case 3: // Mod scale - 4btns as scales sliders modify btns
             drawMode(4, rtCounter);
             break;
-          case 5: // Slides or notes mode
+          case 4: // Slides or notes mode
             drawMode(5, rtCounter);
+            break;
+          case 5: // channel select mode;
+            drawMode(1, rtCounter);
             break;
           case 6: // Explore mode - encoder as pot
             drawMode(6, rtCounter);

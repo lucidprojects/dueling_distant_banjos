@@ -86,11 +86,12 @@ void loop()
   handleEncoder();
   handleChannel();
   handleBroadcast();
-  handleChVolume();
+  handleChMute();
+  handleChVolAdjust();
   handleRecord();
   handleScale();
   handleChords();
-  // capCalibration_Debug(); // uncomment out to show sensor values in  serial monitor
+  //capCalibration_Debug(); // uncomment out to show sensor values in  serial monitor
 
 }
 
@@ -162,20 +163,41 @@ void handleBroadcast()
   }
 }
 
-void handleChVolume()
+void handleChMute()
 {
   // ChVolume
-  if (chVolume == true) {
+  if (chMute == true) {
     //Serial.println("channel vol on");
-    //    capChVol = !capChVol;  // set cap buttons to be channel vol on
+    //    capChMute = !capChMute;  // set cap buttons to be channel vol on
   } else {
     // Serial.println("channel vol off");
-    capChVol = false; // set cap buttons to be channel vol off
+    capChMute = false; // set cap buttons to be channel vol off
   }
 
 }
 
+void handleChVolAdjust() {
+  int volIncrement;
 
+  String myHex;
+  byte bHex;
+  if (volAdjust == true) {
+    if (lastRtCounter != rtCounter) {
+      if (lastRtCounter < rtCounter) rtCounter += 10;
+      else rtCounter -= 10;
+
+      rtCounter = constrain(rtCounter, 1, 127);
+      myHex = decToHex(rtCounter, 4);
+      bHex = myHex.toInt();
+      Serial.println(myHex);
+//      midiCommand(channel, noteValue, rtCounter, 0);
+      //midiOn(channel, noteValue);
+      midiVolCtrl(channel, noteValue, rtCounter);
+    }
+    lastRtCounter = rtCounter;
+    lastVolInc = volIncrement;
+  }
+}
 
 void handleRecord()
 {
@@ -190,12 +212,12 @@ void handleRecord()
 
 void handleScale()
 {
-  if (doScaleMod == true)
+  if (doScale == true || doScaleMod == true)
   {
     // could add mod variations here
-    
+    channel = rtCounter;
 
-    
+
   }
 }
 
@@ -212,11 +234,20 @@ void handleChords()
     {
       chordsOctave = false;
       drawOctaveSelect(false);
-      setMode(2);
+      setMode(1);
     }
   }
 
   octaveChange(); // change octave
 
   currentPitchMillis = millis();
+}
+
+String decToHex(byte decValue, byte desiredStringLength) {
+
+  String hexString = String(decValue, HEX);
+  if (decValue > 15) while (hexString.length() < desiredStringLength) hexString = "0x" + hexString;
+  else hexString = "0x0" + hexString;
+  return hexString;
+
 }
