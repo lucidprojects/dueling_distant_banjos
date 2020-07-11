@@ -123,8 +123,8 @@ curl ifconfig.io
      4) Single click exits back to cycling through channels
      5) slides all work to pitch bend the channel done <s>(in progress - currently ch is hard coded)</s>
      6) double click exits back to Default
-     **New
-     7) Setting !asSlides (cap long press and hold toggles asSlides) make all 8 cap sensors play cords (C, Dm, Em, F, G, A, B, C2)
+     # New
+     7) Setting !asSlides (cap long press and hold toggles asSlides) make all 8 cap sensors play chords (C, Dm, Em, F, G, A, B, C2)
      
      
 2) scales <s>(use ch select)</s> 
