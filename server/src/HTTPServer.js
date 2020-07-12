@@ -175,6 +175,12 @@ const init = () => {
 
 		res.status(200).end()
 	})
+
+	app.get('/looper/mute', async (req, res) => {
+		looper.mute()
+
+		res.status(200).end()
+	})
 }
 
 class HTTPServer {

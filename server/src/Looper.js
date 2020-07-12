@@ -22,7 +22,6 @@ class Looper {
 		this.lastLoopStartTime = new Date
 		this.lastStepTime = new Date
 		this.lastPlayedIndex = 0
-		// this.intervalId = setInterval(this.step.bind(this), 1)
 		this.intervalId = setInterval(this.step.bind(this), 2)
 		this.log('looper', 'info', 'playing loop')
 	}
@@ -44,13 +43,12 @@ class Looper {
 	}
 
 	// TODO: how to use (does it need to log?)
-	// starts looping???
+	// starts looping
 	loop() {
 		if (this.looping) return
 		this.looping = true
 		this.length = new Date - this.startTime
 	}
-
 
 	// toggles recording (`Looper.add` calls)
 	toggleRecording() {
@@ -76,14 +74,15 @@ class Looper {
 	mute() {
 		this.muted = !this.muted
 
+		if (this.recording) this.log('looper', 'info', 'muted')
+		else this.log('looper', 'info', 'unmuted')
+
 		if (!this.muted) {
 			this.lastLoopStartTime = new Date
-			this.lastPlayedIndex = 0 // TODO: does this mean muting restarts 
+			this.lastPlayedIndex = 0
 		}
 
 		if (typeof this.muteCb == 'function') this.muteCb()
-
-		return this.muted
 	}
 
 	// add data to the loop sequence
@@ -104,7 +103,7 @@ class Looper {
 		this.sequence.sort(this.compare)
 	}
 
-	// step event, called by a setInterval.
+	// step event, called by a setInterval
 	step() {
 		let restarted = false
 		let currentTime = new Date - this.lastLoopStartTime // current time in this loop.
@@ -156,25 +155,6 @@ class Looper {
 		}
 		return 0
 	}
-
-	// play() {
-	// 	this.state.isPlaying = true
-
-	// 	this.log('looper', 'info', 'playing loop')
-
-	// 	console.log(this.recordedData)
-
-	// 	this.player = setInterval(() => {
-	// 		const buffer = this.getData()
-
-	// 		if (buffer) {
-	// 			this.log('looper', 'info', 'it was found')
-
-	// 			this.udpServer.sendMessage(buffer, remoteHost, port)
-	// 			this.udpServer.sendMessage(buffer, localArduino, port)
-	// 		}
-	// 	}, 1)
-	// }
 }
 
 module.exports = Looper
