@@ -38,6 +38,8 @@ class Looper {
 
 		this.log('looper', 'info', 'playing loop')
 
+		console.log(this.recordedData)
+
 		this.player = setInterval(() => {
 			const buffer = this.getData()
 
