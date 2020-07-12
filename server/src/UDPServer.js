@@ -17,14 +17,14 @@ class UDPServer {
 		this.port = config.udpPort
 		this.log = log
 		this.looper = looper
-		this.udpServer = this
+		this.looper.onStep = this.onStep
 	}
 
 	run() {
 		this.onClose()
 		this.onError()
 		this.onMessage()
-		this.onListen();
+		this.onListen()
 
 		this.server.bind(this.port)
 	}
@@ -39,69 +39,68 @@ class UDPServer {
 		this.server.on('error', (error) => {
 			this.log("udp_server", "error", error)
 
-			this.server.close();
-		});
+			this.server.close()
+		})
 	}
 
 	onMessage() {
 		this.server.on('message', (buffer, info) => {
-			this.log("udp_server", "info", `Received ${buffer.length} bytes from ${info.address}:${info.port} \n [${buffer[0]},${buffer[1]},${buffer[2]}]`)
+			this.log("udp_server", "info", `received [${buffer[0]},${buffer[1]},${buffer[2]}] from ${info.address}:${info.port}`)
 
 			this.handleMessage(buffer, info)
-		});
+		})
 
 	}
 
 	onListen() {
 		this.server.on('listening', () => {
-			const address = this.server.address();
-			const port = address.port;
-			const family = address.family;
-			const ipaddr = address.address;
+			const address = this.server.address()
+			const port = address.port
+			const family = address.family
+			const ipaddr = address.address
 
 			this.log("udp_server", "info", 'Server is listening at port ' + port)
 			this.log("udp_server", "info", 'Server ip :' + ipaddr)
 			this.log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
-		});
+		})
 	}
 
 	handleMessage(buffer, info) {
 		switch (`${info.address}`) {
 			case this.localArduino:
 				this.sendMessage(buffer, this.remoteHost, this.port)
-				this.checkLooper(buffer)
-				break;
+				this.looper.add(buffer)
+				break
 
 			case this.remoteHost:
 				this.sendMessage(buffer, this.localArduino, this.port)
-				break;
+				break
 
 			default:
-				this.log("info", "received udp from unknown source", `${info.address}:${info.port}`);
-				break;
+				this.log("info", "received udp from unknown source", `${info.address}:${info.port}`)
+				break
 		}
 	}
 
 	sendMessage(buffer, host, port) {
-		const client = dgram.createSocket('udp4');
+		const client = dgram.createSocket('udp4')
 
 		client.send(buffer, port, host, (error, bytes) => {
 			if (error) {
 				this.log("udp_server", "error", error)
 
-				client.close();
+				client.close()
 			} else {
-				this.log("udp_server", "info", 'data sent to', `${host}:${port}`);
+				this.log("udp_server", "info", 'data sent to', `${host}:${port}`)
 
-				client.close();
+				client.close()
 			}
-		});
+		})
 	}
 
-	checkLooper(buffer) {
-		if (this.looper.state.isRecording) {
-			this.looper.saveData(buffer)
-		}
+	onStep(buffer) {
+		this.sendMessage(buffer, config.remoteHost, config.port)
+		this.sendMessage(buffer, config.localArduino, config.port)
 	}
 }
 

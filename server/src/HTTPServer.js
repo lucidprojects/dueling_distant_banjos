@@ -159,19 +159,19 @@ const init = () => {
 	})
 
 	app.get('/looper/record', async (req, res) => {
-		looper.record()
+		looper.toggleRecording()
 
 		res.status(200).end()
 	})
 
 	app.get('/looper/play', async (req, res) => {
-		looper.play()
+		looper.start()
 
 		res.status(200).end()
 	})
 
 	app.get('/looper/stop', async (req, res) => {
-		looper.stop()
+		looper.reset()
 
 		res.status(200).end()
 	})
