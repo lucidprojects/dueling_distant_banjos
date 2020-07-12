@@ -17,7 +17,8 @@ class UDPServer {
 		this.port = config.udpPort
 		this.log = log
 		this.looper = looper
-		this.looper.onStep = this.onStep
+
+		this.looper.onStep(this.onStep)
 	}
 
 	run() {

@@ -11,7 +11,7 @@ class Looper {
 		this.looping = false
 		this.muted = false
 		this.started = false
-		this.recording = true
+		this.recording = false
 		this.log = log
 	}
 
@@ -22,8 +22,8 @@ class Looper {
 		this.lastLoopStartTime = new Date
 		this.lastStepTime = new Date
 		this.lastPlayedIndex = 0
-		// this.intervalId = setInterval(this.step, 1)
-		this.intervalId = setInterval(this.step, 2)
+		// this.intervalId = setInterval(this.step.bind(this), 1)
+		this.intervalId = setInterval(this.step.bind(this), 2)
 		this.log('looper', 'info', 'playing loop')
 	}
 
@@ -36,7 +36,7 @@ class Looper {
 		this.looping = false
 		this.muted = false
 		this.started = false
-		this.recording = true
+		this.recording = false
 
 		clearInterval(this.intervalId)
 
