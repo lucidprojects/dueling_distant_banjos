@@ -40,15 +40,15 @@ class Looper {
 
 		this.player = setInterval(() => {
 			const buffer = this.getData()
-			this.log('looper', 'warn', '...')
+			this.log('looper', 'info', '...')
 
 			if (buffer != undefined) {
-				this.log('looper', 'warn', 'it was found')
+				this.log('looper', 'info', 'it was found')
 
 				this.udpServer.sendMessage(buffer, remoteHost, port)
 				this.udpServer.sendMessage(buffer, localArduino, port)
 			}
-		})
+		}, 1)
 	}
 
 	stop() {
