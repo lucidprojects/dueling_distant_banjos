@@ -1,5 +1,13 @@
 'use strict'
 
+const config = require('../config/config')
+
+const {
+	remoteHost,
+	localArduino,
+	port
+} = config
+
 class Looper {
 	constructor(log) {
 		this.startTime
@@ -32,18 +40,13 @@ class Looper {
 
 		this.player = setInterval(() => {
 			const buffer = this.getData()
+			this.log('looper', 'warn', '...')
 
 			if (buffer != undefined) {
-				console.log("was found");
-				const {
-					sendMessage,
-					remoteHost,
-					localArduino,
-					port
-				} = this.udpServer
+				this.log('looper', 'warn', 'it was found')
 
-				sendMessage(buffer, remoteHost, port)
-				sendMessage(buffer, localArduino, port)
+				this.udpServer.sendMessage(buffer, remoteHost, port)
+				this.udpServer.sendMessage(buffer, localArduino, port)
 			}
 		})
 	}
