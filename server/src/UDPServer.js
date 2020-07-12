@@ -45,7 +45,7 @@ class UDPServer {
 
 	onMessage() {
 		this.server.on('message', (buffer, info) => {
-			this.log("udp_server", "info", msg.toString() + ` | Received ${msg.length} bytes from ${info.address}:${info.port} \n [${buffer[0]},${buffer[1]},${buffer[2]}]`)
+			this.log("udp_server", "info", buffer.toString() + ` | Received ${buffer.length} bytes from ${info.address}:${info.port} \n [${buffer[0]},${buffer[1]},${buffer[2]}]`)
 
 			this.handleMessage(buffer, info)
 		});

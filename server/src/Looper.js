@@ -13,7 +13,6 @@ class Looper {
 	}
 
 	record() {
-		// log('http_server', 'info', 'listening on port: ' + config.port)
 		this.state.isRecording = !this.state.isRecording
 
 		if (this.state.isRecording) {
