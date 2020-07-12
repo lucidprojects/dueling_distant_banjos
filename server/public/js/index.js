@@ -48,7 +48,7 @@ const putData = async () => {
 
 	const response = await fetch("/api/data", payload);
 
-	return response.json(); 
+	return response.json();
 }
 
 const setState = (data) => {
@@ -74,19 +74,11 @@ const handleEdit = () => {
 }
 
 const hide = () => {
-	// for (let i = 0; i < elements.inputs.length; i++) {
-	// 	elements.inputs[i].style.visibility = "hidden";
-	// }
-
 	elements.capBuffInput.style.visibility = "hidden";
 	elements.submit.style.visibility = "hidden";
 }
 
 const show = () => {
-	// for (let i = 0; i < elements.inputs.length; i++) {
-	// 	elements.inputs[i].style.visibility = "visible";
-	// }
-
 	elements.capBuffInput.style.visibility = "visible";
 	elements.submit.style.visibility = "visible";
 }
