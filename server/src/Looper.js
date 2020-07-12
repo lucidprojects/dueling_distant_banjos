@@ -21,7 +21,7 @@ class Looper {
 			this.log('looper', 'info', 'start recording')
 		} else {
 
-			this.log('looper', 'info', 'start recording')
+			this.log('looper', 'info', 'stop recording')
 		}
 	}
 
@@ -34,6 +34,7 @@ class Looper {
 			const buffer = this.getData()
 
 			if (buffer != undefined) {
+				console.log("was found");
 				const {
 					sendMessage,
 					remoteHost,
