@@ -40,9 +40,8 @@ class Looper {
 
 		this.player = setInterval(() => {
 			const buffer = this.getData()
-			this.log('looper', 'info', '...')
 
-			if (buffer != undefined) {
+			if (buffer) {
 				this.log('looper', 'info', 'it was found')
 
 				this.udpServer.sendMessage(buffer, remoteHost, port)
