@@ -1,12 +1,12 @@
 'use strict'
 
-const express = require('express');
-const http = require('http');
-const bodyParser = require('body-parser');
-const helmet = require('helmet');
-const morgan = require('morgan');
+const express = require('express')
+const http = require('http')
+const bodyParser = require('body-parser')
+const helmet = require('helmet')
+const morgan = require('morgan')
 const winston = require('winston')
-const config = require('../config/config');
+const config = require('../config/config')
 // const Traceroute = require('./Traceroute')
 
 var log
@@ -22,37 +22,37 @@ const getArduino = () => {
 			port: 5555,
 			path: '/',
 			method: 'GET'
-		};
+		}
 
 		log('http_server', 'info', 'GET', config.localArduino)
 
-		let resData = "";
+		let resData = ""
 		const req = http.request(options, (res) => {
-			log('http_server', 'info', 'status code:', res.statusCode);
+			log('http_server', 'info', 'status code:', res.statusCode)
 
 			res.on('data', (chunk) => {
-				resData += chunk;
-			});
+				resData += chunk
+			})
 
 			res.on('end', () => {
-				let parsedData = JSON.parse(resData);
+				let parsedData = JSON.parse(resData)
 
 				if (parsedData.message == "success") {
-					log('http_server', 'error', 'failed to get data from arduino');
+					log('http_server', 'error', 'failed to get data from arduino')
 				} else {
-					log('http_server', 'info', 'successfully requested data from arduino');
+					log('http_server', 'info', 'successfully requested data from arduino')
 				}
 
-				resolve(parsedData);
-			});
-		});
+				resolve(parsedData)
+			})
+		})
 
 		req.on('error', err => {
-			log('http_server', 'error', err);
-		});
+			log('http_server', 'error', err)
+		})
 
-		req.end();
-	});
+		req.end()
+	})
 }
 
 const putArduino = (rawData) => {
@@ -68,54 +68,54 @@ const putArduino = (rawData) => {
 		headers: {
 			'data': data
 		}
-	};
+	}
 
 	log('http_server', 'info', 'PUT', config.localArduino)
 
-	let resData = "";
+	let resData = ""
 	const req = http.request(options, (res) => {
-		log('http_server', 'info', 'status code:', res.statusCode);
+		log('http_server', 'info', 'status code:', res.statusCode)
 
 		res.on('data', (chunk) => {
-			resData += chunk;
-		});
+			resData += chunk
+		})
 
 		res.on('end', () => {
 			if (JSON.parse(resData).message == "success") {
-				log('http_server', 'info', 'arduino updated');
+				log('http_server', 'info', 'arduino updated')
 			} else {
-				log('http_server', 'error', 'failed to updated arduino');
+				log('http_server', 'error', 'failed to updated arduino')
 			}
 
-			return new Promise((resolve) => resolve());
+			return new Promise((resolve) => resolve())
 		})
-	});
+	})
 
 	req.on('error', err => {
-		log('http_server', 'error', err);
-	});
+		log('http_server', 'error', err)
+	})
 
-	req.end();
+	req.end()
 }
 
 // -----> Create HTTP Server <-----
 
-const app = express();
+const app = express()
 
-const server = http.createServer(app);
+const server = http.createServer(app)
 
 const init = () => {
 	// -----> Set Middleware <-----
 
-	app.use(bodyParser.json());
+	app.use(bodyParser.json())
 	app.use(morgan('combined', {
 		stream: logger.stream
 	}))
-	app.use(helmet());
+	app.use(helmet())
 
 	// -----> Set Static Directory <-----
 
-	app.use(express.static('public'));
+	app.use(express.static('public'))
 
 	// -----> Default Error Handler <-----
 
@@ -137,7 +137,6 @@ const init = () => {
 
 	app.get('/api/data', async (req, res) => {
 		const data = await getArduino(req.body)
-		// log(data);
 
 		const state = {
 			localIp: config.host,
@@ -148,14 +147,12 @@ const init = () => {
 		}
 
 		res.json(state)
-		// res.status(500).json({ error: 'message' }) // error stuff
 	})
 
 	app.put('/api/data', async (req, res) => {
-		await putArduino(req.body);
+		await putArduino(req.body)
 
 		res.json({})
-		// res.status(500).json({ error: 'message' }) // error stuff
 	})
 
 	app.get('/looper/record', async (req, res) => {

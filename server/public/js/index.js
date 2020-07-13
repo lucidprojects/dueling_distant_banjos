@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 const elements = {
 	edit: document.getElementById('edit'),
@@ -10,7 +10,7 @@ const elements = {
 	capBuff: document.getElementById('cap-buff'),
 	capBuffInput: document.getElementById('capBuff'),
 	inputs: document.getElementsByClassName('input-field')
-};
+}
 
 // TODO: Remove this and get keys names from keys in state
 const dataNames = [
@@ -19,7 +19,7 @@ const dataNames = [
 	'remoteIp',
 	'remotePort',
 	'capBuff'
-];
+]
 
 const state = {
 	localIp: '',
@@ -27,14 +27,14 @@ const state = {
 	remoteIp: '',
 	remotePort: '',
 	capBuff: 0,
-};
+}
 
-var edit = false;
+var edit = false
 
 const getData = async () => {
-	const response = await fetch("/api/data");
+	const response = await fetch("/api/data")
 
-	return response.json();
+	return response.json()
 }
 
 const putData = async () => {
@@ -46,30 +46,30 @@ const putData = async () => {
 		body: JSON.stringify(state)
 	}
 
-	const response = await fetch("/api/data", payload);
+	const response = await fetch("/api/data", payload)
 
-	return response.json();
+	return response.json()
 }
 
 const setState = (data) => {
 	for (let i = 0; i < dataNames.length; i++) {
-		state[dataNames[i]] = data[dataNames[i]];
+		state[dataNames[i]] = data[dataNames[i]]
 	}
 }
 
 const setValues = () => {
 	for (let i = 0; i < dataNames.length; i++) {
-		elements[dataNames[i]].innerHTML = state[dataNames[i]];
+		elements[dataNames[i]].innerHTML = state[dataNames[i]]
 	}
 }
 
 const handleEdit = () => {
-	edit = !edit;
+	edit = !edit
 
 	if (edit) {
-		show();
+		show()
 	} else {
-		hide();
+		hide()
 	}
 }
 
@@ -84,42 +84,42 @@ const show = () => {
 }
 
 const handleSubmit = async () => {
-	let val;
+	let val
 
 	for (let i = 0; i < dataNames.length; i++) {
 		val = document.getElementById(dataNames[i]).value
 
 		if (val != '') {
-			state[dataNames[i]] = val;
+			state[dataNames[i]] = val
 			document.getElementById(dataNames[i]).value = ""
 		}
 	}
 
-	hide();
+	hide()
 
-	let response = await putData();
+	let response = await putData()
 
 	if (response.error) {
-		console.log("Something went wrong trying to update data");
+		console.log("Something went wrong trying to update data")
 	} else {
-		setValues();
+		setValues()
 	}
 }
 
 const init = async () => {
 	// assign listeners
-	elements.edit.onclick = handleEdit;
-	elements.submit.onclick = handleSubmit;
+	elements.edit.onclick = handleEdit
+	elements.submit.onclick = handleSubmit
 
 	// get initial data
-	let response = await getData();
+	let response = await getData()
 
 	if (response.error) {
-		console.log("Something went wrong trying to get initial data from Arduino");
+		console.log("Something went wrong trying to get initial data from Arduino")
 	} else {
-		setState(response);
-		setValues();
+		setState(response)
+		setValues()
 	}
 }
 
-init();
+init()

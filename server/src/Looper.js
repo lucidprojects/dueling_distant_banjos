@@ -21,6 +21,7 @@ class Looper {
 
 		this.looping = true
 		this.length = new Date - this.startTime
+		this.lastPlayedIndex = 0
 		this.intervalId = setInterval(this.step.bind(this), 2)
 
 		this.log('looper', 'info', 'playing loop')
@@ -49,8 +50,6 @@ class Looper {
 		if (this.recording) {
 			this.startTime = new Date
 			this.lastLoopStartTime = new Date
-			this.lastPlayedIndex = 0
-
 			this.log('looper', 'info', 'start recording')
 		} else {
 			this.log('looper', 'info', 'stop recording')
@@ -147,12 +146,8 @@ class Looper {
 
 	// sort events in the sequence
 	compare(a, b) {
-		if (a.time < b.time) {
-			return -1
-		}
-		if (a.time > b.time) {
-			return 1
-		}
+		if (a.time < b.time) return -1
+		if (a.time > b.time) return 1
 		return 0
 	}
 }
