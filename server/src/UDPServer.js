@@ -99,8 +99,8 @@ class UDPServer {
 	}
 
 	onStep(buffer) {
-		this.sendMessage(buffer, config.remoteHost, config.port)
-		this.sendMessage(buffer, config.localArduino, config.port)
+		this.sendMessage(buffer, this.remoteHost, this.port)
+		this.sendMessage(buffer, this.localArduino, this.port)
 	}
 }
 
