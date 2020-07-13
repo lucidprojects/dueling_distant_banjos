@@ -10,19 +10,24 @@ class Looper {
 		this.length = false
 		this.looping = false
 		this.muted = false
-		this.started = false
+		this.started = true
 		this.recording = false
 		this.log = log
 	}
 
-	// start looping
+
+	// starts looping
 	start() {
-		this.started = true
+		if (this.looping) return
+
+		this.looping = true
+		this.length = new Date - this.startTime // NOTE: this is what actually resets everything?
 		this.startTime = new Date
 		this.lastLoopStartTime = new Date
 		this.lastStepTime = new Date
 		this.lastPlayedIndex = 0
 		this.intervalId = setInterval(this.step.bind(this), 2)
+
 		this.log('looper', 'info', 'playing loop')
 	}
 
@@ -42,20 +47,17 @@ class Looper {
 		this.log('looper', 'info', 'loop reset')
 	}
 
-	// TODO: how to use (does it need to log?)
-	// starts looping
-	loop() {
-		if (this.looping) return
-		this.looping = true
-		this.length = new Date - this.startTime
-	}
-
 	// toggles recording (`Looper.add` calls)
 	toggleRecording() {
 		this.recording = !this.recording
 
-		if (this.recording) this.log('looper', 'info', 'start recording')
-		else this.log('looper', 'info', 'stop recording')
+		if (this.recording) {
+			this.startTime = new Date
+			this.log('looper', 'info', 'start recording')
+		} else {
+			this.log('looper', 'info', 'stop recording')
+		}
+
 
 		return this.recording
 	}
