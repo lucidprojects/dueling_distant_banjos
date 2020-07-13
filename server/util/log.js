@@ -11,8 +11,6 @@ const moment = require('moment')
 
 const filename = path.join(__dirname, '../log/' + moment().format('YYYYMMDDHHmmss') + '.log')
 
-// TODO: create custom format: https://github.com/winstonjs/winston#formats
-
 const transports = [
 	new winston.transports.File({
 		filename: filename
