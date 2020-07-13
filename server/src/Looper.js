@@ -10,11 +10,10 @@ class Looper {
 		this.length = false
 		this.looping = false
 		this.muted = false
-		this.started = true
 		this.recording = false
+		this.started = true
 		this.log = log
 	}
-
 
 	// starts looping
 	start() {
@@ -89,6 +88,7 @@ class Looper {
 
 	// add data to the loop sequence
 	add(buffer) {
+		this.log("looper", "warn", `rec: ${!this.recording}, mut: ${this.muted}, start: ${!this.started}`)
 		if (!this.recording) return
 		if (this.muted) return
 		if (!this.started) return
