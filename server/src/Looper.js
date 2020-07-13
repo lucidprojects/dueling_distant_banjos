@@ -21,7 +21,7 @@ class Looper {
 		if (this.looping) return
 
 		this.looping = true
-		this.length = new Date - this.startTime // NOTE: this is what actually resets everything?
+		this.length = new Date - this.startTime
 		this.startTime = new Date
 		this.lastLoopStartTime = new Date
 		this.lastStepTime = new Date
@@ -35,8 +35,8 @@ class Looper {
 	reset() {
 		if (typeof this.muteCb == 'function') this.muteCb()
 
-		this.sequence = []
-		this.length = false
+		// this.sequence = []
+		// this.length = false
 		this.looping = false
 		this.muted = false
 		this.started = false
