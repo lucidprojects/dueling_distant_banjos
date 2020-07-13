@@ -93,7 +93,7 @@ class Looper {
 		if (this.muted) return
 		if (!this.started) return
 
-		this.log('looper', 'info', `saving data: [${buffer[0]},${buffer[1]},${buffer[2]}]`)
+		this.log('looper', 'info', `saving data: [${buffer[0]}, ${buffer[1]}, ${buffer[2]}]`)
 
 		var obj = {
 			time: new Date - this.lastLoopStartTime,
