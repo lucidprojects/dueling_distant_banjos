@@ -32,7 +32,7 @@ const logger = winston.createLogger({
 logger.stream = {
 	write: function (message, encoding) {
 		logger.log({
-			timestamp: moment().format('YYYY-MM-DD HH:mm:ss.SSSS'),
+			timestamp: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
 			service: 'http_server',
 			level: 'info',
 			message: message
@@ -42,7 +42,7 @@ logger.stream = {
 
 const log = async (service, level, msg) => {
 	logger.log({
-		timestamp: moment().format('YYYY-MM-DD HH:mm:ss.SSSS'),
+		timestamp: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
 		service: service,
 		level: level,
 		message: msg
