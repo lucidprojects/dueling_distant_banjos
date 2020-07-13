@@ -88,7 +88,7 @@ class Looper {
 
 	// add data to the loop sequence
 	add(buffer) {
-		this.log("looper", "warn", `rec: ${!this.recording}, mut: ${this.muted}, start: ${!this.started}`)
+		// this.log("looper", "warn", `rec: ${!this.recording}, mut: ${this.muted}, start: ${!this.started}`)
 		if (!this.recording) return
 		if (this.muted) return
 		if (!this.started) return
