@@ -91,7 +91,7 @@ class UDPServer {
 
 				client.close()
 			} else {
-				this.log("udp_server", "info", 'data sent to', `${host}:${port}`)
+				this.log("udp_server", "info", `data sent to ${host}:${port}`)
 
 				client.close()
 			}
