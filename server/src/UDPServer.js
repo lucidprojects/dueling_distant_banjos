@@ -17,8 +17,7 @@ class UDPServer {
 		this.port = config.udpPort
 		this.log = log
 		this.looper = looper
-
-		this.looper.onStep(this.onStep)
+		this.looper.onStep(this.onStep.bind(this))
 	}
 
 	run() {
@@ -100,8 +99,8 @@ class UDPServer {
 	}
 
 	onStep(buffer) {
-		UDPServer.sendMessage(buffer, config.remoteHost, config.port)
-		UDPServer.sendMessage(buffer, config.localArduino, config.port)
+		this.sendMessage(buffer, config.remoteHost, config.port)
+		this.sendMessage(buffer, config.localArduino, config.port)
 	}
 }
 
