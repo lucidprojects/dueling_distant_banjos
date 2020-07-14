@@ -201,14 +201,6 @@ void midiAllOff(int chnl, int noteValue)
   }
 }
 
-<<<<<<< HEAD
-void midiVolCtrl(int chnl, int noteValue)
-{
-
-	// Serial.println(chnl);
-	switch (chnl)
-=======
-
 
 void midiCtrl(int chnl, int noteValue)
 {
@@ -337,44 +329,7 @@ void midiVolCtrl(int chnl, int noteValue, int volHex)
   Serial.println  (volHex);
 }
 
->>>>>>> master
 
-	{
-	case 1:
-		midiCommand(ctrlChannels[0], noteValue, 0x6F, fwd[0]);
-		break;
-	case 2:
-		midiCommand(ctrlChannels[1], noteValue, 0x6F, fwd[1]);
-		break;
-	case 3:
-		midiCommand(ctrlChannels[2], noteValue, 0x6F, fwd[2]);
-		break;
-	case 4:
-		midiCommand(ctrlChannels[3], noteValue, 0x6F, fwd[3]);
-		break;
-	case 5:
-		midiCommand(ctrlChannels[4], noteValue, 0x6F, fwd[4]);
-		break;
-	case 6:
-		midiCommand(ctrlChannels[5], noteValue, 0x6F, fwd[5]);
-		break;
-	case 7:
-		midiCommand(ctrlChannels[6], noteValue, 0x6F, fwd[6]);
-		break;
-	case 8:
-		midiCommand(ctrlChannels[7], noteValue, 0x6F, fwd[7]);
-		break;
-	case 9: // added channel 9 for scale notes to all play on same channel
-		midiCommand(ctrlChannels[8], noteValue, 0x6F, fwd[8]);
-		break;
-	default:
-		break;
-	}
-	Serial.print("midiVolCtrl chnl = ");
-	Serial.print(chnl);
-	Serial.print(" noteValue = ");
-	Serial.println(noteValue);
-}
 
 void handleReceiveUdp()
 {
