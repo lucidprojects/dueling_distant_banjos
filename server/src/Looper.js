@@ -20,6 +20,7 @@ class Looper {
 		if (this.looping) return
 
 		this.looping = true
+		this.lastLoopStartTime = new Date
 		this.length = new Date - this.startTime
 		this.lastPlayedIndex = 0
 		this.intervalId = setInterval(this.step.bind(this), 2)
@@ -49,7 +50,6 @@ class Looper {
 
 		if (this.recording) {
 			this.startTime = new Date
-			this.lastLoopStartTime = new Date
 			this.log('looper', 'info', 'start recording')
 		} else {
 			this.log('looper', 'info', 'stop recording')
@@ -105,7 +105,7 @@ class Looper {
 	// step event, called by a setInterval
 	step() {
 		let restarted = false
-		let currentTime = new Date - this.lastLoopStartTime // current time in this loop.
+		let currentTime = new Date - this.lastLoopStartTime // current time in this loop. NOTE:: setting this?
 
 		// If this is the end of a loop.
 		if (this.length && currentTime > this.length) {
