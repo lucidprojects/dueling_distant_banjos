@@ -159,12 +159,13 @@ void handleBroadcast()
     Serial.print(" ");
     Serial.println(fwd[rtCounter - 1]);
     doBroadCast = false;
-    setMode(8);
+    setMode(9);
   }
 }
 
 void handleChMute()
 {
+  //rtCounter = 1;
   // ChVolume
   if (chMute == true) {
     //Serial.println("channel vol on");
