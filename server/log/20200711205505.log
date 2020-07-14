@@ -1,0 +1,64 @@
+{"timestamp":"2020-07-11 20:55:05.9750","service":"udp_server","level":"info","message":"Server is listening at port 5000"}
+{"timestamp":"2020-07-11 20:55:05.9790","service":"udp_server","level":"info","message":"Server ip :0.0.0.0"}
+{"timestamp":"2020-07-11 20:55:05.9800","service":"udp_server","level":"info","message":"Server is IP4/IP6 : IPv4"}
+{"timestamp":"2020-07-11 20:55:05.9800","service":"http_server","level":"info","message":"listening on port: 5050"}
+{"timestamp":"2020-07-11 20:55:11.3370","service":"looper","level":"info","message":"start recording"}
+{"message":"::1 - - [12/Jul/2020:00:55:11 +0000] \"GET /looper/record HTTP/1.1\" 200 - \"-\" \"curl/7.54.0\"\n","level":"info"}
+{"timestamp":"2020-07-11 20:55:13.3060","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [145,62,127]"}
+{"timestamp":"2020-07-11 20:55:13.3070","service":"looper","level":"info","message":"saving data: [145,62,127]"}
+{"timestamp":"2020-07-11 20:55:13.3080","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:13.4440","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:13.4450","service":"looper","level":"info","message":"saving data: [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:13.4450","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:13.7740","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [145,64,127]"}
+{"timestamp":"2020-07-11 20:55:13.7740","service":"looper","level":"info","message":"saving data: [145,64,127]"}
+{"timestamp":"2020-07-11 20:55:13.7750","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:13.8900","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:13.8900","service":"looper","level":"info","message":"saving data: [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:13.8910","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:14.1450","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [145,62,127]"}
+{"timestamp":"2020-07-11 20:55:14.1450","service":"looper","level":"info","message":"saving data: [145,62,127]"}
+{"timestamp":"2020-07-11 20:55:14.1450","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:14.2480","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:14.2480","service":"looper","level":"info","message":"saving data: [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:14.2490","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:14.5260","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [145,64,127]"}
+{"timestamp":"2020-07-11 20:55:14.5270","service":"looper","level":"info","message":"saving data: [145,64,127]"}
+{"timestamp":"2020-07-11 20:55:14.5280","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:14.6090","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:14.6090","service":"looper","level":"info","message":"saving data: [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:14.6090","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:14.8210","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [145,62,127]"}
+{"timestamp":"2020-07-11 20:55:14.8220","service":"looper","level":"info","message":"saving data: [145,62,127]"}
+{"timestamp":"2020-07-11 20:55:14.8220","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:14.9080","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:14.9090","service":"looper","level":"info","message":"saving data: [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:14.9090","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:15.1580","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [145,60,127]"}
+{"timestamp":"2020-07-11 20:55:15.1580","service":"looper","level":"info","message":"saving data: [145,60,127]"}
+{"timestamp":"2020-07-11 20:55:15.1590","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:15.2930","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:15.2930","service":"looper","level":"info","message":"saving data: [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:15.2940","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:15.5320","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [145,62,127]"}
+{"timestamp":"2020-07-11 20:55:15.5320","service":"looper","level":"info","message":"saving data: [145,62,127]"}
+{"timestamp":"2020-07-11 20:55:15.5330","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:15.6250","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:15.6260","service":"looper","level":"info","message":"saving data: [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:15.6260","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:15.9240","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [145,64,127]"}
+{"timestamp":"2020-07-11 20:55:15.9240","service":"looper","level":"info","message":"saving data: [145,64,127]"}
+{"timestamp":"2020-07-11 20:55:15.9250","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:16.0110","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:16.0120","service":"looper","level":"info","message":"saving data: [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:16.0120","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:16.0240","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [145,64,127]"}
+{"timestamp":"2020-07-11 20:55:16.0250","service":"looper","level":"info","message":"saving data: [145,64,127]"}
+{"timestamp":"2020-07-11 20:55:16.0250","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:16.1580","service":"udp_server","level":"info","message":"Received 3 bytes from 192.168.86.249:5000 \n [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:16.1590","service":"looper","level":"info","message":"saving data: [129,0,0]"}
+{"timestamp":"2020-07-11 20:55:16.1590","service":"udp_server","level":"info","message":"data sent to"}
+{"timestamp":"2020-07-11 20:55:17.4770","service":"looper","level":"info","message":"stop recording"}
+{"message":"::1 - - [12/Jul/2020:00:55:17 +0000] \"GET /looper/record HTTP/1.1\" 200 - \"-\" \"curl/7.54.0\"\n","level":"info"}
+{"timestamp":"2020-07-11 20:55:27.0130","service":"looper","level":"info","message":"playing loop"}
+{"message":"::1 - - [12/Jul/2020:00:55:27 +0000] \"GET /looper/play HTTP/1.1\" 200 - \"-\" \"curl/7.54.0\"\n","level":"info"}

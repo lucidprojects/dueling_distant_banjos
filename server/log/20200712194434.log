@@ -1,0 +1,8 @@
+{"timestamp":"2020-07-12 19:44:34.3360","service":"udp_server","level":"info","message":"Server is listening at port 5000"}
+{"timestamp":"2020-07-12 19:44:34.3390","service":"udp_server","level":"info","message":"Server ip :0.0.0.0"}
+{"timestamp":"2020-07-12 19:44:34.3400","service":"udp_server","level":"info","message":"Server is IP4/IP6 : IPv4"}
+{"timestamp":"2020-07-12 19:44:34.3400","service":"http_server","level":"info","message":"listening on port: 5050"}
+{"timestamp":"2020-07-12 19:44:49.8680","service":"looper","level":"info","message":"start recording"}
+{"message":"::1 - - [12/Jul/2020:23:44:49 +0000] \"GET /looper/record HTTP/1.1\" 200 - \"-\" \"curl/7.54.0\"\n","level":"info"}
+{"timestamp":"2020-07-12 19:44:56.6450","service":"looper","level":"info","message":"loop reset"}
+{"message":"::1 - - [12/Jul/2020:23:44:56 +0000] \"GET /looper/stop HTTP/1.1\" 200 - \"-\" \"curl/7.54.0\"\n","level":"info"}

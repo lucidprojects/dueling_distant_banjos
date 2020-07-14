@@ -53,14 +53,14 @@ void drawMode(int disMode, int rtCounter)
     case 0: // set default encoderMode
       modeText = "Explore";
       break;
-    case 1: // channel select mode;
-      modeText = "Ch Select";
-      break;
-    case 2: // Play chords - 4btns as chords sliders modify btns
+    case 1: // Play chords - 4btns as chords sliders modify btns
       modeText = "Chords";
       break;
-    case 3: // All cap inputs as scale buttons mode
+    case 2: // All cap inputs as scale buttons mode
       modeText = "Scales";
+      break;
+    case 3: // Adjust channel volume ON/OFF
+      modeText = "Mute on/off";
       break;
     case 4: // Mod scale - 4btns as scales sliders modify btns
       modeText = "Scales pb";
@@ -68,18 +68,19 @@ void drawMode(int disMode, int rtCounter)
     case 5: // Slides or notes mode
       modeText = "Slds_or_note";
       break;
-    case 6: // Explore mode - encoder as pot
+    case 6: // channel select mode;
+      modeText = "Ch Select";
+      break;  
+    case 7: // Explore mode - encoder as pot
       modeText = "Pot mode";
       break;
-    case 7: // volume adjust per channel
+    case 8: // volume adjust per channel
       modeText = "Volume Adj";
       break;
-    case 8: // Broadcast X CHANNEL
+    case 9: // Broadcast X CHANNEL
       modeText = "Broadcast";
       break;
-    case 9: // Adjust channel volume ON/OFF
-      modeText = "Mute on/off";
-      break;
+
     case 10: // Calibration
       modeText = "Calibration";
       break;
@@ -91,7 +92,7 @@ void drawMode(int disMode, int rtCounter)
       break;
     case 13: // wifi failed
       modeText = "Wifi Failed";
-      break;      
+      break;
 
     default:
       break;
@@ -214,9 +215,9 @@ void drawOctaveSelect(bool disOctaveSelect) {
 void drawSlidesONotes(bool disSlide) {
   display.setRotation(4);
   display.setTextSize(1);  // Normal 1:1 pixel scale
-    display.setTextColor(WHITE, BLACK); // Draw white text
-    display.setCursor(60, 24); // Start at top-left corner
-    display.println(F(" "));
+  display.setTextColor(WHITE, BLACK); // Draw white text
+  display.setCursor(60, 24); // Start at top-left corner
+  display.println(F(" "));
 
   if (disSlide == true)
   {
