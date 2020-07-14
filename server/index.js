@@ -25,7 +25,7 @@ const httpServer = new HTTPServer(log, logger, looper)
 
 httpServer.run()
 
-// Keypress handler
+// -----> Handle Keypress <-----
 
 const onKeyPress = (ch, key) => {
 	if ((key && key.ctrl && key.name == 'c') || key.name == 'q') {
