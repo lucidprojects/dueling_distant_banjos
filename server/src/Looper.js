@@ -50,14 +50,14 @@ class Looper {
 		this.recording = !this.recording
 
 		if (this.recording) {
-			this.startTime = new Date
+			this.recordStartTime = new Date
 
 			if (!this.hasData) this.hasData = true
 
 			this.log('looper', 'info', 'start recording')
 
 		} else {
-			this.length = new Date - this.startTime
+			this.length = new Date - this.recordStartTime
 
 			this.log('looper', 'info', 'stop recording')
 		}
@@ -101,7 +101,7 @@ class Looper {
 		this.log('looper', 'info', `saving data: [${buffer[0]}, ${buffer[1]}, ${buffer[2]}]`)
 
 		var obj = {
-			time: new Date - this.startTime,
+			time: new Date - this.recordStartTime,
 			data: buffer,
 			isNew: true
 		}
