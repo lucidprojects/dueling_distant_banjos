@@ -1,6 +1,7 @@
 # MUSIC_CAN aka MIDI_CAN
 
 ## Concept
+
 MUSIC_CAN is an ode to the original project name “MIDI_CAN.”  Built to embrace all that music can do for our psyche, culture, and society,  MUSIC_CAN is a networked, multimode, instrument / MIDI controller.
  
 During the pandemic and the new socially distant world we find ourselves in, we are now more separate than ever.  With rolling stay at home orders, what can we do to continue our collaborative nature?  How can we still connect even though we can't physically?
@@ -13,11 +14,10 @@ Music is a powerful force for connection. MUSIC_CAN strives to actively bring pe
 
 The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherwood. Jake and Nikhil Kumar will be performing with the MUSIC_CAN at NMF 2020. All 3 are 2021 M.P.S. Candidates at the New York University, Tisch School of the Arts, Interactive Telecommunications Program. 
 
-
-
-# 2020-07-10 Update
+# 2020-07-10 -- UPDATED
 
 ### New Features
+
 1) Cap sensors now have multipress
 	1) (single click, double click, long press, long press and hold)
 	#### Current multipress functionality
@@ -28,6 +28,7 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 	1) going back to asSlides mode turns pitch bend back on (I haven't used this much at all in practice)
 
 ### Improvements
+
 1) Channel selection now works in all modes via the encoder
 	1) pot mode and volume mode still require channel selection.
 		
@@ -41,6 +42,7 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 4) !asSlides now properly sends single MIDI cmds instead of sending a bunch in quick succession 	
 
 ### DAW set up
+
 1) Added additional sample Channels
 
 2) Added ability to turn off channel with sample looping (this is kind of a hack)
@@ -49,6 +51,7 @@ The MUSIC_CAN is student work designed and created by Noah Kernis and Jake Sherw
 ## Functionality 
 
 ### Usage
+
 1) Create repo dir 
 ```
 mkdir music_can
@@ -81,6 +84,7 @@ nano secrets.h
 7) Compile,upload to MUSIC_CAN and go through calibration. ([see calibration steps](#calibration)) 
 
 #### Network
+
 8) Update network settings 
      1) Set remote and local IP addresss /server/config/config.js
      ```
@@ -112,6 +116,7 @@ curl ifconfig.io
 ```
 
 ### Encoder Functions - UPDATED
+
 0) explore - different instruments all 8 channels
      1) single click selects mode
 
@@ -126,14 +131,15 @@ curl ifconfig.io
      #### New
      7) Setting !asSlides (cap long press and hold toggles asSlides) make all 8 cap sensors play chords (C, Dm, Em, F, G, A, B, C2)
      
-     
 2) scales <s>(use ch select)</s> 
 	1) (all 8 cap sensors)
 	2) encoder selects channel
+
 3) scales w/ pitch bend (use ch select)
 	1) 4cap btns scale notes pitch bend sliders
     2) double click exits back to Default
     3) encoder selects channel
+
 4) slides as slides or notes - defaults to slides (1)
 	1) single click from default mode (enc == 5) toggles boolean
 	2) double click exits back to Default
@@ -141,22 +147,26 @@ curl ifconfig.io
 
 5) ch select
     1) single click selects channel and exits back to Default
+
 6) pot mode
     1) rotating encoder scrolls through 1-110 audible MIDI note vals
     2) double click exits back to Default	
-7) <s>volume adjust per channel - to play with things on and off</s><br>
-<s> 1) not started - need to add handling to adjust volume per channel</s>
+
+7) ~~<s>volume adjust per channel - to play with things on and off~~
+   1) ~~not started - need to add handling to adjust volume per channel~~
+
 8) broadcast
   	1) rotating encoder scrolls through channels
-    2) single click toggles send 1/0
-    3) double click exits back to Default
-9) track mute on/off
-  	1) tappng cap sensor turns sends cmd to mute on/off pre-mapped tracks
-    2) requires setup in DAW for MIDI cmd mapping to respective tracks.
-    3) encode select 8 channel array to mute or unmute (1 = 1st 8 ch, 2 = 2nd 8 etc)
-
+    1) single click toggles send 1/0
+    2) double click exits back to Default
+    3) 
+9)  track mute on/off
+  	2) tappng cap sensor turns sends cmd to mute on/off pre-mapped tracks
+    1) requires setup in DAW for MIDI cmd mapping to respective tracks.
+    2) encode select 8 channel array to mute or unmute (1 = 1st 8 ch, 2 = 2nd 8 etc)
 
 ### Playing Music
+
 1) use explore mode to experiment with different didgital instruments set up in the DAW
 2) chords 4 w/ pitch bend or chords 8 (full octave)
 3) scales play preconfigured minor or major scale (all 8 cap sensors)
@@ -168,8 +178,20 @@ curl ifconfig.io
 9) broadcast sets which channels to sent to partner
 10) mute on/off preconfigured tracks in DAW
 
+### Using looper
+
+- The following key presses must be entered in the active terminal session where the server is running
+  - *r*
+    - A) start recording loop (local data only)
+    - B) if recording, stop recording
+  - *space*
+    - A) play recorded loop
+    - B) if loop playing, stop loop and reset it to start
+  - *m*
+    - if loop playing, mute it's output
 
 ### Calibration
+
 CALIBRATION - iterate through an array of sensors and calibrate each sensor.  Storing values in an array of mins/maxes.
 1) Can calibration will run first - canCalibrationTime  eg first 10 seconds - used as threshold to prevent cap readings from holding the can
      1) OLED will show S: C (for can) and V: (CAN_SENSOR_VALUE)
@@ -182,11 +204,12 @@ CALIBRATION - iterate through an array of sensors and calibrate each sensor.  St
 	use these vars for various thresholds
 
 ### OLED Info
-![MUSIC_CAN Oled details](https://raw.githubusercontent.com/lucidprojects/dueling_distant_banjos/master/img/midi_can_oled_all.jpg)
-                          <!-- https://github.com/lucidprojects/dueling_distant_banjos/blob/master/img/midi_can_oled_all.jpg     -->
+ 
+ - [MUSIC_CAN Oled details](https://raw.githubusercontent.com/lucidprojects/dueling_distant_banjos/master/img/midi_can_oled_all.jpg)
 
 ### Calibration and Modes video 
-[![midi_can oled](http://img.youtube.com/vi/G5dJEBQeuGQ/0.jpg)](http://www.youtube.com/watch?v=G5dJEBQeuGQ "MIDI_CAN")
+
+- [![midi_can oled](http://img.youtube.com/vi/G5dJEBQeuGQ/0.jpg)](http://www.youtube.com/watch?v=G5dJEBQeuGQ "MIDI_CAN")
 
 (clicks through to youtube)
 
@@ -203,6 +226,7 @@ CALIBRATION - iterate through an array of sensors and calibrate each sensor.  St
 	- [node-gyp error installing fiber@2.0.2 on macOS Catalina](npm_config_node_gyp)
 
 ### Helpful software
-[MIDI Monitor](https://www.macupdate.com/app/mac/9950/midi-monitor)<br>
-[LoopBack](https://rogueamoeba.com/loopback/)<br>
-[SoundFlower - for Catalina](https://github.com/mattingalls/Soundflower/releases/tag/2.0b2)<br>
+
+- [MIDI Monitor](https://www.macupdate.com/app/mac/9950/midi-monitor)<br>
+- [LoopBack](https://rogueamoeba.com/loopback/)<br>
+- [SoundFlower - for Catalina](https://github.com/mattingalls/Soundflower/releases/tag/2.0b2)<br>

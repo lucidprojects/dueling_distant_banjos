@@ -11,7 +11,7 @@ class Looper {
 		this.looping = false
 		this.muted = false
 		this.recording = false
-		this.started = true
+		this.hasData = false
 		this.log = log
 	}
 
@@ -33,10 +33,10 @@ class Looper {
 		if (typeof this.muteCb == 'function') this.muteCb()
 
 		// this.sequence = []
+		// this.hasData = false
 		// this.length = false
 		this.looping = false
 		this.muted = false
-		this.started = false
 		this.recording = false
 
 		clearInterval(this.intervalId)
@@ -44,13 +44,17 @@ class Looper {
 		this.log('looper', 'info', 'loop reset')
 	}
 
-	// toggles recording (`Looper.add` calls)
+	// toggles recording (enables `Looper.add` calls)
 	toggleRecording() {
+		if (this.looping) return
+
 		this.recording = !this.recording
 
 		if (this.recording) {
 			this.startTime = new Date
 			this.log('looper', 'info', 'start recording')
+
+			if (!this.hasData) this.hasData = true
 		} else {
 			this.log('looper', 'info', 'stop recording')
 		}
@@ -71,9 +75,11 @@ class Looper {
 
 	// mute looper
 	mute() {
+		if (this.recording) return
+
 		this.muted = !this.muted
 
-		if (this.recording) this.log('looper', 'info', 'muted')
+		if (this.looping && this.muted) this.log('looper', 'info', 'muted')
 		else this.log('looper', 'info', 'unmuted')
 
 		if (!this.muted) {
@@ -88,7 +94,7 @@ class Looper {
 	add(buffer) {
 		if (!this.recording) return
 		if (this.muted) return
-		if (!this.started) return
+		if (!this.hasData) return
 
 		this.log('looper', 'info', `saving data: [${buffer[0]}, ${buffer[1]}, ${buffer[2]}]`)
 
@@ -105,7 +111,7 @@ class Looper {
 	// step event, called by a setInterval
 	step() {
 		let restarted = false
-		let currentTime = new Date - this.lastLoopStartTime // current time in this loop. NOTE:: setting this?
+		let currentTime = new Date - this.lastLoopStartTime
 
 		// If this is the end of a loop.
 		if (this.length && currentTime > this.length) {
