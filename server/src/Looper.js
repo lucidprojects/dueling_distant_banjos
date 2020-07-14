@@ -21,7 +21,6 @@ class Looper {
 
 		this.looping = true
 		this.lastLoopStartTime = new Date
-		this.length = new Date - this.startTime
 		this.lastPlayedIndex = 0
 		this.intervalId = setInterval(this.step.bind(this), 2)
 
@@ -52,13 +51,16 @@ class Looper {
 
 		if (this.recording) {
 			this.startTime = new Date
-			this.log('looper', 'info', 'start recording')
 
 			if (!this.hasData) this.hasData = true
+
+			this.log('looper', 'info', 'start recording')
+
 		} else {
+			this.length = new Date - this.startTime
+
 			this.log('looper', 'info', 'stop recording')
 		}
-
 
 		return this.recording
 	}
