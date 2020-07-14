@@ -1,4 +1,0 @@
-{"timestamp":"2020-07-11 20:34:29.5650","service":"udp_server","level":"info","message":"Server is listening at port 5000"}
-{"timestamp":"2020-07-11 20:34:29.5690","service":"udp_server","level":"info","message":"Server ip :0.0.0.0"}
-{"timestamp":"2020-07-11 20:34:29.5700","service":"udp_server","level":"info","message":"Server is IP4/IP6 : IPv4"}
-{"timestamp":"2020-07-11 20:34:29.5700","service":"http_server","level":"info","message":"listening on port: 5050"}
