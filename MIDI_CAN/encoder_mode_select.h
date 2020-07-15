@@ -205,7 +205,7 @@ void setMode(int myMode)
       chMuteOnOff();
       disMode = 3;
       drawMode(3, rtCounter);
-      //rtCounter = 1;
+      rtCounter = 1;
       //      drawModeSelect(false);
       break;
 
