@@ -11,6 +11,7 @@ class Looper {
 		this.looping = false
 		this.muted = false
 		this.recording = false
+		this.receivedFirstMsg = false
 		this.hasData = false
 		this.log = log
 	}
@@ -50,14 +51,13 @@ class Looper {
 		this.recording = !this.recording
 
 		if (this.recording) {
-			this.recordStartTime = new Date
-
 			if (!this.hasData) this.hasData = true
 
 			this.log('looper', 'info', 'start recording')
 
 		} else {
 			this.length = new Date - this.recordStartTime
+			this.receivedFirstMsg = false
 
 			this.log('looper', 'info', 'stop recording')
 		}
@@ -97,6 +97,12 @@ class Looper {
 		if (!this.recording) return
 		if (this.muted) return
 		if (!this.hasData) return
+
+		// check to see if this is first msg received for new recording
+		if (!this.receivedFirstMsg) {
+			this.recordStartTime = new Date
+			this.receivedFirstMsg = true
+		}
 
 		this.log('looper', 'info', `saving data: [${buffer[0]}, ${buffer[1]}, ${buffer[2]}]`)
 
